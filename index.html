@@ -27,7 +27,6 @@
     body{
       background:#080808;
       font-family:'Barlow Condensed',sans-serif;
-      overflow-x:hidden;
     }
 
     input[type=number]::-webkit-inner-spin-button{
@@ -56,7 +55,7 @@
 
 <div id="root"></div>
 
-<script type="text/babel">
+<script type="text/babel" data-presets="react">
 
 const { useState, useMemo } = React;
 
@@ -115,7 +114,9 @@ function Field({
           onFocus={()=>setFocused(true)}
           onBlur={()=>setFocused(false)}
           onChange={e=>onChange(
-            e.target.value==="" ? "" : Number(e.target.value)
+            e.target.value === ""
+            ? ""
+            : Number(e.target.value)
           )}
           style={{
             flex:1,
@@ -131,8 +132,7 @@ function Field({
           }}
         />
 
-        {
-          unit &&
+        {unit &&
           <span style={{
             padding:"0 12px",
             color:focused ? "#f5d800" : "#555",
@@ -146,8 +146,7 @@ function Field({
 
       </div>
 
-      {
-        hint &&
+      {hint &&
         <span style={{
           fontSize:9,
           color:"#444"
@@ -182,8 +181,7 @@ function Section({num,title,children}){
           justifyContent:"center",
           fontSize:11,
           fontWeight:900,
-          color:"#000",
-          flexShrink:0
+          color:"#000"
         }}>
           {num}
         </div>
@@ -219,64 +217,181 @@ function Section({num,title,children}){
   );
 }
 
-function CalcRow({
-  label,
-  formula,
-  result,
-  yellow,
-  last
-}){
+function BoxPreview({comp,larg,alt}){
+
+  const scale = 3;
+
+  const width = Math.max(larg * scale, 60);
+  const height = Math.max(alt * scale, 60);
+  const depth = Math.max(comp * scale, 60);
 
   return(
     <div style={{
-      display:"flex",
-      justifyContent:"space-between",
-      alignItems:"flex-start",
-      padding:"10px 0",
-      borderBottom:last ? "none" : "1px solid #1a1a1a",
-      gap:12
+      background:"#0d0d0d",
+      border:"1px solid #222",
+      borderRadius:12,
+      padding:"30px 20px",
+      marginBottom:18,
+      overflow:"hidden"
     }}>
 
       <div style={{
-        flex:1,
-        minWidth:0
+        display:"flex",
+        alignItems:"center",
+        gap:10,
+        marginBottom:24
+      }}>
+        <div style={{
+          width:8,
+          height:20,
+          background:"#f5d800",
+          borderRadius:2
+        }}/>
+
+        <span style={{
+          fontSize:11,
+          fontWeight:800,
+          letterSpacing:"0.14em",
+          textTransform:"uppercase",
+          color:"#666"
+        }}>
+          Visualização da Caixa
+        </span>
+      </div>
+
+      <div style={{
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+        perspective:"1200px",
+        padding:"20px 0 40px"
       }}>
 
         <div style={{
-          fontSize:9,
-          color:"#555",
-          fontWeight:700,
-          letterSpacing:"0.1em",
-          textTransform:"uppercase",
-          marginBottom:3
+          position:"relative",
+          width:width,
+          height:height,
+          transformStyle:"preserve-3d",
+          transform:"rotateX(-18deg) rotateY(-28deg)",
+          transition:"all .4s ease"
         }}>
-          {label}
-        </div>
 
-        <div style={{
-          fontSize:11,
-          color:"#444",
-          fontWeight:500,
-          wordBreak:"break-word"
-        }}>
-          {formula}
+          <div style={{
+            position:"absolute",
+            width:width,
+            height:height,
+            background:"#d4a017",
+            border:"2px solid #f5d800"
+          }}/>
+
+          <div style={{
+            position:"absolute",
+            width:depth,
+            height:height,
+            background:"#b8860b",
+            border:"2px solid #f5d800",
+            transform:`rotateY(90deg) translateZ(${width}px)`,
+            transformOrigin:"left"
+          }}/>
+
+          <div style={{
+            position:"absolute",
+            width:width,
+            height:depth,
+            background:"#e0b91f",
+            border:"2px solid #f5d800",
+            transform:`rotateX(90deg) translateZ(${-height}px)`,
+            transformOrigin:"top"
+          }}/>
+
         </div>
 
       </div>
 
       <div style={{
-        fontSize:16,
-        fontWeight:700,
-        color:yellow ? "#f5d800" : "#fff",
-        whiteSpace:"nowrap",
-        background:yellow ? "#1a1700" : "#161616",
-        padding:"5px 12px",
-        borderRadius:5,
-        border:yellow
-          ? "1px solid #3a3300"
-          : "1px solid #222"
+        display:"grid",
+        gridTemplateColumns:"1fr 1fr 1fr",
+        gap:10
       }}>
-        {result}
+
+        <div style={{
+          background:"#111",
+          border:"1px solid #222",
+          borderRadius:8,
+          padding:"12px",
+          textAlign:"center"
+        }}>
+          <div style={{
+            fontSize:9,
+            color:"#666",
+            letterSpacing:"0.12em",
+            textTransform:"uppercase",
+            marginBottom:4
+          }}>
+            Comprimento
+          </div>
+
+          <div style={{
+            color:"#f5d800",
+            fontSize:22,
+            fontWeight:800
+          }}>
+            {comp} cm
+          </div>
+        </div>
+
+        <div style={{
+          background:"#111",
+          border:"1px solid #222",
+          borderRadius:8,
+          padding:"12px",
+          textAlign:"center"
+        }}>
+          <div style={{
+            fontSize:9,
+            color:"#666",
+            letterSpacing:"0.12em",
+            textTransform:"uppercase",
+            marginBottom:4
+          }}>
+            Largura
+          </div>
+
+          <div style={{
+            color:"#f5d800",
+            fontSize:22,
+            fontWeight:800
+          }}>
+            {larg} cm
+          </div>
+        </div>
+
+        <div style={{
+          background:"#111",
+          border:"1px solid #222",
+          borderRadius:8,
+          padding:"12px",
+          textAlign:"center"
+        }}>
+          <div style={{
+            fontSize:9,
+            color:"#666",
+            letterSpacing:"0.12em",
+            textTransform:"uppercase",
+            marginBottom:4
+          }}>
+            Altura
+          </div>
+
+          <div style={{
+            color:"#f5d800",
+            fontSize:22,
+            fontWeight:800
+          }}>
+            {alt} cm
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -292,13 +407,8 @@ function App(){
   const [gram,setGram]=useState(380);
   const [precoVenda,setPrecoVenda]=useState(14);
   const [precoCusto,setPrecoCusto]=useState(8);
+
   const [qtd,setQtd]=useState(100);
-
-  // VISUAL 3D DA CAIXA
-
-  const escalaComp = Math.max(120, comp * 4);
-  const escalaAlt = Math.max(80, alt * 4);
-  const profundidade = Math.max(60, larg * 2.5);
 
   const calc=useMemo(()=>{
 
@@ -309,9 +419,12 @@ function App(){
     const g=Number(gram)||0;
     const pv=Number(precoVenda)||0;
     const pc=Number(precoCusto)||0;
+
     const q=Number(qtd)||0;
 
-    if(!c||!l||!a||!g||!pv||!pc||!q)return null;
+    if(!c||!l||!a||!g||!pv||!pc||!q){
+      return null;
+    }
 
     const cVar=c+0.4;
     const lVar=l+0.4;
@@ -341,18 +454,29 @@ function App(){
     const margemPct=(lucroUnit/vendaUnit)*100;
 
     return{
-      cVar,lVar,
-      devHoriz,devVert,
-      abaTop,abaBot,
-      areaCm2,areaM2,
-      pesoGramas,pesoKg,
-      custoUnit,vendaUnit,lucroUnit,
-      custoTotal,vendaTotal,lucroTotal,
+      cVar,
+      lVar,
+      devHoriz,
+      devVert,
+      abaTop,
+      abaBot,
+      areaCm2,
+      areaM2,
+      pesoGramas,
+      pesoKg,
+      custoUnit,
+      vendaUnit,
+      lucroUnit,
+      custoTotal,
+      vendaTotal,
+      lucroTotal,
       margemPct
     };
 
   },[
-    comp,larg,alt,
+    comp,
+    larg,
+    alt,
     gram,
     precoVenda,
     precoCusto,
@@ -360,14 +484,12 @@ function App(){
   ]);
 
   return(
-
     <div style={{
       minHeight:"100vh",
       background:"#080808",
+      fontFamily:"'Barlow Condensed',sans-serif",
       paddingBottom:60
     }}>
-
-      {/* HEADER */}
 
       <div style={{
         background:"#000",
@@ -381,16 +503,7 @@ function App(){
         zIndex:10
       }}>
 
-        <svg width="46" height="46" viewBox="0 0 100 100" fill="none">
-          <rect width="100" height="100" fill="black"/>
-          <rect x="2" y="2" width="96" height="96" stroke="white" strokeWidth="4"/>
-          <path d="M10 18 L26 42 L26 62 L34 62 L34 42 L50 18 L40 18 L30 34 L20 18 Z" fill="white"/>
-          <path d="M52 18 L52 62 L66 62 C78 62 86 54 86 40 C86 26 78 18 66 18 Z M62 26 L66 26 C72 26 76 32 76 40 C76 48 72 54 66 54 L62 54 Z" fill="white"/>
-          <rect x="68" y="28" width="12" height="12" fill="#f5d800"/>
-        </svg>
-
         <div>
-
           <div style={{
             fontSize:28,
             fontWeight:900,
@@ -410,108 +523,9 @@ function App(){
           }}>
             CALCULADORA DE PAPELÃO
           </div>
-
         </div>
 
       </div>
-
-      {/* VISUALIZAÇÃO */}
-
-      <div style={{
-        display:"flex",
-        justifyContent:"center",
-        alignItems:"center",
-        padding:"40px 20px 20px"
-      }}>
-
-        <div style={{
-          position:"relative",
-          width:escalaComp + profundidade,
-          height:escalaAlt + profundidade,
-          transition:"all .4s ease"
-        }}>
-
-          {/* frente */}
-
-          <div style={{
-            position:"absolute",
-            width:escalaComp,
-            height:escalaAlt,
-            background:"#d4a017",
-            border:"3px solid #f5d800",
-            bottom:0,
-            left:0,
-            borderRadius:8,
-            boxShadow:"0 20px 50px rgba(245,216,0,.15)"
-          }}/>
-
-          {/* lado */}
-
-          <div style={{
-            position:"absolute",
-            width:profundidade,
-            height:escalaAlt,
-            background:"#b8860b",
-            right:0,
-            bottom:profundidade * 0.25,
-            transform:"skewY(-45deg)",
-            border:"3px solid #e0b800"
-          }}/>
-
-          {/* topo */}
-
-          <div style={{
-            position:"absolute",
-            width:escalaComp,
-            height:profundidade,
-            background:"#f5d800",
-            left:profundidade * 0.5,
-            top:0,
-            transform:"skewX(-45deg)",
-            border:"3px solid #ffe44d"
-          }}/>
-
-          {/* medidas */}
-
-          <div style={{
-            position:"absolute",
-            bottom:-28,
-            left:0,
-            color:"#888",
-            fontSize:14,
-            fontWeight:700
-          }}>
-            C: {comp}cm
-          </div>
-
-          <div style={{
-            position:"absolute",
-            top:-28,
-            right:10,
-            color:"#888",
-            fontSize:14,
-            fontWeight:700
-          }}>
-            L: {larg}cm
-          </div>
-
-          <div style={{
-            position:"absolute",
-            right:-30,
-            top:"45%",
-            transform:"rotate(90deg)",
-            color:"#888",
-            fontSize:14,
-            fontWeight:700
-          }}>
-            A: {alt}cm
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* CONTEÚDO */}
 
       <div style={{
         maxWidth:600,
@@ -519,7 +533,44 @@ function App(){
         padding:"24px 16px 0"
       }}>
 
-        <!-- COLE O RESTO DA SUA CALCULADORA AQUI -->
+        <Section num="1" title="Medidas internas da caixa">
+
+          <div style={{
+            display:"grid",
+            gridTemplateColumns:"1fr 1fr 1fr",
+            gap:12
+          }}>
+
+            <Field
+              label="Comprimento"
+              value={comp}
+              onChange={setComp}
+              unit="cm"
+            />
+
+            <Field
+              label="Largura"
+              value={larg}
+              onChange={setLarg}
+              unit="cm"
+            />
+
+            <Field
+              label="Altura"
+              value={alt}
+              onChange={setAlt}
+              unit="cm"
+            />
+
+          </div>
+
+        </Section>
+
+        <BoxPreview
+          comp={comp}
+          larg={larg}
+          alt={alt}
+        />
 
       </div>
 
