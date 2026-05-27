@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
 
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#000000"/>
 
 <title>YD BOX — Calculadora</title>
 
@@ -23,24 +25,43 @@
 
 body{
   background:#080808;
-  color:white;
   font-family:'Barlow Condensed',sans-serif;
+  color:white;
+}
+
+input{
+  width:100%;
+  background:#111;
+  border:1px solid #2b2b2b;
+  border-radius:10px;
+  padding:14px;
+  color:white;
+  font-size:18px;
+  font-family:'Barlow Condensed';
+  outline:none;
+}
+
+input:focus{
+  border-color:#f5d800;
 }
 
 .container{
-  max-width:1200px;
+  max-width:1100px;
   margin:auto;
   padding:20px;
 }
 
 .header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:30px;
   border-bottom:2px solid #f5d800;
   padding-bottom:20px;
-  margin-bottom:30px;
 }
 
 .logo{
-  font-size:48px;
+  font-size:42px;
   font-weight:900;
 }
 
@@ -50,130 +71,125 @@ body{
 
 .subtitle{
   color:#666;
-  letter-spacing:4px;
-  font-size:13px;
+  font-size:14px;
+  letter-spacing:3px;
 }
 
 .grid{
   display:grid;
-  grid-template-columns:400px 1fr;
-  gap:25px;
+  grid-template-columns:420px 1fr;
+  gap:30px;
 }
 
 .card{
-  background:#101010;
-  border:1px solid #232323;
+  background:#0d0d0d;
+  border:1px solid #222;
   border-radius:18px;
   padding:22px;
   margin-bottom:18px;
 }
 
 .section-title{
-  color:#f5d800;
   font-size:12px;
   letter-spacing:3px;
-  margin-bottom:18px;
+  color:#f5d800;
+  margin-bottom:16px;
   font-weight:800;
 }
 
 .fields{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
+  gap:12px;
 }
 
-.input-group label{
-  display:block;
+.label{
   margin-bottom:6px;
   color:#777;
   font-size:12px;
+  letter-spacing:1px;
 }
 
-input{
-  width:100%;
-  background:#181818;
-  border:1px solid #2a2a2a;
-  border-radius:10px;
-  padding:14px;
-  color:white;
-  font-size:20px;
-  font-family:'Barlow Condensed';
-}
-
-input:focus{
-  outline:none;
-  border-color:#f5d800;
-}
-
-.mockup{
-  background:#101010;
-  border:1px solid #232323;
-  border-radius:22px;
-  min-height:700px;
+.result{
   display:flex;
-  align-items:center;
-  justify-content:center;
-  position:sticky;
-  top:20px;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #1f1f1f;
 }
 
-.scene{
-  position:relative;
-  width:500px;
-  height:500px;
+.result:last-child{
+  border:none;
 }
 
-/* MEDIDAS */
+.result-name{
+  color:#777;
+}
 
-.measure{
-  position:absolute;
+.result-value{
+  font-weight:800;
   color:#f5d800;
-  font-weight:900;
-  text-shadow:0 0 10px black;
+}
+
+.total-box{
+  background:#000;
+  border:2px solid #f5d800;
+  border-radius:18px;
+  padding:20px;
+}
+
+.total-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-top:20px;
+}
+
+.total-item{
+  background:#111;
+  border-radius:12px;
+  padding:18px;
   text-align:center;
 }
 
-.measure small{
-  display:block;
+.total-item h3{
+  color:#666;
   font-size:12px;
-  color:#888;
+  margin-bottom:8px;
 }
 
-.measure.c{
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:28px;
+.total-item p{
+  font-size:22px;
+  font-weight:900;
 }
 
-.measure.l{
-  right:20px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:28px;
+.mockup{
+  background:#0d0d0d;
+  border:1px solid #222;
+  border-radius:18px;
+  min-height:700px;
+  position:sticky;
+  top:20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 
-.measure.a{
-  left:20px;
-  top:50%;
-  transform:translateY(-50%);
-  font-size:28px;
+svg{
+  width:100%;
+  max-width:650px;
 }
 
 @media(max-width:900px){
 
-.grid{
-  grid-template-columns:1fr;
-}
+  .grid{
+    grid-template-columns:1fr;
+  }
 
-.mockup{
-  min-height:500px;
-  position:relative;
-}
-
-.scene{
-  transform:scale(.75);
-}
+  .mockup{
+    min-height:450px;
+    position:relative;
+  }
 
 }
 
@@ -187,7 +203,15 @@ input:focus{
 
 <script type="text/babel">
 
-const {useState}=React;
+const {useState,useMemo}=React;
+
+const fmt=(n,d=2)=>
+n.toLocaleString('pt-BR',{
+minimumFractionDigits:d,
+maximumFractionDigits:d
+});
+
+const money=(n)=>"R$ "+fmt(n);
 
 function App(){
 
@@ -195,11 +219,65 @@ const [comp,setComp]=useState(30);
 const [larg,setLarg]=useState(20);
 const [alt,setAlt]=useState(15);
 
-/* ESCALA VISUAL */
+const [gram,setGram]=useState(380);
+const [venda,setVenda]=useState(14);
+const [custo,setCusto]=useState(8);
 
-const c = Math.max(comp * 5,120);
-const l = Math.max(larg * 4,80);
-const a = Math.max(alt * 5,80);
+const [qtd,setQtd]=useState(100);
+
+const calc=useMemo(()=>{
+
+const c=Number(comp)||0;
+const l=Number(larg)||0;
+const a=Number(alt)||0;
+
+const g=Number(gram)||0;
+const pv=Number(venda)||0;
+const pc=Number(custo)||0;
+const q=Number(qtd)||0;
+
+const cVar=c+0.4;
+const lVar=l+0.4;
+
+const devHoriz=(2*cVar)+(2*lVar)+3;
+
+const abaTop=lVar/2;
+const abaBot=cVar/2;
+
+const devVert=a+abaTop+abaBot;
+
+const areaCm2=devHoriz*devVert;
+const areaM2=areaCm2/10000;
+
+const pesoGramas=areaM2*g;
+const pesoKg=pesoGramas/1000;
+
+const custoUnit=pesoKg*pc;
+const vendaUnit=pesoKg*pv;
+const lucroUnit=vendaUnit-custoUnit;
+
+const custoTotal=custoUnit*q;
+const vendaTotal=vendaUnit*q;
+const lucroTotal=lucroUnit*q;
+
+const margem=(lucroUnit/vendaUnit)*100;
+
+return{
+devHoriz,
+devVert,
+areaCm2,
+pesoKg,
+pesoGramas,
+custoUnit,
+vendaUnit,
+lucroUnit,
+custoTotal,
+vendaTotal,
+lucroTotal,
+margem
+};
+
+},[comp,larg,alt,gram,venda,custo,qtd]);
 
 return(
 
@@ -207,6 +285,7 @@ return(
 
 <div className="header">
 
+<div>
 <div className="logo">
 YD <span>BOX</span>
 </div>
@@ -214,50 +293,55 @@ YD <span>BOX</span>
 <div className="subtitle">
 CALCULADORA DE PAPELÃO
 </div>
+</div>
 
 </div>
 
 <div className="grid">
-
-{/* ESQUERDA */}
 
 <div>
 
 <div className="card">
 
 <div className="section-title">
-MEDIDAS DA CAIXA
+MEDIDAS
 </div>
 
 <div className="fields">
 
-<div className="input-group">
-<label>COMPRIMENTO</label>
+<div>
+<div className="label">
+COMPRIMENTO
+</div>
 
 <input
 type="number"
 value={comp}
-onChange={(e)=>setComp(Number(e.target.value))}
+onChange={(e)=>setComp(e.target.value)}
 />
 </div>
 
-<div className="input-group">
-<label>LARGURA</label>
+<div>
+<div className="label">
+LARGURA
+</div>
 
 <input
 type="number"
 value={larg}
-onChange={(e)=>setLarg(Number(e.target.value))}
+onChange={(e)=>setLarg(e.target.value)}
 />
 </div>
 
-<div className="input-group">
-<label>ALTURA</label>
+<div>
+<div className="label">
+ALTURA
+</div>
 
 <input
 type="number"
 value={alt}
-onChange={(e)=>setAlt(Number(e.target.value))}
+onChange={(e)=>setAlt(e.target.value)}
 />
 </div>
 
@@ -268,121 +352,254 @@ onChange={(e)=>setAlt(Number(e.target.value))}
 <div className="card">
 
 <div className="section-title">
-VISUAL INTELIGENTE
+MATERIAL
 </div>
 
-<p style={{
-color:'#999',
-fontSize:'22px',
-lineHeight:'30px'
-}}>
-A caixa altera automaticamente conforme as medidas digitadas,
-mantendo proporção real de comprimento, largura e altura.
+<div className="fields">
+
+<div>
+<div className="label">
+GRAMATURA
+</div>
+
+<input
+type="number"
+value={gram}
+onChange={(e)=>setGram(e.target.value)}
+/>
+</div>
+
+<div>
+<div className="label">
+VENDA R$/KG
+</div>
+
+<input
+type="number"
+value={venda}
+onChange={(e)=>setVenda(e.target.value)}
+/>
+</div>
+
+<div>
+<div className="label">
+CUSTO R$/KG
+</div>
+
+<input
+type="number"
+value={custo}
+onChange={(e)=>setCusto(e.target.value)}
+/>
+</div>
+
+</div>
+
+</div>
+
+<div className="card">
+
+<div className="section-title">
+QUANTIDADE
+</div>
+
+<input
+type="number"
+value={qtd}
+onChange={(e)=>setQtd(e.target.value)}
+/>
+
+</div>
+
+<div className="card">
+
+<div className="section-title">
+CÁLCULO
+</div>
+
+<div className="result">
+<div className="result-name">
+Desenvolvimento Horizontal
+</div>
+
+<div className="result-value">
+{fmt(calc.devHoriz)} cm
+</div>
+</div>
+
+<div className="result">
+<div className="result-name">
+Desenvolvimento Vertical
+</div>
+
+<div className="result-value">
+{fmt(calc.devVert)} cm
+</div>
+</div>
+
+<div className="result">
+<div className="result-name">
+Área Total
+</div>
+
+<div className="result-value">
+{fmt(calc.areaCm2)} cm²
+</div>
+</div>
+
+<div className="result">
+<div className="result-name">
+Peso por Caixa
+</div>
+
+<div className="result-value">
+{fmt(calc.pesoGramas)} g
+</div>
+</div>
+
+<div className="result">
+<div className="result-name">
+Margem
+</div>
+
+<div className="result-value">
+{fmt(calc.margem)}%
+</div>
+</div>
+
+</div>
+
+<div className="total-box">
+
+<h2 style={{fontSize:'28px'}}>
+TOTAL DO PEDIDO
+</h2>
+
+<div className="total-grid">
+
+<div className="total-item">
+<h3>CUSTO</h3>
+<p style={{color:'#999'}}>
+{money(calc.custoTotal)}
 </p>
+</div>
 
+<div className="total-item">
+<h3>VENDA</h3>
+<p style={{color:'#f5d800'}}>
+{money(calc.vendaTotal)}
+</p>
+</div>
+
+<div className="total-item">
+<h3>LUCRO</h3>
+<p style={{color:'#4dcc7a'}}>
+{money(calc.lucroTotal)}
+</p>
 </div>
 
 </div>
 
-{/* DIREITA */}
+</div>
+
+</div>
 
 <div className="mockup">
 
-<div className="scene">
+<svg
+viewBox="0 0 600 500"
+>
 
 {/* TOPO */}
 
-<div
-style={{
-position:'absolute',
-left:'120px',
-top:'80px',
-width:`${c}px`,
-height:`${l}px`,
-background:'#d89a47',
-transform:'skew(-30deg)',
-border:'2px solid #8b5c1c'
-}}
-></div>
+<polygon
+points="200,120 420,120 500,180 280,180"
+fill="#d89a47"
+stroke="#8b5c1c"
+strokeWidth="3"
+/>
 
 {/* FRENTE */}
 
-<div
-style={{
-position:'absolute',
-left:'70px',
-top:`${80+(l/2)}px`,
-width:`${c}px`,
-height:`${a}px`,
-background:'#c8893d',
-border:'2px solid #8b5c1c'
-}}
-></div>
+<polygon
+points="200,120 280,180 280,340 200,280"
+fill="#c8893d"
+stroke="#8b5c1c"
+strokeWidth="3"
+/>
 
 {/* LATERAL */}
 
-<div
-style={{
-position:'absolute',
-left:`${70+c}px`,
-top:`${80+(l/2)}px`,
-width:`${l}px`,
-height:`${a}px`,
-background:'#b67831',
-transform:'skewY(-30deg)',
-transformOrigin:'top',
-border:'2px solid #8b5c1c'
-}}
-></div>
+<polygon
+points="280,180 500,180 500,340 280,340"
+fill="#b67831"
+stroke="#8b5c1c"
+strokeWidth="3"
+/>
 
 {/* ABA ESQUERDA */}
 
-<div
-style={{
-position:'absolute',
-left:'95px',
-top:'42px',
-width:`${c/2}px`,
-height:'42px',
-background:'#e4aa57',
-transform:'skew(-30deg)',
-border:'2px solid #8b5c1c'
-}}
-></div>
+<polygon
+points="180,80 300,80 340,120 220,120"
+fill="#e4aa57"
+stroke="#8b5c1c"
+strokeWidth="3"
+/>
 
 {/* ABA DIREITA */}
 
-<div
-style={{
-position:'absolute',
-left:`${95+(c/2)}px`,
-top:'42px',
-width:`${c/2}px`,
-height:'42px',
-background:'#e4aa57',
-transform:'skew(-30deg)',
-border:'2px solid #8b5c1c'
-}}
-></div>
+<polygon
+points="320,80 440,80 480,120 360,120"
+fill="#e4aa57"
+stroke="#8b5c1c"
+strokeWidth="3"
+/>
+
+{/* LINHAS */}
+
+<line
+x1="280"
+y1="180"
+x2="280"
+y2="340"
+stroke="#8b5c1c"
+strokeWidth="2"
+/>
 
 {/* MEDIDAS */}
 
-<div className="measure c">
+<text
+x="350"
+y="390"
+fill="#f5d800"
+fontSize="28"
+fontWeight="900"
+textAnchor="middle"
+>
 {comp} cm
-<small>Comprimento</small>
-</div>
+</text>
 
-<div className="measure l">
+<text
+x="530"
+y="260"
+fill="#f5d800"
+fontSize="28"
+fontWeight="900"
+>
 {larg} cm
-<small>Largura</small>
-</div>
+</text>
 
-<div className="measure a">
+<text
+x="140"
+y="240"
+fill="#f5d800"
+fontSize="28"
+fontWeight="900"
+>
 {alt} cm
-<small>Altura</small>
-</div>
+</text>
 
-</div>
+</svg>
 
 </div>
 
