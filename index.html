@@ -176,7 +176,6 @@ input:focus{
   overflow:hidden;
 }
 
-/* Painel de Zoom */
 .zoom-controls {
   position: absolute;
   top: 20px;
@@ -204,7 +203,6 @@ input:focus{
   color: #f5d800;
 }
 
-/* Logo flutuante no Mockup */
 .mockup-logo-container {
   position: absolute;
   top: 20px;
@@ -253,17 +251,16 @@ const money=(n)=>"R$ "+fmt(n);
 
 function App(){
 
-const [comp,setComp]=useState(30);
-const [larg,setLarg]=useState(20);
-const [alt,setAlt]=useState(15);
+// Valores padrão inicializados agora em milímetros (Exemplo equivalente a 30cm x 20cm x 15cm)
+const [comp,setComp]=useState(300);
+const [larg,setLarg]=useState(200);
+const [alt,setAlt]=useState(150);
 
 const [gram,setGram]=useState(380);
 const [venda,setVenda]=useState(14);
 const [custo,setCusto]=useState(8);
 
 const [qtd,setQtd]=useState(100);
-
-// Estado para controlar o Zoom dinâmico da caixa
 const [zoom, setZoom] = useState(1.0);
 
 const calc=useMemo(()=>{
@@ -275,14 +272,23 @@ const pv=Number(venda)||0;
 const pc=Number(custo)||0;
 const q=Number(qtd)||0;
 
-const cVar=c+0.4;
-const lVar=l+0.4;
-const devHoriz=(2*cVar)+(2*lVar)+3;
+// Folga técnica convertida proporcionalmente de 0.4cm para 4mm
+const cVar=c+4;
+const lVar=l+4;
+
+// Desenvolvimento horizontal e vertical calculados em mm
+const devHoriz=(2*cVar)+(2*lVar)+30; // 3cm de orelha colagem = 30mm
 const abaTop=lVar/2;
 const abaBot=cVar/2;
 const devVert=a+abaTop+abaBot;
-const areaCm2=devHoriz*devVert;
-const areaM2=areaCm2/10000;
+
+// Área em mm²
+const areaMm2=devHoriz*devVert;
+
+// Conversão matemática crucial: 1 m² equivale a 1.000.000 mm²
+const areaM2=areaMm2/1000000;
+
+// Pesos baseados na área calculada convertida
 const pesoGramas=areaM2*g;
 const pesoKg=pesoGramas/1000;
 
@@ -291,7 +297,7 @@ const vendaUnit=pesoKg*pv;
 const lucroUnit=vendaUnit-custoUnit;
 
 return{
-areaCm2,
+areaMm2,
 pesoGramas,
 custoTotal:custoUnit*q,
 vendaTotal:vendaUnit*q,
@@ -300,7 +306,6 @@ margem:vendaUnit > 0 ? (lucroUnit/vendaUnit)*100 : 0
 };
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
-// Funções de ajuste de zoom
 const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.15, 2.0));
 const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.15, 0.4));
 const handleZoomReset = () => setZoom(1.0);
@@ -312,7 +317,7 @@ return(
 <div className="header">
 <div>
 <div className="logo">YD <span>BOX</span></div>
-<div className="subtitle">CALCULADORA DE PAPELÃO</div>
+<div className="subtitle">CALCULADORA DE PAPELÃO (MM)</div>
 </div>
 </div>
 
@@ -321,18 +326,18 @@ return(
 {/* ESQUERDA */}
 <div>
 <div className="card">
-<div className="section-title">MEDIDAS</div>
+<div className="section-title">MEDIDAS (EM MILÍMETROS)</div>
 <div className="fields">
 <div>
-<div className="label">COMPRIMENTO</div>
+<div className="label">COMPRIMENTO (mm)</div>
 <input type="number" value={comp} onChange={(e)=>setComp(e.target.value)}/>
 </div>
 <div>
-<div className="label">LARGURA</div>
+<div className="label">LARGURA (mm)</div>
 <input type="number" value={larg} onChange={(e)=>setLarg(e.target.value)}/>
 </div>
 <div>
-<div className="label">ALTURA</div>
+<div className="label">ALTURA (mm)</div>
 <input type="number" value={alt} onChange={(e)=>setAlt(e.target.value)}/>
 </div>
 </div>
@@ -342,7 +347,7 @@ return(
 <div className="section-title">MATERIAL</div>
 <div className="fields">
 <div>
-<div className="label">GRAMATURA</div>
+<div className="label">GRAMATURA (g/m²)</div>
 <input type="number" value={gram} onChange={(e)=>setGram(e.target.value)}/>
 </div>
 <div>
@@ -363,7 +368,7 @@ return(
 
 <div className="card">
 <div className="section-title">CÁLCULO</div>
-<div className="result"><div className="result-name">Área Total</div><div className="result-value">{fmt(calc.areaCm2)} cm²</div></div>
+<div className="result"><div className="result-name">Área Total</div><div className="result-value">{fmt(calc.areaMm2, 0)} mm²</div></div>
 <div className="result"><div className="result-name">Peso por Caixa</div><div className="result-value">{fmt(calc.pesoGramas)} g</div></div>
 <div className="result"><div className="result-name">Margem</div><div className="result-value">{fmt(calc.margem)}%</div></div>
 </div>
@@ -378,43 +383,33 @@ return(
 </div>
 </div>
 
-{/* DIREITA - MOCKUP COM ZOOM E LOGO */}
+{/* DIREITA - MOCKUP */}
 <div className="mockup">
   
-  {/* Controles de Zoom */}
   <div className="zoom-controls">
-    <button className="zoom-btn" onClick={handleZoomIn} title="Aproximar Caixa">Zoom +</button>
-    <button className="zoom-btn" onClick={handleZoomOut} title="Afastar Caixa">Zoom -</button>
+    <button className="zoom-btn" onClick={handleZoomIn}>Zoom +</button>
+    <button className="zoom-btn" onClick={handleZoomOut}>Zoom -</button>
     <button className="zoom-btn" onClick={handleZoomReset} style={{fontSize:'12px', opacity: 0.6}}>Reset</button>
   </div>
 
-  {/* Logo YD Box no canto superior direito conforme a imagem */}
   <div className="mockup-logo-container">
     <svg viewBox="0 0 100 100" style={{width: '90%', height: '90%'}}>
       <g transform="translate(5, 5)">
-        {/* Texto YD estilizado */}
         <text x="5" y="52" fill="white" fontSize="48" fontWeight="900" fontFamily="sans-serif" letterSpacing="-2">Y</text>
         <path d="M42 16 H68 C82 16, 88 26, 88 36 C88 47, 82 56, 68 56 H42 Z" fill="white" />
-        {/* Vão interno da letra D */}
         <path d="M54 25 H65 C73 25, 77 30, 77 36 C77 42, 73 47, 65 47 H54 Z" fill="#000" />
         
-        {/* Ícone do Cubinho Isométrico dentro da letra D */}
         <g transform="translate(55, 27) scale(0.24)">
-          {/* Topo do cubinho amarelado */}
           <polygon points="30,0 60,15 30,30 0,15" fill="#f5d800" stroke="#000" strokeWidth="5"/>
-          {/* Lateral Esquerda do cubinho */}
           <polygon points="0,15 30,30 30,65 0,50" fill="white" stroke="#000" strokeWidth="5"/>
-          {/* Lateral Direita do cubinho */}
           <polygon points="30,30 60,15 60,50 30,65" fill="white" stroke="#000" strokeWidth="5"/>
         </g>
         
-        {/* Texto BOX na parte inferior */}
         <text x="50" y="80" fill="white" fontSize="13" fontWeight="bold" fontFamily="sans-serif" letterSpacing="4">BOX</text>
       </g>
     </svg>
   </div>
 
-  {/* SVG Principal da Caixa responsiva ao multiplicador de Zoom */}
   <svg viewBox="0 0 900 750" style={{ transform: `scale(${zoom})` }}>
   <defs>
     <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -428,8 +423,8 @@ return(
     const lNum = Math.max(Number(larg) || 0, 1);
     const aNum = Math.max(Number(alt) || 0, 1);
 
-    // Mantém a proporção dinâmica restrita à área útil de visualização
     const maxDim = Math.max(cNum, lNum, aNum);
+    // Fator ajustado para manter a proporção com entradas maiores em mm
     const fatorGlobal = 230 / maxDim;
 
     const w = cNum * fatorGlobal; 
@@ -451,7 +446,7 @@ return(
           strokeWidth="1.5"
         />
 
-        {/* 2. PAREDES INTERNES DE TRÁS */}
+        {/* 2. PAREDES INTERNAS */}
         <polygon
           points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`}
           fill="#7d470d"
@@ -461,14 +456,13 @@ return(
           fill="#8e5313"
         />
         
-        {/* Sombra interna mapeada */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
           fill="url(#innerShadow)"
           style={{mixBlendMode: 'multiply'}}
         />
 
-        {/* 3. ABAS TRASEIRAS (Abertas para trás/cima) */}
+        {/* 3. ABAS TRASEIRAS */}
         <polygon
           points={`
             ${cx - w},${cy - w/2 - h} 
@@ -492,7 +486,7 @@ return(
           strokeWidth="2"
         />
 
-        {/* 4. PAREDES EXTERNAS DIANTEIRAS */}
+        {/* 4. PAREDES EXTERNAS */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`}
           fill="#c8893d"
@@ -506,7 +500,7 @@ return(
           strokeWidth="3"
         />
 
-        {/* 5. ABAS DIANTEIRAS (Abertas para frente/baixo) */}
+        {/* 5. ABAS DIANTEIRAS */}
         <polygon
           points={`
             ${cx},${cy - h} 
@@ -530,10 +524,10 @@ return(
           strokeWidth="3"
         />
 
-        {/* MEDIDAS DINÂMICAS */}
-        <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{comp} cm</text>
-        <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{larg} cm</text>
-        <text x={cx - w - 45} y={cy - w/2 - h/2 + 15} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{alt} cm</text>
+        {/* TEXTOS DE MEDIDA EM MILÍMETROS */}
+        <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{comp} mm</text>
+        <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{larg} mm</text>
+        <text x={cx - w - 45} y={cy - w/2 - h/2 + 15} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{alt} mm</text>
       </g>
     );
   })()}
