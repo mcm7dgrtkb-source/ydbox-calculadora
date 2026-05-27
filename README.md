@@ -1,1 +1,0 @@
-# ydbox-calculadora
