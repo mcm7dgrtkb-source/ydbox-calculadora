@@ -1,5 +1,5 @@
-Aqui está o código HTML completo e pronto para uso. Substituí toda a lógica de renderização do SVG para criar uma caixa aberta e vazia em perspectiva isométrica realística, adicionando também sombras internas para dar profundidade ao fundo da caixa e reposicionando as abas para fora.
-Pode copiar e colar este código diretamente no seu arquivo .html:
+Para garantir que a caixa pareça realmente aberta e vazia com as **4 abas** (uma para cada lado da borda superior), ajustei a geometria do SVG. Agora, cada aba está conectada a uma das quatro paredes, dobradas para fora em perspectiva isométrica.
+Aqui está o código completo e atualizado:
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -182,15 +182,8 @@ svg{
 }
 
 @media(max-width:900px){
-
-.grid{
-  grid-template-columns:1fr;
-}
-
-.mockup{
-  min-height:450px;
-}
-
+.grid{ grid-template-columns:1fr; }
+.mockup{ min-height:450px; }
 }
 
 </style>
@@ -226,11 +219,9 @@ const [custo,setCusto]=useState(8);
 const [qtd,setQtd]=useState(100);
 
 const calc=useMemo(()=>{
-
 const c=Number(comp)||0;
 const l=Number(larg)||0;
 const a=Number(alt)||0;
-
 const g=Number(gram)||0;
 const pv=Number(venda)||0;
 const pc=Number(custo)||0;
@@ -238,17 +229,12 @@ const q=Number(qtd)||0;
 
 const cVar=c+0.4;
 const lVar=l+0.4;
-
 const devHoriz=(2*cVar)+(2*lVar)+3;
-
 const abaTop=lVar/2;
 const abaBot=cVar/2;
-
 const devVert=a+abaTop+abaBot;
-
 const areaCm2=devHoriz*devVert;
 const areaM2=areaCm2/10000;
-
 const pesoGramas=areaM2*g;
 const pesoKg=pesoGramas/1000;
 
@@ -262,422 +248,194 @@ pesoGramas,
 custoTotal:custoUnit*q,
 vendaTotal:vendaUnit*q,
 lucroTotal:lucroUnit*q,
-margem:(lucroUnit/vendaUnit)*100
+margem:vendaUnit > 0 ? (lucroUnit/vendaUnit)*100 : 0
 };
-
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
-/* ESCALA VISUAL DO MODELO 3D */
-const largura = Math.max(comp * 6, 180);
-const profundidade = Math.max(larg * 6, 130);
-const altura = Math.max(alt * 5, 120);
+/* ESCALA VISUAL DO MODELO */
+const w = Math.max(comp * 7, 180); // Comprimento (eixo X esquerda)
+const d = Math.max(larg * 7, 130); // Profundidade (eixo X direita)
+const h = Math.max(alt * 6, 120);  // Altura
 
 return(
 
 <div className="container">
 
 <div className="header">
-
 <div>
-<div className="logo">
-YD <span>BOX</span>
+<div className="logo">YD <span>BOX</span></div>
+<div className="subtitle">CALCULADORA DE PAPELÃO</div>
 </div>
-
-<div className="subtitle">
-CALCULADORA DE PAPELÃO
-</div>
-</div>
-
 </div>
 
 <div className="grid">
 
 {/* ESQUERDA */}
-
 <div>
-
 <div className="card">
-
-<div className="section-title">
-MEDIDAS
-</div>
-
+<div className="section-title">MEDIDAS</div>
 <div className="fields">
-
 <div>
 <div className="label">COMPRIMENTO</div>
-
-<input
-type="number"
-value={comp}
-onChange={(e)=>setComp(e.target.value)}
-/>
+<input type="number" value={comp} onChange={(e)=>setComp(e.target.value)}/>
 </div>
-
 <div>
 <div className="label">LARGURA</div>
-
-<input
-type="number"
-value={larg}
-onChange={(e)=>setLarg(e.target.value)}
-/>
+<input type="number" value={larg} onChange={(e)=>setLarg(e.target.value)}/>
 </div>
-
 <div>
 <div className="label">ALTURA</div>
-
-<input
-type="number"
-value={alt}
-onChange={(e)=>setAlt(e.target.value)}
-/>
+<input type="number" value={alt} onChange={(e)=>setAlt(e.target.value)}/>
 </div>
-
 </div>
-
 </div>
 
 <div className="card">
-
-<div className="section-title">
-MATERIAL
-</div>
-
+<div className="section-title">MATERIAL</div>
 <div className="fields">
-
 <div>
 <div className="label">GRAMATURA</div>
-
-<input
-type="number"
-value={gram}
-onChange={(e)=>setGram(e.target.value)}
-/>
+<input type="number" value={gram} onChange={(e)=>setGram(e.target.value)}/>
 </div>
-
 <div>
 <div className="label">VENDA R$/KG</div>
-
-<input
-type="number"
-value={venda}
-onChange={(e)=>setVenda(e.target.value)}
-/>
+<input type="number" value={venda} onChange={(e)=>setVenda(e.target.value)}/>
 </div>
-
 <div>
 <div className="label">CUSTO R$/KG</div>
-
-<input
-type="number"
-value={custo}
-onChange={(e)=>setCusto(e.target.value)}
-/>
+<input type="number" value={custo} onChange={(e)=>setCusto(e.target.value)}/>
 </div>
-
 </div>
-
 </div>
 
 <div className="card">
-
-<div className="section-title">
-QUANTIDADE
-</div>
-
-<input
-type="number"
-value={qtd}
-onChange={(e)=>setQtd(e.target.value)}
-/>
-
+<div className="section-title">QUANTIDADE</div>
+<input type="number" value={qtd} onChange={(e)=>setQtd(e.target.value)}/>
 </div>
 
 <div className="card">
-
-<div className="section-title">
-CÁLCULO
-</div>
-
-<div className="result">
-<div className="result-name">Área Total</div>
-<div className="result-value">{fmt(calc.areaCm2)} cm²</div>
-</div>
-
-<div className="result">
-<div className="result-name">Peso por Caixa</div>
-<div className="result-value">{fmt(calc.pesoGramas)} g</div>
-</div>
-
-<div className="result">
-<div className="result-name">Margem</div>
-<div className="result-value">{fmt(calc.margem)}%</div>
-</div>
-
+<div className="section-title">CÁLCULO</div>
+<div className="result"><div className="result-name">Área Total</div><div className="result-value">{fmt(calc.areaCm2)} cm²</div></div>
+<div className="result"><div className="result-name">Peso por Caixa</div><div className="result-value">{fmt(calc.pesoGramas)} g</div></div>
+<div className="result"><div className="result-name">Margem</div><div className="result-value">{fmt(calc.margem)}%</div></div>
 </div>
 
 <div className="total-box">
-
-<h2 style={{fontSize:'28px'}}>
-TOTAL DO PEDIDO
-</h2>
-
+<h2 style={{fontSize:'28px'}}>TOTAL DO PEDIDO</h2>
 <div className="total-grid">
-
-<div className="total-item">
-<h3>CUSTO</h3>
-<p style={{color:'#999'}}>
-{money(calc.custoTotal)}
-</p>
+<div className="total-item"><h3>CUSTO</h3><p style={{color:'#999'}}>{money(calc.custoTotal)}</p></div>
+<div className="total-item"><h3>VENDA</h3><p style={{color:'#f5d800'}}>{money(calc.vendaTotal)}</p></div>
+<div className="total-item"><h3>LUCRO</h3><p style={{color:'#4dcc7a'}}>{money(calc.lucroTotal)}</p></div>
+</div>
+</div>
 </div>
 
-<div className="total-item">
-<h3>VENDA</h3>
-<p style={{color:'#f5d800'}}>
-{money(calc.vendaTotal)}
-</p>
-</div>
-
-<div className="total-item">
-<h3>LUCRO</h3>
-<p style={{color:'#4dcc7a'}}>
-{money(calc.lucroTotal)}
-</p>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-{/* DIREITA - CAIXA ISOMÉTRICA VAZIA */}
-
+{/* DIREITA - MODELO SVG */}
 <div className="mockup">
-
-<svg viewBox="0 0 900 700">
+<svg viewBox="0 0 900 800">
   <defs>
-    {/* Gradiente para simular a sombra projetada nas paredes internas */}
-    <linearGradient id="inner-shadow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#000000" stopOpacity="0.45" />
-      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+    <linearGradient id="insideShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#000" stopOpacity="0.5" />
+      <stop offset="100%" stopColor="#000" stopOpacity="0" />
     </linearGradient>
   </defs>
 
   {(() => {
-    const w = largura;       
-    const d = profundidade;  
-    const h = altura;        
-
-    // Centro do SVG adaptativo baseado na altura para não quebrar o layout
-    const cx = 450;
-    const cy = 290 + (h / 4);
-
+    const cx = 450; // Centro X
+    const cy = 400 + (h/3); // Centro Y (ajusta com a altura)
+    
+    // Proporção isométrica: x +/- largura, y +/- largura/2
     return (
       <g>
-        {/* ========================================================= */}
-        {/* 1. ESTRUTURA INTERNA DA CAIXA VAZIA                       */}
-        {/* ========================================================= */}
-        
-        {/* Fundo interno */}
+        {/* 1. FUNDO INTERNO */}
         <polygon
-          points={`
-            ${cx},${cy}
-            ${cx - w},${cy - w/2}
-            ${cx - w + d},${cy - w/2 - d/2}
-            ${cx + d},${cy - d/2}
-          `}
-          fill="#78470f"
-          stroke="#543008"
+          points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
+          fill="#764511"
+          stroke="#4d2c0a"
+          strokeWidth="1"
+        />
+
+        {/* 2. PAREDES INTERNAS DE TRÁS */}
+        <polygon
+          points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`}
+          fill="#8e5a21"
+        />
+        <polygon
+          points={`${cx + d},${cy - d/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx + d},${cy - d/2 - h}`}
+          fill="#a06a2d"
+        />
+        
+        {/* Sombra de profundidade interna */}
+        <polygon
+          points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
+          fill="url(#insideShadow)"
+          style={{mixBlendMode: 'multiply'}}
+        />
+
+        {/* 3. ABAS DE TRÁS (As que ficam "atrás" da abertura) */}
+        {/* Aba Traseira Esquerda */}
+        <polygon
+          points={`${cx - w},${cy - w/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d - d/1.5},${cy - w/2 - d/2 - h - d/4} ${cx - w - d/1.5},${cy - w/2 - h - d/4}`}
+          fill="#c8893d"
+          stroke="#8b5c1c"
+          strokeWidth="2"
+        />
+        {/* Aba Traseira Direita */}
+        <polygon
+          points={`${cx + d},${cy - d/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d + w/1.5},${cy - w/2 - d/2 - h - w/4} ${cx + d + w/1.5},${cy - d/2 - h - w/4}`}
+          fill="#b67831"
+          stroke="#8b5c1c"
           strokeWidth="2"
         />
 
-        {/* Parede de trás interna (Esquerda) */}
+        {/* 4. PAREDES EXTERNAS DA FRENTE */}
         <polygon
-          points={`
-            ${cx - w},${cy - w/2}
-            ${cx - w + d},${cy - w/2 - d/2}
-            ${cx - w + d},${cy - w/2 - d/2 - h}
-            ${cx - w},${cy - w/2 - h}
-          `}
-          fill="#8e5517"
-        />
-
-        {/* Parede de trás interna (Direita) */}
-        <polygon
-          points={`
-            ${cx - w + d},${cy - w/2 - d/2}
-            ${cx + d},${cy - d/2}
-            ${cx + d},${cy - d/2 - h}
-            ${cx - w + d},${cy - w/2 - d/2 - h}
-          `}
-          fill="#9c5f1d"
-        />
-        
-        {/* Camada de Sombra Interna Aplicada sobre o fundo */}
-        <polygon
-          points={`
-            ${cx},${cy}
-            ${cx - w},${cy - w/2}
-            ${cx - w + d},${cy - w/2 - d/2}
-            ${cx + d},${cy - d/2}
-          `}
-          fill="url(#inner-shadow)"
-          style={{ mixBlendMode: 'multiply' }}
-        />
-
-        {/* ========================================================= */}
-        {/* 2. ABAS TRASEIRAS (Abertas para trás/cima)                 */}
-        {/* ========================================================= */}
-
-        {/* Aba Traseira Esquerda */}
-        <polygon
-          points={`
-            ${cx - w},${cy - w/2 - h}
-            ${cx - w + d},${cy - w/2 - d/2 - h}
-            ${cx - w + d - d},${cy - w/2 - d/2 - h + d/2}
-            ${cx - w - d},${cy - w/2 - h + d/2}
-          `}
-          fill="#a86922"
-          stroke="#764511"
-          strokeWidth="3"
-        />
-
-        {/* Aba Traseira Direita */}
-        <polygon
-          points={`
-            ${cx - w + d},${cy - w/2 - d/2 - h}
-            ${cx + d},${cy - d/2 - h}
-            ${cx + d + w},${cy - d/2 - h + w/2}
-            ${cx - w + d + w},${cy - w/2 - d/2 - h + w/2}
-          `}
-          fill="#b37227"
-          stroke="#764511"
-          strokeWidth="3"
-        />
-
-        {/* ========================================================= */}
-        {/* 3. PAREDES EXTERNAS DA FRENTE                             */}
-        {/* ========================================================= */}
-
-        {/* Face Lateral Esquerda Externa */}
-        <polygon
-          points={`
-            ${cx},${cy}
-            ${cx - w},${cy - w/2}
-            ${cx - w},${cy - w/2 - h}
-            ${cx},${cy - h}
-          `}
-          fill="#c8893d"
-          stroke="#8b5c1c"
-          strokeWidth="4"
-        />
-
-        {/* Face Lateral Direita Externa */}
-        <polygon
-          points={`
-            ${cx},${cy}
-            ${cx + d},${cy - d/2}
-            ${cx + d},${cy - d/2 - h}
-            ${cx},${cy - h}
-          `}
-          fill="#b67831"
-          stroke="#8b5c1c"
-          strokeWidth="4"
-        />
-
-        {/* ========================================================= */}
-        {/* 4. ABAS DIANTEIRAS (Abertas para frente/baixo)             */}
-        {/* ========================================================= */}
-
-        {/* Aba Dianteira Esquerda */}
-        <polygon
-          points={`
-            ${cx},${cy - h}
-            ${cx - w},${cy - w/2 - h}
-            ${cx - w - d},${cy - w/2 - h + d/2}
-            ${cx - d},${cy - h + d/2}
-          `}
+          points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`}
           fill="#dca04d"
           stroke="#8b5c1c"
-          strokeWidth="4"
+          strokeWidth="3"
+        />
+        <polygon
+          points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`}
+          fill="#c8893d"
+          stroke="#8b5c1c"
+          strokeWidth="3"
         />
 
-        {/* Aba Dianteira Direita */}
+        {/* 5. ABAS DA FRENTE (As que ficam dobradas para baixo/frente) */}
+        {/* Aba Dianteira Esquerda */}
         <polygon
-          points={`
-            ${cx},${cy - h}
-            ${cx + d},${cy - d/2 - h}
-            ${cx + d + w},${cy - d/2 - h + w/2}
-            ${cx + w},${cy - h + w/2}
-          `}
+          points={`${cx},${cy - h} ${cx - w},${cy - w/2 - h} ${cx - w + d/2},${cy - w/2 - h + d/2} ${cx + d/2},${cy - h + d/2}`}
           fill="#e4aa57"
           stroke="#8b5c1c"
-          strokeWidth="4"
+          strokeWidth="3"
+        />
+        {/* Aba Dianteira Direita */}
+        <polygon
+          points={`${cx},${cy - h} ${cx + d},${cy - d/2 - h} ${cx + d - w/2},${cy - d/2 - h + w/2} ${cx - w/2},${cy - h + w/2}`}
+          fill="#f3c27a"
+          stroke="#8b5c1c"
+          strokeWidth="3"
         />
 
-        {/* ========================================================= */}
-        {/* 5. TEXTOS E INDICAÇÕES DE MEDIDAS                         */}
-        {/* ========================================================= */}
-
-        {/* Medida do Comprimento */}
-        <text
-          x={cx - w/2}
-          y={cy + 45}
-          fill="#f5d800"
-          fontSize="32"
-          fontWeight="900"
-          textAnchor="middle"
-        >
-          {comp} cm
-        </text>
-
-        {/* Medida da Largura */}
-        <text
-          x={cx + d/2 + 55}
-          y={cy - d/4 + 45}
-          fill="#f5d800"
-          fontSize="32"
-          fontWeight="900"
-          textAnchor="middle"
-        >
-          {larg} cm
-        </text>
-
-        {/* Medida da Altura */}
-        <text
-          x={cx - w - 45}
-          y={cy - w/4 - h/2}
-          fill="#f5d800"
-          fontSize="32"
-          fontWeight="900"
-          textAnchor="end"
-        >
-          {alt} cm
-        </text>
+        {/* MEDIDAS */}
+        <text x={cx - w/2} y={cy + 50} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{comp} cm</text>
+        <text x={cx + d/2 + 50} y={cy - d/4 + 40} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{larg} cm</text>
+        <text x={cx - w - 60} y={cy - w/2 - h/2} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{alt} cm</text>
       </g>
     );
   })()}
 </svg>
-
 </div>
 
 </div>
-
 </div>
 
 );
-
 }
 
-ReactDOM
-.createRoot(document.getElementById('root'))
-.render(<App/>);
-
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 
 </body>
-</html>
 
-```
