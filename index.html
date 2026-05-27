@@ -1,68 +1,293 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="theme-color" content="#000000"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="apple-mobile-web-app-title" content="YD Box"/>
-  <link rel="manifest" href="manifest.json"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#000000"/>
+<title>YD BOX — Calculadora</title>
 
-  <title>YD Box — Calculadora</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-  <style>
+body{
+  background:#080808;
+  font-family:'Barlow Condensed',sans-serif;
+  color:white;
+}
 
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
-    }
+input{
+  width:100%;
+  background:#111;
+  border:2px solid #2a2a2a;
+  border-radius:10px;
+  padding:16px;
+  color:white;
+  font-size:22px;
+  font-weight:700;
+  outline:none;
+}
 
-    body{
-      background:#080808;
-      font-family:'Barlow Condensed',sans-serif;
-      overflow-x:hidden;
-    }
+input:focus{
+  border-color:#f5d800;
+}
 
-    input[type=number]::-webkit-inner-spin-button{
-      opacity:0.3;
-      filter:invert(1);
-    }
+.section{
+  background:#0d0d0d;
+  border:1px solid #222;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+}
 
-    @keyframes fadeUp{
-      from{
-        opacity:0;
-        transform:translateY(14px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
+.title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:16px;
+}
 
-    .fadeUp{
-      animation:fadeUp 0.3s ease both;
-    }
+.number{
+  width:34px;
+  height:34px;
+  background:#f5d800;
+  color:black;
+  font-weight:900;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    @keyframes flap{
-      0%{transform:rotateX(0deg);}
-      50%{transform:rotateX(-28deg);}
-      100%{transform:rotateX(0deg);}
-    }
+.title span{
+  color:#999;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.18em;
+}
 
-    .flap{
-      animation:flap 3s ease-in-out infinite;
-      transform-origin:bottom;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+}
 
-  </style>
+.label{
+  margin-bottom:8px;
+  color:#666;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+
+.resultBox{
+  background:#111;
+  border:1px solid #222;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:12px;
+}
+
+.resultLabel{
+  color:#666;
+  font-size:12px;
+  margin-bottom:8px;
+  letter-spacing:.1em;
+}
+
+.resultValue{
+  font-size:28px;
+  color:#f5d800;
+  font-weight:900;
+}
+
+.header{
+  background:black;
+  border-bottom:4px solid #f5d800;
+  padding:24px;
+  margin-bottom:24px;
+}
+
+.visualBox{
+  background:#0d0d0d;
+  border:1px solid #222;
+  border-radius:24px;
+  padding:30px 20px 40px;
+  margin-bottom:24px;
+  overflow:hidden;
+}
+
+.visualTitle{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+  font-weight:900;
+  letter-spacing:.22em;
+  margin-bottom:30px;
+}
+
+.scene{
+  position:relative;
+  width:100%;
+  height:340px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.measure{
+  position:absolute;
+  color:#f5d800;
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.05em;
+}
+
+.altura{
+  left:-10px;
+  top:50%;
+  transform:translateY(-50%) rotate(-90deg);
+}
+
+.largura{
+  right:0;
+  top:70px;
+}
+
+.comp{
+  bottom:0;
+}
+
+.box3d{
+  position:relative;
+  width:260px;
+  height:180px;
+}
+
+.top{
+  position:absolute;
+  top:0;
+  left:55px;
+  width:160px;
+  height:70px;
+  background:#e4bf00;
+  transform:skewX(-35deg);
+  border:3px solid #ffe95c;
+}
+
+.side{
+  position:absolute;
+  top:64px;
+  right:0;
+  width:52px;
+  height:110px;
+  background:#b99300;
+  transform:skewY(-38deg);
+  border-right:3px solid #ffe95c;
+  border-bottom:3px solid #ffe95c;
+}
+
+.front{
+  position:absolute;
+  top:76px;
+  left:28px;
+  width:190px;
+  height:120px;
+  background:#f5d800;
+  border:4px solid #fff07d;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 35px rgba(245,216,0,.25);
+}
+
+.frontText{
+  color:black;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.flapLeft{
+  position:absolute;
+  top:34px;
+  left:4px;
+  width:100px;
+  height:60px;
+  background:#d1ab00;
+  transform-origin:right bottom;
+  transform:skewX(-35deg) rotate(-14deg);
+  animation:flapLeft 2.8s ease-in-out infinite alternate;
+  border:2px solid #ffe95c;
+}
+
+.flapRight{
+  position:absolute;
+  top:38px;
+  right:-4px;
+  width:100px;
+  height:60px;
+  background:#d1ab00;
+  transform-origin:left bottom;
+  transform:skewX(-35deg) rotate(14deg);
+  animation:flapRight 2.8s ease-in-out infinite alternate;
+  border:2px solid #ffe95c;
+}
+
+.flapBack{
+  position:absolute;
+  top:-18px;
+  left:80px;
+  width:120px;
+  height:70px;
+  background:#ecc600;
+  transform:skewX(-35deg);
+  animation:flapBack 2.8s ease-in-out infinite alternate;
+  border:2px solid #ffe95c;
+}
+
+.flapFront{
+  position:absolute;
+  top:70px;
+  left:58px;
+  width:120px;
+  height:48px;
+  background:#f5d800;
+  border:2px solid #fff07d;
+  border-radius:8px;
+  animation:flapFront 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes flapLeft{
+  from{transform:skewX(-35deg) rotate(-8deg);}
+  to{transform:skewX(-35deg) rotate(-18deg);}
+}
+
+@keyframes flapRight{
+  from{transform:skewX(-35deg) rotate(8deg);}
+  to{transform:skewX(-35deg) rotate(18deg);}
+}
+
+@keyframes flapBack{
+  from{transform:skewX(-35deg) translateY(0);}
+  to{transform:skewX(-35deg) translateY(-8px);}
+}
+
+@keyframes flapFront{
+  from{transform:rotate(-2deg);}
+  to{transform:rotate(4deg);}
+}
+</style>
 </head>
 
 <body>
@@ -71,679 +296,205 @@
 
 <script type="text/babel">
 
-const { useState, useMemo } = React;
+const {useState,useMemo} = React;
 
-const fmt = (n, d=2) =>
-  n.toLocaleString("pt-BR",{
-    minimumFractionDigits:d,
-    maximumFractionDigits:d
-  });
-
-const fmtBRL = (n) => "R$ " + fmt(n,2);
-
-function Field({
-  label,
-  value,
-  onChange,
-  unit,
-  hint,
-  step="any",
-  min=0
-}){
-
-  const [focused,setFocused]=useState(false);
-
-  return(
-    <div style={{
-      display:"flex",
-      flexDirection:"column",
-      gap:6
-    }}>
-
-      <label style={{
-        fontSize:9,
-        fontWeight:800,
-        letterSpacing:"0.18em",
-        textTransform:"uppercase",
-        color:focused?"#f5d800":"#666"
-      }}>
-        {label}
-      </label>
-
-      <div style={{
-        display:"flex",
-        alignItems:"center",
-        background:"#111",
-        border:`1.5px solid ${focused?"#f5d800":"#333"}`,
-        borderRadius:6,
-        overflow:"hidden"
-      }}>
-
-        <input
-          type="number"
-          min={min}
-          step={step}
-          value={value}
-          onFocus={()=>setFocused(true)}
-          onBlur={()=>setFocused(false)}
-          onChange={e=>onChange(
-            e.target.value===""
-              ? ""
-              : Number(e.target.value)
-          )}
-          style={{
-            flex:1,
-            border:"none",
-            background:"transparent",
-            padding:"12px 14px",
-            fontSize:18,
-            fontFamily:"'Barlow Condensed',sans-serif",
-            fontWeight:600,
-            color:"#fff",
-            outline:"none",
-            width:0
-          }}
-        />
-
-        {unit&&(
-          <span style={{
-            padding:"0 12px",
-            color:focused?"#f5d800":"#555",
-            fontSize:11,
-            fontWeight:700,
-            whiteSpace:"nowrap"
-          }}>
-            {unit}
-          </span>
-        )}
-
-      </div>
-
-      {hint&&(
-        <span style={{
-          fontSize:9,
-          color:"#444"
-        }}>
-          {hint}
-        </span>
-      )}
-
-    </div>
-  );
-
-}
-
-function Section({num,title,children}){
-
-  return(
-    <div style={{marginBottom:16}}>
-
-      <div style={{
-        display:"flex",
-        alignItems:"center",
-        gap:10,
-        marginBottom:12
-      }}>
-
-        <div style={{
-          width:24,
-          height:24,
-          background:"#f5d800",
-          borderRadius:4,
-          display:"flex",
-          alignItems:"center",
-          justifyContent:"center",
-          fontSize:11,
-          fontWeight:900,
-          color:"#000"
-        }}>
-          {num}
-        </div>
-
-        <span style={{
-          fontSize:11,
-          fontWeight:800,
-          letterSpacing:"0.14em",
-          textTransform:"uppercase",
-          color:"#aaa"
-        }}>
-          {title}
-        </span>
-
-        <div style={{
-          flex:1,
-          height:1,
-          background:"#222"
-        }}/>
-
-      </div>
-
-      <div style={{
-        background:"#0d0d0d",
-        borderRadius:10,
-        padding:"18px 16px",
-        border:"1px solid #222"
-      }}>
-        {children}
-      </div>
-
-    </div>
-  );
-
-}
-
-function CalcRow({
-  label,
-  formula,
-  result,
-  yellow,
-  last
-}){
-
-  return(
-    <div style={{
-      display:"flex",
-      justifyContent:"space-between",
-      alignItems:"flex-start",
-      padding:"10px 0",
-      borderBottom:last?"none":"1px solid #1a1a1a",
-      gap:12
-    }}>
-
-      <div style={{
-        flex:1,
-        minWidth:0
-      }}>
-
-        <div style={{
-          fontSize:9,
-          color:"#555",
-          fontWeight:700,
-          letterSpacing:"0.1em",
-          textTransform:"uppercase",
-          marginBottom:3
-        }}>
-          {label}
-        </div>
-
-        <div style={{
-          fontSize:11,
-          color:"#444",
-          fontWeight:500
-        }}>
-          {formula}
-        </div>
-
-      </div>
-
-      <div style={{
-        fontSize:16,
-        fontWeight:700,
-        color:yellow?"#f5d800":"#fff",
-        whiteSpace:"nowrap",
-        background:yellow?"#1a1700":"#161616",
-        padding:"5px 12px",
-        borderRadius:5,
-        border:yellow
-          ?"1px solid #3a3300"
-          :"1px solid #222"
-      }}>
-        {result}
-      </div>
-
-    </div>
-  );
-
-}
-
-/* ========================= */
-/* CAIXA VISUAL */
-/* ========================= */
-
-function BoxPreview({comp,larg,alt}){
-
-  const width = Math.max(120, comp * 3);
-  const height = Math.max(70, alt * 3);
-  const depth = Math.max(60, larg * 2.2);
-
-  return(
-
-    <div style={{
-      background:"#0d0d0d",
-      border:"1px solid #222",
-      borderRadius:14,
-      padding:"24px 10px",
-      marginBottom:18,
-      overflow:"hidden"
-    }}>
-
-      <div style={{
-        textAlign:"center",
-        fontSize:11,
-        letterSpacing:"0.18em",
-        color:"#777",
-        fontWeight:800,
-        marginBottom:16
-      }}>
-        VISUALIZAÇÃO DA CAIXA
-      </div>
-
-      <div style={{
-        position:"relative",
-        width:"100%",
-        height:320,
-        display:"flex",
-        justifyContent:"center",
-        alignItems:"center"
-      }}>
-
-        <div style={{
-          position:"relative",
-          width:width,
-          height:height,
-          transform:"skewY(-8deg)"
-        }}>
-
-          {/* TAMPA */}
-
-          <div className="flap" style={{
-            position:"absolute",
-            width:width,
-            height:40,
-            background:"#d6a100",
-            top:-38,
-            left:0,
-            clipPath:"polygon(0 100%, 8% 0, 92% 0, 100% 100%)",
-            border:"2px solid #f5d800"
-          }}/>
-
-          {/* FRENTE */}
-
-          <div style={{
-            position:"absolute",
-            width:width,
-            height:height,
-            background:"#f5d800",
-            border:"3px solid #ffe95c",
-            borderRadius:6,
-            boxShadow:"0 15px 35px rgba(245,216,0,0.15)"
-          }}/>
-
-          {/* LATERAL */}
-
-          <div style={{
-            position:"absolute",
-            width:depth,
-            height:height,
-            background:"#c99700",
-            right:-depth,
-            top:-depth/2,
-            transform:"skewY(45deg)",
-            border:"3px solid #f5d800"
-          }}/>
-
-          {/* TOPO */}
-
-          <div style={{
-            position:"absolute",
-            width:width,
-            height:depth,
-            background:"#ffd633",
-            top:-depth,
-            left:depth/2,
-            transform:"skewX(45deg)",
-            border:"3px solid #f5d800"
-          }}/>
-
-          {/* TEXTO */}
-
-          <div style={{
-            position:"absolute",
-            width:"100%",
-            top:"42%",
-            textAlign:"center",
-            color:"#000",
-            fontWeight:900,
-            fontSize:28,
-            letterSpacing:"0.1em"
-          }}>
-            YD BOX
-          </div>
-
-          {/* MEDIDAS */}
-
-          <div style={{
-            position:"absolute",
-            bottom:-34,
-            width:"100%",
-            textAlign:"center",
-            color:"#f5d800",
-            fontWeight:800,
-            fontSize:14
-          }}>
-            COMPRIMENTO: {comp} cm
-          </div>
-
-          <div style={{
-            position:"absolute",
-            left:-90,
-            top:"40%",
-            color:"#f5d800",
-            fontWeight:800,
-            fontSize:14,
-            transform:"rotate(-90deg)"
-          }}>
-            ALTURA: {alt} cm
-          </div>
-
-          <div style={{
-            position:"absolute",
-            right:-140,
-            top:-55,
-            color:"#f5d800",
-            fontWeight:800,
-            fontSize:14
-          }}>
-            LARGURA: {larg} cm
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  );
-
-}
+const fmt = n => n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+const brl = n => "R$ " + fmt(n);
 
 function App(){
 
-  const [comp,setComp]=useState(30);
-  const [larg,setLarg]=useState(20);
-  const [alt,setAlt]=useState(15);
+const [comp,setComp]=useState(30);
+const [larg,setLarg]=useState(20);
+const [alt,setAlt]=useState(15);
 
-  const [gram,setGram]=useState(380);
-  const [precoVenda,setPrecoVenda]=useState(14);
-  const [precoCusto,setPrecoCusto]=useState(8);
-  const [qtd,setQtd]=useState(100);
+const [gram,setGram]=useState(380);
+const [venda,setVenda]=useState(14);
+const [custo,setCusto]=useState(8);
+const [qtd,setQtd]=useState(100);
 
-  const calc=useMemo(()=>{
+const calc = useMemo(()=>{
 
-    const c=Number(comp)||0;
-    const l=Number(larg)||0;
-    const a=Number(alt)||0;
+const area=((comp+larg+alt)/100)*0.9;
+const peso=(area*gram)/1000;
 
-    const g=Number(gram)||0;
-    const pv=Number(precoVenda)||0;
-    const pc=Number(precoCusto)||0;
-    const q=Number(qtd)||0;
+const custoUnit=peso*custo;
+const vendaUnit=peso*venda;
+const lucro=vendaUnit-custoUnit;
 
-    if(!c||!l||!a||!g||!pv||!pc||!q)return null;
+const custoTotal=custoUnit*qtd;
+const vendaTotal=vendaUnit*qtd;
+const lucroTotal=lucro*qtd;
 
-    const cVar=c+0.4;
-    const lVar=l+0.4;
+const margem=(lucro/vendaUnit)*100;
 
-    const devHoriz=(2*cVar)+(2*lVar)+3;
+return{
+peso,
+custoUnit,
+vendaUnit,
+lucro,
+custoTotal,
+vendaTotal,
+lucroTotal,
+margem
+};
 
-    const abaTop=lVar/2;
-    const abaBot=cVar/2;
+},[comp,larg,alt,gram,venda,custo,qtd]);
 
-    const devVert=a+abaTop+abaBot;
+return(
+<div>
 
-    const areaCm2=devHoriz*devVert;
-    const areaM2=areaCm2/10000;
+<div className="header">
+  <div style={{fontSize:56,fontWeight:900}}>
+    YD <span style={{color:"#f5d800"}}>BOX</span>
+  </div>
 
-    const pesoGramas=areaM2*g;
-    const pesoKg=pesoGramas/1000;
+  <div style={{
+    color:"#666",
+    fontWeight:800,
+    letterSpacing:".18em",
+    fontSize:16
+  }}>
+    CALCULADORA DE PAPELÃO
+  </div>
+</div>
 
-    const custoUnit=pesoKg*pc;
-    const vendaUnit=pesoKg*pv;
-    const lucroUnit=vendaUnit-custoUnit;
+<div style={{padding:"0 18px 50px"}}>
 
-    const custoTotal=custoUnit*q;
-    const vendaTotal=vendaUnit*q;
-    const lucroTotal=lucroUnit*q;
+<div className="visualBox">
 
-    const margemPct=(lucroUnit/vendaUnit)*100;
+<div className="visualTitle">
+VISUALIZAÇÃO DA CAIXA
+</div>
 
-    return{
-      cVar,lVar,
-      devHoriz,devVert,
-      abaTop,abaBot,
-      areaCm2,areaM2,
-      pesoGramas,pesoKg,
-      custoUnit,vendaUnit,
-      lucroUnit,
-      custoTotal,
-      vendaTotal,
-      lucroTotal,
-      margemPct
-    };
+<div className="scene">
 
-  },[
-    comp,
-    larg,
-    alt,
-    gram,
-    precoVenda,
-    precoCusto,
-    qtd
-  ]);
+<div className="measure altura">
+ALTURA: {alt} cm
+</div>
 
-  return(
+<div className="measure largura">
+LARGURA: {larg} cm
+</div>
 
-    <div style={{
-      minHeight:"100vh",
-      background:"#080808",
-      paddingBottom:60
-    }}>
+<div className="measure comp">
+COMPRIMENTO: {comp} cm
+</div>
 
-      {/* HEADER */}
+<div className="box3d">
 
-      <div style={{
-        background:"#000",
-        borderBottom:"3px solid #f5d800",
-        padding:"18px 20px 16px",
-        display:"flex",
-        alignItems:"center",
-        gap:14,
-        position:"sticky",
-        top:0,
-        zIndex:10
-      }}>
+<div className="flapBack"></div>
+<div className="flapLeft"></div>
+<div className="flapRight"></div>
 
-        <div>
+<div className="top"></div>
 
-          <div style={{
-            fontSize:28,
-            fontWeight:900,
-            color:"#fff",
-            letterSpacing:"0.08em"
-          }}>
-            YD <span style={{color:"#f5d800"}}>BOX</span>
-          </div>
+<div className="side"></div>
 
-          <div style={{
-            fontSize:10,
-            color:"#555",
-            fontWeight:700,
-            letterSpacing:"0.2em"
-          }}>
-            CALCULADORA DE PAPELÃO
-          </div>
+<div className="front">
+<div className="frontText">YD BOX</div>
+</div>
 
-        </div>
+<div className="flapFront"></div>
 
-      </div>
+</div>
+</div>
+</div>
 
-      <div style={{
-        maxWidth:600,
-        margin:"0 auto",
-        padding:"24px 16px 0"
-      }}>
+<div className="section">
 
-        {/* NOVA CAIXA */}
+<div className="title">
+<div className="number">1</div>
+<span>MEDIDAS INTERNAS DA CAIXA</span>
+</div>
 
-        <BoxPreview
-          comp={comp}
-          larg={larg}
-          alt={alt}
-        />
+<div className="grid">
 
-        {/* RESTO DA SUA CALCULADORA */}
+<div>
+<div className="label">COMPRIMENTO</div>
+<input value={comp} onChange={e=>setComp(Number(e.target.value))}/>
+</div>
 
-        <Section num="1" title="Medidas internas da caixa">
+<div>
+<div className="label">LARGURA</div>
+<input value={larg} onChange={e=>setLarg(Number(e.target.value))}/>
+</div>
 
-          <div style={{
-            display:"grid",
-            gridTemplateColumns:"1fr 1fr 1fr",
-            gap:12
-          }}>
+<div>
+<div className="label">ALTURA</div>
+<input value={alt} onChange={e=>setAlt(Number(e.target.value))}/>
+</div>
 
-            <Field
-              label="Comprimento"
-              value={comp}
-              onChange={setComp}
-              unit="cm"
-            />
+</div>
+</div>
 
-            <Field
-              label="Largura"
-              value={larg}
-              onChange={setLarg}
-              unit="cm"
-            />
+<div className="section">
 
-            <Field
-              label="Altura"
-              value={alt}
-              onChange={setAlt}
-              unit="cm"
-            />
+<div className="title">
+<div className="number">2</div>
+<span>MATERIAL E PREÇOS</span>
+</div>
 
-          </div>
+<div className="grid">
 
-        </Section>
+<div>
+<div className="label">GRAMATURA</div>
+<input value={gram} onChange={e=>setGram(Number(e.target.value))}/>
+</div>
 
-        <Section num="2" title="Material e preços">
+<div>
+<div className="label">VENDA R$/KG</div>
+<input value={venda} onChange={e=>setVenda(Number(e.target.value))}/>
+</div>
 
-          <div style={{
-            display:"grid",
-            gridTemplateColumns:"1fr 1fr 1fr",
-            gap:12
-          }}>
+<div>
+<div className="label">CUSTO R$/KG</div>
+<input value={custo} onChange={e=>setCusto(Number(e.target.value))}/>
+</div>
 
-            <Field
-              label="Gramatura"
-              value={gram}
-              onChange={setGram}
-              unit="g/m²"
-            />
+</div>
+</div>
 
-            <Field
-              label="Venda"
-              value={precoVenda}
-              onChange={setPrecoVenda}
-              unit="R$/kg"
-            />
+<div className="section">
 
-            <Field
-              label="Custo"
-              value={precoCusto}
-              onChange={setPrecoCusto}
-              unit="R$/kg"
-            />
+<div className="title">
+<div className="number">3</div>
+<span>QUANTIDADE</span>
+</div>
 
-          </div>
+<div>
+<div className="label">QUANTIDADE</div>
+<input value={qtd} onChange={e=>setQtd(Number(e.target.value))}/>
+</div>
 
-        </Section>
+</div>
 
-        <Section num="3" title="Quantidade">
+<div className="resultBox">
+<div className="resultLabel">PESO POR CAIXA</div>
+<div className="resultValue">{fmt(calc.peso)} kg</div>
+</div>
 
-          <Field
-            label="Quantidade do pedido"
-            value={qtd}
-            onChange={setQtd}
-            unit="un"
-          />
+<div className="resultBox">
+<div className="resultLabel">VENDA TOTAL</div>
+<div className="resultValue">{brl(calc.vendaTotal)}</div>
+</div>
 
-        </Section>
+<div className="resultBox">
+<div className="resultLabel">LUCRO TOTAL</div>
+<div className="resultValue">{brl(calc.lucroTotal)}</div>
+</div>
 
-        {calc && (
+<div className="resultBox">
+<div className="resultLabel">MARGEM SOBRE VENDA</div>
+<div className="resultValue">{fmt(calc.margem)}%</div>
+</div>
 
-          <div className="fadeUp">
-
-            <div style={{
-              background:"#000",
-              border:"2px solid #f5d800",
-              borderRadius:12,
-              overflow:"hidden"
-            }}>
-
-              <div style={{
-                background:"#f5d800",
-                padding:"10px 18px",
-                display:"flex",
-                justifyContent:"space-between"
-              }}>
-
-                <span style={{
-                  fontSize:11,
-                  fontWeight:900,
-                  letterSpacing:"0.18em",
-                  color:"#000"
-                }}>
-                  TOTAL DO PEDIDO
-                </span>
-
-                <span style={{
-                  fontSize:13,
-                  fontWeight:900,
-                  color:"#000"
-                }}>
-                  {qtd} unidades
-                </span>
-
-              </div>
-
-              <div style={{
-                padding:"20px 18px"
-              }}>
-
-                <CalcRow
-                  label="Venda Total"
-                  formula="Valor final"
-                  result={fmtBRL(calc.vendaTotal)}
-                  yellow
-                />
-
-                <CalcRow
-                  label="Lucro Total"
-                  formula="Lucro calculado"
-                  result={fmtBRL(calc.lucroTotal)}
-                  last
-                />
-
-              </div>
-
-            </div>
-
-          </div>
-
-        )}
-
-      </div>
-
-    </div>
-
-  );
+</div>
+</div>
+);
 
 }
 
-ReactDOM
-  .createRoot(document.getElementById("root"))
-  .render(<App/>);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 
 </script>
 
