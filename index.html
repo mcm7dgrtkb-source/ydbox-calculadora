@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>YD BOX — Calculadora PRO</title>
+
+<title>YD BOX — Calculadora</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -20,7 +22,7 @@
 }
 
 body{
-  background:#070707;
+  background:#080808;
   color:white;
   font-family:'Barlow Condensed',sans-serif;
 }
@@ -33,12 +35,12 @@ body{
 
 .header{
   border-bottom:2px solid #f5d800;
-  padding-bottom:18px;
-  margin-bottom:25px;
+  padding-bottom:20px;
+  margin-bottom:30px;
 }
 
 .logo{
-  font-size:46px;
+  font-size:48px;
   font-weight:900;
 }
 
@@ -47,7 +49,7 @@ body{
 }
 
 .subtitle{
-  color:#777;
+  color:#666;
   letter-spacing:4px;
   font-size:13px;
 }
@@ -62,7 +64,7 @@ body{
   background:#101010;
   border:1px solid #232323;
   border-radius:18px;
-  padding:20px;
+  padding:22px;
   margin-bottom:18px;
 }
 
@@ -70,7 +72,7 @@ body{
   color:#f5d800;
   font-size:12px;
   letter-spacing:3px;
-  margin-bottom:15px;
+  margin-bottom:18px;
   font-weight:800;
 }
 
@@ -89,12 +91,12 @@ body{
 
 input{
   width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #2c2c2c;
   background:#181818;
+  border:1px solid #2a2a2a;
+  border-radius:10px;
+  padding:14px;
   color:white;
-  font-size:18px;
+  font-size:20px;
   font-family:'Barlow Condensed';
 }
 
@@ -104,131 +106,37 @@ input:focus{
 }
 
 .mockup{
-  background:#0f0f0f;
-  border:1px solid #222;
+  background:#101010;
+  border:1px solid #232323;
   border-radius:22px;
-  min-height:760px;
+  min-height:700px;
   display:flex;
   align-items:center;
   justify-content:center;
   position:sticky;
   top:20px;
-  overflow:hidden;
 }
 
 .scene{
   position:relative;
-  width:520px;
-  height:520px;
-  perspective:1400px;
+  width:500px;
+  height:500px;
 }
 
-.box{
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform-style:preserve-3d;
-  transform:
-    translate(-50%,-50%)
-    rotateX(-22deg)
-    rotateY(-32deg);
-}
-
-/* BASE */
-
-.face{
-  position:absolute;
-  border:2px solid #8b5c1c;
-  background:#c68a3b;
-}
-
-/* FRENTE */
-.front{
-  transform:translateZ(var(--depth));
-}
-
-/* FUNDO */
-.back{
-  transform:
-    rotateY(180deg)
-    translateZ(var(--depth));
-}
-
-/* LADO ESQUERDO */
-.left{
-  transform:
-    rotateY(-90deg)
-    translateZ(var(--depth));
-}
-
-/* LADO DIREITO */
-.right{
-  transform:
-    rotateY(90deg)
-    translateZ(var(--width));
-}
-
-/* BASE */
-.bottom{
-  background:#b3782d;
-  transform:
-    rotateX(-90deg)
-    translateZ(calc(var(--height) - var(--depth)));
-}
-
-/* ABAS REAIS */
-
-.flap-front,
-.flap-back,
-.flap-left,
-.flap-right{
-  position:absolute;
-  background:#d89a47;
-  border:2px solid #8b5c1c;
-}
-
-/* ABA FRENTE */
-.flap-front{
-  transform-origin:bottom;
-  transform:
-    translateZ(var(--depth))
-    translateY(calc(-1 * var(--flapFront)))
-    rotateX(-115deg);
-}
-
-/* ABA TRÁS */
-.flap-back{
-  transform-origin:bottom;
-  transform:
-    rotateY(180deg)
-    translateZ(var(--depth))
-    translateY(calc(-1 * var(--flapFront)))
-    rotateX(-115deg);
-}
-
-/* ABA ESQUERDA */
-.flap-left{
-  transform-origin:left;
-  transform:
-    rotateY(-90deg)
-    translateZ(var(--depth))
-    rotateY(-115deg);
-}
-
-/* ABA DIREITA */
-.flap-right{
-  transform-origin:right;
-  transform:
-    rotateY(90deg)
-    translateZ(var(--width))
-    rotateY(115deg);
-}
+/* MEDIDAS */
 
 .measure{
   position:absolute;
   color:#f5d800;
   font-weight:900;
   text-shadow:0 0 10px black;
+  text-align:center;
+}
+
+.measure small{
+  display:block;
+  font-size:12px;
+  color:#888;
 }
 
 .measure.c{
@@ -252,13 +160,6 @@ input:focus{
   font-size:28px;
 }
 
-.measure small{
-  display:block;
-  color:#888;
-  font-size:12px;
-  text-align:center;
-}
-
 @media(max-width:900px){
 
 .grid{
@@ -277,6 +178,7 @@ input:focus{
 }
 
 </style>
+
 </head>
 
 <body>
@@ -293,28 +195,31 @@ const [comp,setComp]=useState(30);
 const [larg,setLarg]=useState(20);
 const [alt,setAlt]=useState(15);
 
-const width=Math.max(comp*5,120);
-const depth=Math.max(larg*5,80);
-const height=Math.max(alt*5,80);
+/* ESCALA VISUAL */
 
-const flapFront=depth*0.55;
-const flapSide=width*0.28;
+const c = Math.max(comp * 5,120);
+const l = Math.max(larg * 4,80);
+const a = Math.max(alt * 5,80);
 
 return(
 
 <div className="container">
 
 <div className="header">
+
 <div className="logo">
 YD <span>BOX</span>
 </div>
 
 <div className="subtitle">
-DOBRA AUTOMÁTICA REAL
+CALCULADORA DE PAPELÃO
 </div>
+
 </div>
 
 <div className="grid">
+
+{/* ESQUERDA */}
 
 <div>
 
@@ -363,117 +268,104 @@ onChange={(e)=>setAlt(Number(e.target.value))}
 <div className="card">
 
 <div className="section-title">
-COMO FUNCIONA
+VISUAL INTELIGENTE
 </div>
 
 <p style={{
 color:'#999',
-lineHeight:'28px',
-fontSize:'20px'
+fontSize:'22px',
+lineHeight:'30px'
 }}>
-A caixa agora altera automaticamente o tamanho real das abas,
-altura, largura e profundidade conforme as medidas digitadas,
-simulando uma dobra industrial mais próxima da fabricação real.
+A caixa altera automaticamente conforme as medidas digitadas,
+mantendo proporção real de comprimento, largura e altura.
 </p>
 
 </div>
 
 </div>
 
+{/* DIREITA */}
+
 <div className="mockup">
 
 <div className="scene">
 
-<div
-className="box"
-style={{
-'--width':`${width}px`,
-'--height':`${height}px`,
-'--depth':`${depth}px`,
-'--flapFront':`${flapFront}px`,
-'--flapSide':`${flapSide}px`,
-width:`${width}px`,
-height:`${height}px`
-}}
->
-
-{/* FACES */}
+{/* TOPO */}
 
 <div
-className="face front"
 style={{
-width:`${width}px`,
-height:`${height}px`
+position:'absolute',
+left:'120px',
+top:'80px',
+width:`${c}px`,
+height:`${l}px`,
+background:'#d89a47',
+transform:'skew(-30deg)',
+border:'2px solid #8b5c1c'
 }}
 ></div>
 
+{/* FRENTE */}
+
 <div
-className="face back"
 style={{
-width:`${width}px`,
-height:`${height}px`
+position:'absolute',
+left:'70px',
+top:`${80+(l/2)}px`,
+width:`${c}px`,
+height:`${a}px`,
+background:'#c8893d',
+border:'2px solid #8b5c1c'
 }}
 ></div>
 
+{/* LATERAL */}
+
 <div
-className="face left"
 style={{
-width:`${depth}px`,
-height:`${height}px`
+position:'absolute',
+left:`${70+c}px`,
+top:`${80+(l/2)}px`,
+width:`${l}px`,
+height:`${a}px`,
+background:'#b67831',
+transform:'skewY(-30deg)',
+transformOrigin:'top',
+border:'2px solid #8b5c1c'
 }}
 ></div>
 
+{/* ABA ESQUERDA */}
+
 <div
-className="face right"
 style={{
-width:`${depth}px`,
-height:`${height}px`
+position:'absolute',
+left:'95px',
+top:'42px',
+width:`${c/2}px`,
+height:'42px',
+background:'#e4aa57',
+transform:'skew(-30deg)',
+border:'2px solid #8b5c1c'
 }}
 ></div>
 
+{/* ABA DIREITA */}
+
 <div
-className="face bottom"
 style={{
-width:`${width}px`,
-height:`${depth}px`
+position:'absolute',
+left:`${95+(c/2)}px`,
+top:'42px',
+width:`${c/2}px`,
+height:'42px',
+background:'#e4aa57',
+transform:'skew(-30deg)',
+border:'2px solid #8b5c1c'
 }}
 ></div>
 
-{/* ABAS */}
-
-<div
-className="flap-front"
-style={{
-width:`${width}px`,
-height:`${flapFront}px`
-}}
-></div>
-
-<div
-className="flap-back"
-style={{
-width:`${width}px`,
-height:`${flapFront}px`
-}}
-></div>
-
-<div
-className="flap-left"
-style={{
-width:`${flapSide}px`,
-height:`${height}px`
-}}
-></div>
-
-<div
-className="flap-right"
-style={{
-width:`${flapSide}px`,
-height:`${height}px`
-}}
-></div>
-
-</div>
+{/* MEDIDAS */}
 
 <div className="measure c">
 {comp} cm
