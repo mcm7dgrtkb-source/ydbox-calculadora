@@ -8,64 +8,555 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="apple-mobile-web-app-title" content="YD Box"/>
   <link rel="manifest" href="manifest.json"/>
+
   <title>YD Box — Calculadora</title>
+
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+
   <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{background:#080808;font-family:'Barlow Condensed',sans-serif;}
-    input[type=number]::-webkit-inner-spin-button{opacity:0.3;filter:invert(1);}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-    .fadeUp{animation:fadeUp 0.3s ease both;}
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      background:#080808;
+      font-family:'Barlow Condensed',sans-serif;
+      overflow-x:hidden;
+    }
+
+    input[type=number]::-webkit-inner-spin-button{
+      opacity:0.3;
+      filter:invert(1);
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(14px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .fadeUp{
+      animation:fadeUp 0.3s ease both;
+    }
+
+    /* ANIMAÇÃO DA CAIXA */
+
+    .box-container{
+      position:fixed;
+      top:110px;
+      right:20px;
+      z-index:999;
+      pointer-events:none;
+    }
+
+    .box{
+      position:relative;
+      animation:float 3s ease-in-out infinite;
+    }
+
+    .lid{
+      width:90px;
+      height:18px;
+      background:#facc15;
+      position:absolute;
+      top:-15px;
+      border-radius:6px 6px 0 0;
+      transform-origin:bottom;
+      animation:openBox 3s ease-in-out infinite;
+    }
+
+    .body-box{
+      width:90px;
+      height:70px;
+      background:#eab308;
+      border:3px solid #fde047;
+      border-radius:10px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      color:black;
+      font-family:Arial;
+      font-weight:bold;
+      box-shadow:0 10px 25px rgba(255,255,0,0.25);
+    }
+
+    .body-box h1{
+      font-size:24px;
+      margin:0;
+      line-height:1;
+    }
+
+    .body-box p{
+      margin:0;
+      font-size:12px;
+      letter-spacing:3px;
+    }
+
+    .shadow{
+      width:70px;
+      height:12px;
+      background:rgba(255,255,0,0.18);
+      border-radius:50%;
+      position:absolute;
+      bottom:-18px;
+      left:10px;
+      filter:blur(8px);
+      animation:shadow 3s ease-in-out infinite;
+    }
+
+    @keyframes openBox{
+      0%,100%{
+        transform:rotateX(0deg);
+      }
+      50%{
+        transform:rotateX(-120deg);
+      }
+    }
+
+    @keyframes float{
+      0%,100%{
+        transform:translateY(0px);
+      }
+      50%{
+        transform:translateY(-10px);
+      }
+    }
+
+    @keyframes shadow{
+      0%,100%{
+        transform:scale(1);
+        opacity:0.4;
+      }
+      50%{
+        transform:scale(0.8);
+        opacity:0.2;
+      }
+    }
+
   </style>
 </head>
+
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState, useMemo } = React;
-const fmt = (n, d=2) => n.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
-const fmtBRL = (n) => "R$ " + fmt(n,2);
-function Field({label,value,onChange,unit,hint,step="any",min=0}){
-  const [focused,setFocused]=useState(false);
-  return(<div style={{display:"flex",flexDirection:"column",gap:6}}><label style={{fontSize:9,fontWeight:800,letterSpacing:"0.18em",textTransform:"uppercase",color:focused?"#f5d800":"#666"}}>{label}</label><div style={{display:"flex",alignItems:"center",background:"#111",border:`1.5px solid ${focused?"#f5d800":"#333"}`,borderRadius:6,overflow:"hidden",transition:"border-color 0.2s"}}><input type="number" min={min} step={step} value={value} onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)} onChange={e=>onChange(e.target.value===""?"":Number(e.target.value))} style={{flex:1,border:"none",background:"transparent",padding:"12px 14px",fontSize:18,fontFamily:"'Barlow Condensed',sans-serif",fontWeight:600,color:"#fff",outline:"none",width:0}}/>{unit&&<span style={{padding:"0 12px",color:focused?"#f5d800":"#555",fontSize:11,fontWeight:700,whiteSpace:"nowrap",transition:"color 0.2s"}}>{unit}</span>}</div>{hint&&<span style={{fontSize:9,color:"#444"}}>{hint}</span>}</div>);
-}
-function Section({num,title,children}){
-  return(<div style={{marginBottom:16}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}><div style={{width:24,height:24,background:"#f5d800",borderRadius:4,display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900,color:"#000",flexShrink:0}}>{num}</div><span style={{fontSize:11,fontWeight:800,letterSpacing:"0.14em",textTransform:"uppercase",color:"#aaa"}}>{title}</span><div style={{flex:1,height:1,background:"#222"}}/></div><div style={{background:"#0d0d0d",borderRadius:10,padding:"18px 16px",border:"1px solid #222"}}>{children}</div></div>);
-}
-function CalcRow({label,formula,result,yellow,last}){
-  return(<div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"10px 0",borderBottom:last?"none":"1px solid #1a1a1a",gap:12}}><div style={{flex:1,minWidth:0}}><div style={{fontSize:9,color:"#555",fontWeight:700,letterSpacing:"0.1em",textTransform:"uppercase",marginBottom:3}}>{label}</div><div style={{fontSize:11,color:"#444",fontFamily:"'Barlow Condensed'",fontWeight:500,wordBreak:"break-word"}}>{formula}</div></div><div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:16,fontWeight:700,color:yellow?"#f5d800":"#fff",whiteSpace:"nowrap",background:yellow?"#1a1700":"#161616",padding:"5px 12px",borderRadius:5,border:yellow?"1px solid #3a3300":"1px solid #222"}}>{result}</div></div>);
-}
-function App(){
-  const [comp,setComp]=useState(30);
-  const [larg,setLarg]=useState(20);
-  const [alt,setAlt]=useState(15);
-  const [gram,setGram]=useState(380);
-  const [precoVenda,setPrecoVenda]=useState(14);
-  const [precoCusto,setPrecoCusto]=useState(8);
-  const [qtd,setQtd]=useState(100);
-  const calc=useMemo(()=>{
-    const c=Number(comp)||0,l=Number(larg)||0,a=Number(alt)||0;
-    const g=Number(gram)||0,pv=Number(precoVenda)||0,pc=Number(precoCusto)||0,q=Number(qtd)||0;
-    if(!c||!l||!a||!g||!pv||!pc||!q)return null;
-    const cVar=c+0.4,lVar=l+0.4;
-    const devHoriz=(2*cVar)+(2*lVar)+3;
-    const abaTop=lVar/2,abaBot=cVar/2;
-    const devVert=a+abaTop+abaBot;
-    const areaCm2=devHoriz*devVert;
-    const areaM2=areaCm2/10000;
-    const pesoGramas=areaM2*g;
-    const pesoKg=pesoGramas/1000;
-    const custoUnit=pesoKg*pc,vendaUnit=pesoKg*pv;
-    const lucroUnit=vendaUnit-custoUnit;
-    const custoTotal=custoUnit*q,vendaTotal=vendaUnit*q,lucroTotal=lucroUnit*q;
-    const margemPct=(lucroUnit/vendaUnit)*100;
-    return{cVar,lVar,devHoriz,devVert,abaTop,abaBot,areaCm2,areaM2,pesoGramas,pesoKg,custoUnit,vendaUnit,lucroUnit,custoTotal,vendaTotal,lucroTotal,margemPct};
-  },[comp,larg,alt,gram,precoVenda,precoCusto,qtd]);
-  return(<div style={{minHeight:"100vh",background:"#080808",fontFamily:"'Barlow Condensed',sans-serif",paddingBottom:60}}><div style={{background:"#000",borderBottom:"3px solid #f5d800",padding:"18px 20px 16px",display:"flex",alignItems:"center",gap:14,position:"sticky",top:0,zIndex:10}}><svg width="46" height="46" viewBox="0 0 100 100" fill="none"><rect width="100" height="100" fill="black"/><rect x="2" y="2" width="96" height="96" stroke="white" strokeWidth="4" fill="none"/><path d="M10 18 L26 42 L26 62 L34 62 L34 42 L50 18 L40 18 L30 34 L20 18 Z" fill="white"/><path d="M52 18 L52 62 L66 62 C78 62 86 54 86 40 C86 26 78 18 66 18 Z M62 26 L66 26 C72 26 76 32 76 40 C76 48 72 54 66 54 L62 54 Z" fill="white"/><rect x="68" y="28" width="12" height="12" fill="#f5d800"/></svg><div><div style={{fontSize:28,fontWeight:900,color:"#fff",letterSpacing:"0.08em",lineHeight:1}}>YD <span style={{color:"#f5d800"}}>BOX</span></div><div style={{fontSize:10,color:"#555",fontWeight:700,letterSpacing:"0.2em",marginTop:2}}>CALCULADORA DE PAPELÃO</div></div></div><div style={{maxWidth:600,margin:"0 auto",padding:"24px 16px 0"}}><Section num="1" title="Medidas internas da caixa"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}><Field label="Comprimento" value={comp} onChange={setComp} unit="cm" hint="+ 0,4mm auto"/><Field label="Largura" value={larg} onChange={setLarg} unit="cm" hint="+ 0,4mm auto"/><Field label="Altura" value={alt} onChange={setAlt} unit="cm"/></div></Section><Section num="2" title="Material e preços"><div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12}}><Field label="Gramatura" value={gram} onChange={setGram} unit="g/m²" step="10" hint="290 · 380 · 630"/><Field label="Venda" value={precoVenda} onChange={setPrecoVenda} unit="R$/kg" step="0.01"/><Field label="Custo" value={precoCusto} onChange={setPrecoCusto} unit="R$/kg" step="0.01"/></div></Section><Section num="3" title="Quantidade"><Field label="Quantidade do pedido" value={qtd} onChange={setQtd} unit="unidades" min={1} step="1"/></Section>{calc?(<div className="fadeUp"><div style={{marginBottom:14}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}><div style={{width:8,height:20,background:"#f5d800",borderRadius:2}}/><span style={{fontSize:11,fontWeight:800,letterSpacing:"0.14em",textTransform:"uppercase",color:"#666"}}>Como foi calculado</span></div><div style={{background:"#0d0d0d",borderRadius:10,padding:"4px 16px",border:"1px solid #222"}}><CalcRow label="Desenvolvimento horizontal" formula={`(2x${fmt(calc.cVar,1)}) + (2x${fmt(calc.lVar,1)}) + 3cm lingueta`} result={`${fmt(calc.devHoriz,2)} cm`}/><CalcRow label="Abas (fecham ate a metade)" formula={`Sup: L/2=${fmt(calc.abaTop,2)}cm - Inf: C/2=${fmt(calc.abaBot,2)}cm`} result={`${fmt(calc.abaTop+calc.abaBot,2)} cm`}/><CalcRow label="Desenvolvimento vertical" formula={`${alt}cm + ${fmt(calc.abaTop,2)} + ${fmt(calc.abaBot,2)}`} result={`${fmt(calc.devVert,2)} cm`}/><CalcRow label="Area do blanque" formula={`${fmt(calc.devHoriz,2)} x ${fmt(calc.devVert,2)}`} result={`${fmt(calc.areaCm2,1)} cm2`}/><CalcRow label="Area em m2" formula={`${fmt(calc.areaCm2,1)} / 10.000`} result={`${fmt(calc.areaM2,5)} m2`}/><CalcRow label="Peso por caixa" formula={`${fmt(calc.areaM2,5)} m2 x ${gram} g/m2`} result={`${fmt(calc.pesoGramas,2)} g`}/><CalcRow label="Peso em kg" formula={`${fmt(calc.pesoGramas,2)} / 1.000`} result={`${fmt(calc.pesoKg,5)} kg`} yellow last/></div></div><div style={{marginBottom:14}}><div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}><div style={{width:8,height:20,background:"#333",borderRadius:2}}/><span style={{fontSize:11,fontWeight:800,letterSpacing:"0.14em",textTransform:"uppercase",color:"#666"}}>Valores por unidade</span></div><div style={{background:"#0d0d0d",borderRadius:10,padding:"4px 16px",border:"1px solid #222"}}><CalcRow label="Custo unitario" formula={`${fmt(calc.pesoKg,5)} kg x R$ ${fmt(precoCusto,2)}/kg`} result={fmtBRL(calc.custoUnit)}/><CalcRow label="Preco de venda unitario" formula={`${fmt(calc.pesoKg,5)} kg x R$ ${fmt(precoVenda,2)}/kg`} result={fmtBRL(calc.vendaUnit)} yellow/><CalcRow label="Lucro por caixa" formula={`${fmtBRL(calc.vendaUnit)} - ${fmtBRL(calc.custoUnit)}`} result={fmtBRL(calc.lucroUnit)} last/></div></div><div style={{background:"#000",border:"2px solid #f5d800",borderRadius:12,overflow:"hidden",marginBottom:16}}><div style={{background:"#f5d800",padding:"10px 18px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{fontSize:11,fontWeight:900,letterSpacing:"0.18em",color:"#000",textTransform:"uppercase"}}>Total do Pedido</span><span style={{fontSize:13,fontWeight:900,color:"#000"}}>{qtd} unidades</span></div><div style={{padding:"20px 18px"}}><div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:18}}>{[{label:"Custo Total",value:calc.custoTotal,color:"#888"},{label:"Venda Total",value:calc.vendaTotal,color:"#f5d800"},{label:"Lucro Total",value:calc.lucroTotal,color:"#4dcc7a"}].map(({label,value,color})=>(<div key={label} style={{textAlign:"center",background:"#0d0d0d",borderRadius:8,padding:"14px 8px",border:"1px solid #1a1a1a"}}><div style={{fontSize:8,color:"#444",fontWeight:800,letterSpacing:"0.14em",marginBottom:6,textTransform:"uppercase"}}>{label}</div><div style={{fontSize:18,fontWeight:800,color}}>{fmtBRL(value)}</div></div>))}</div><div style={{textAlign:"center",borderTop:"1px solid #1a1a1a",paddingTop:14}}><span style={{fontSize:11,color:"#555",fontWeight:700,letterSpacing:"0.1em"}}>MARGEM SOBRE VENDA </span><span style={{fontSize:24,fontWeight:900,color:"#f5d800"}}>{fmt(calc.margemPct,1)}%</span></div></div></div></div>):(<div style={{textAlign:"center",padding:"40px 20px",color:"#333",fontSize:13,fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase"}}>Preencha os campos acima</div>)}</div></div>);
-}
-ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
-</script>
+
+  <!-- CAIXA ANIMADA -->
+
+  <div class="box-container">
+    <div class="box">
+
+      <div class="lid"></div>
+
+      <div class="body-box">
+        <h1>YD</h1>
+        <p>BOX</p>
+      </div>
+
+      <div class="shadow"></div>
+
+    </div>
+  </div>
+
+  <!-- APP -->
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    const { useState, useMemo } = React;
+
+    const fmt = (n, d=2) =>
+      n.toLocaleString("pt-BR",{
+        minimumFractionDigits:d,
+        maximumFractionDigits:d
+      });
+
+    const fmtBRL = (n) => "R$ " + fmt(n,2);
+
+    function Field({label,value,onChange,unit,hint,step="any",min=0}){
+
+      const [focused,setFocused]=useState(false);
+
+      return(
+        <div style={{
+          display:"flex",
+          flexDirection:"column",
+          gap:6
+        }}>
+
+          <label style={{
+            fontSize:9,
+            fontWeight:800,
+            letterSpacing:"0.18em",
+            textTransform:"uppercase",
+            color:focused?"#f5d800":"#666"
+          }}>
+            {label}
+          </label>
+
+          <div style={{
+            display:"flex",
+            alignItems:"center",
+            background:"#111",
+            border:`1.5px solid ${focused?"#f5d800":"#333"}`,
+            borderRadius:6,
+            overflow:"hidden"
+          }}>
+
+            <input
+              type="number"
+              min={min}
+              step={step}
+              value={value}
+              onFocus={()=>setFocused(true)}
+              onBlur={()=>setFocused(false)}
+              onChange={e=>onChange(
+                e.target.value===""?"":Number(e.target.value)
+              )}
+              style={{
+                flex:1,
+                border:"none",
+                background:"transparent",
+                padding:"12px 14px",
+                fontSize:18,
+                fontFamily:"'Barlow Condensed',sans-serif",
+                fontWeight:600,
+                color:"#fff",
+                outline:"none",
+                width:0
+              }}
+            />
+
+            {unit &&
+              <span style={{
+                padding:"0 12px",
+                color:focused?"#f5d800":"#555",
+                fontSize:11,
+                fontWeight:700,
+                whiteSpace:"nowrap"
+              }}>
+                {unit}
+              </span>
+            }
+
+          </div>
+
+          {hint &&
+            <span style={{
+              fontSize:9,
+              color:"#444"
+            }}>
+              {hint}
+            </span>
+          }
+
+        </div>
+      );
+
+    }
+
+    function Section({num,title,children}){
+
+      return(
+        <div style={{marginBottom:16}}>
+
+          <div style={{
+            display:"flex",
+            alignItems:"center",
+            gap:10,
+            marginBottom:12
+          }}>
+
+            <div style={{
+              width:24,
+              height:24,
+              background:"#f5d800",
+              borderRadius:4,
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              fontSize:11,
+              fontWeight:900,
+              color:"#000"
+            }}>
+              {num}
+            </div>
+
+            <span style={{
+              fontSize:11,
+              fontWeight:800,
+              letterSpacing:"0.14em",
+              textTransform:"uppercase",
+              color:"#aaa"
+            }}>
+              {title}
+            </span>
+
+            <div style={{
+              flex:1,
+              height:1,
+              background:"#222"
+            }}/>
+
+          </div>
+
+          <div style={{
+            background:"#0d0d0d",
+            borderRadius:10,
+            padding:"18px 16px",
+            border:"1px solid #222"
+          }}>
+            {children}
+          </div>
+
+        </div>
+      );
+
+    }
+
+    function CalcRow({label,formula,result,yellow,last}){
+
+      return(
+        <div style={{
+          display:"flex",
+          justifyContent:"space-between",
+          alignItems:"flex-start",
+          padding:"10px 0",
+          borderBottom:last?"none":"1px solid #1a1a1a",
+          gap:12
+        }}>
+
+          <div style={{flex:1,minWidth:0}}>
+
+            <div style={{
+              fontSize:9,
+              color:"#555",
+              fontWeight:700,
+              letterSpacing:"0.1em",
+              textTransform:"uppercase",
+              marginBottom:3
+            }}>
+              {label}
+            </div>
+
+            <div style={{
+              fontSize:11,
+              color:"#444"
+            }}>
+              {formula}
+            </div>
+
+          </div>
+
+          <div style={{
+            fontSize:16,
+            fontWeight:700,
+            color:yellow?"#f5d800":"#fff",
+            whiteSpace:"nowrap"
+          }}>
+            {result}
+          </div>
+
+        </div>
+      );
+
+    }
+
+    function App(){
+
+      const [comp,setComp]=useState(30);
+      const [larg,setLarg]=useState(20);
+      const [alt,setAlt]=useState(15);
+
+      const [gram,setGram]=useState(380);
+
+      const [precoVenda,setPrecoVenda]=useState(14);
+      const [precoCusto,setPrecoCusto]=useState(8);
+
+      const [qtd,setQtd]=useState(100);
+
+      const calc=useMemo(()=>{
+
+        const c=Number(comp)||0;
+        const l=Number(larg)||0;
+        const a=Number(alt)||0;
+
+        const g=Number(gram)||0;
+        const pv=Number(precoVenda)||0;
+        const pc=Number(precoCusto)||0;
+
+        const q=Number(qtd)||0;
+
+        if(!c||!l||!a||!g||!pv||!pc||!q)return null;
+
+        const cVar=c+0.4;
+        const lVar=l+0.4;
+
+        const devHoriz=(2*cVar)+(2*lVar)+3;
+
+        const abaTop=lVar/2;
+        const abaBot=cVar/2;
+
+        const devVert=a+abaTop+abaBot;
+
+        const areaCm2=devHoriz*devVert;
+        const areaM2=areaCm2/10000;
+
+        const pesoGramas=areaM2*g;
+        const pesoKg=pesoGramas/1000;
+
+        const custoUnit=pesoKg*pc;
+        const vendaUnit=pesoKg*pv;
+
+        const lucroUnit=vendaUnit-custoUnit;
+
+        const custoTotal=custoUnit*q;
+        const vendaTotal=vendaUnit*q;
+        const lucroTotal=lucroUnit*q;
+
+        const margemPct=(lucroUnit/vendaUnit)*100;
+
+        return{
+          cVar,
+          lVar,
+          devHoriz,
+          devVert,
+          abaTop,
+          abaBot,
+          areaCm2,
+          areaM2,
+          pesoGramas,
+          pesoKg,
+          custoUnit,
+          vendaUnit,
+          lucroUnit,
+          custoTotal,
+          vendaTotal,
+          lucroTotal,
+          margemPct
+        };
+
+      },[
+        comp,
+        larg,
+        alt,
+        gram,
+        precoVenda,
+        precoCusto,
+        qtd
+      ]);
+
+      return(
+
+        <div style={{
+          minHeight:"100vh",
+          background:"#080808",
+          fontFamily:"'Barlow Condensed',sans-serif",
+          paddingBottom:60
+        }}>
+
+          <div style={{
+            background:"#000",
+            borderBottom:"3px solid #f5d800",
+            padding:"18px 20px 16px",
+            display:"flex",
+            alignItems:"center",
+            gap:14,
+            position:"sticky",
+            top:0,
+            zIndex:10
+          }}>
+
+            <div>
+
+              <div style={{
+                fontSize:28,
+                fontWeight:900,
+                color:"#fff",
+                letterSpacing:"0.08em"
+              }}>
+                YD <span style={{color:"#f5d800"}}>BOX</span>
+              </div>
+
+              <div style={{
+                fontSize:10,
+                color:"#555",
+                fontWeight:700,
+                letterSpacing:"0.2em",
+                marginTop:2
+              }}>
+                CALCULADORA DE PAPELÃO
+              </div>
+
+            </div>
+
+          </div>
+
+          <div style={{
+            maxWidth:600,
+            margin:"0 auto",
+            padding:"24px 16px 0"
+          }}>
+
+            <Section num="1" title="Medidas internas da caixa">
+
+              <div style={{
+                display:"grid",
+                gridTemplateColumns:"1fr 1fr 1fr",
+                gap:12
+              }}>
+
+                <Field
+                  label="Comprimento"
+                  value={comp}
+                  onChange={setComp}
+                  unit="cm"
+                  hint="+ 0,4mm auto"
+                />
+
+                <Field
+                  label="Largura"
+                  value={larg}
+                  onChange={setLarg}
+                  unit="cm"
+                  hint="+ 0,4mm auto"
+                />
+
+                <Field
+                  label="Altura"
+                  value={alt}
+                  onChange={setAlt}
+                  unit="cm"
+                />
+
+              </div>
+
+            </Section>
+
+          </div>
+
+        </div>
+
+      );
+
+    }
+
+    ReactDOM
+      .createRoot(document.getElementById("root"))
+      .render(<App/>);
+
+  </script>
+
 </body>
 </html>
