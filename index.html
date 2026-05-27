@@ -251,7 +251,6 @@ const money=(n)=>"R$ "+fmt(n);
 
 function App(){
 
-// Valores padrão inicializados agora em milímetros (Exemplo equivalente a 30cm x 20cm x 15cm)
 const [comp,setComp]=useState(300);
 const [larg,setLarg]=useState(200);
 const [alt,setAlt]=useState(150);
@@ -272,25 +271,20 @@ const pv=Number(venda)||0;
 const pc=Number(custo)||0;
 const q=Number(qtd)||0;
 
-// Folga técnica convertida proporcionalmente de 0.4cm para 4mm
 const cVar=c+4;
 const lVar=l+4;
 
-// Desenvolvimento horizontal e vertical calculados em mm
-const devHoriz=(2*cVar)+(2*lVar)+30; // 3cm de orelha colagem = 30mm
+const devHoriz=(2*cVar)+(2*lVar)+30; 
 const abaTop=lVar/2;
 const abaBot=cVar/2;
 const devVert=a+abaTop+abaBot;
 
-// Área em mm²
 const areaMm2=devHoriz*devVert;
-
-// Conversão matemática crucial: 1 m² equivale a 1.000.000 mm²
 const areaM2=areaMm2/1000000;
 
-// Pesos baseados na área calculada convertida
 const pesoGramas=areaM2*g;
 const pesoKg=pesoGramas/1000;
+const pesoTotalKg=pesoKg*q; // Cálculo do peso global acumulado
 
 const custoUnit=pesoKg*pc;
 const vendaUnit=pesoKg*pv;
@@ -299,6 +293,7 @@ const lucroUnit=vendaUnit-custoUnit;
 return{
 areaMm2,
 pesoGramas,
+pesoTotalKg,
 custoTotal:custoUnit*q,
 vendaTotal:vendaUnit*q,
 lucroTotal:lucroUnit*q,
@@ -370,6 +365,7 @@ return(
 <div className="section-title">CÁLCULO</div>
 <div className="result"><div className="result-name">Área Total</div><div className="result-value">{fmt(calc.areaMm2, 0)} mm²</div></div>
 <div className="result"><div className="result-name">Peso por Caixa</div><div className="result-value">{fmt(calc.pesoGramas)} g</div></div>
+<div className="result"><div className="result-name">Peso Total do Pedido</div><div className="result-value" style={{color:'#f5d800'}}>{fmt(calc.pesoTotalKg)} kg</div></div>
 <div className="result"><div className="result-name">Margem</div><div className="result-value">{fmt(calc.margem)}%</div></div>
 </div>
 
@@ -424,7 +420,6 @@ return(
     const aNum = Math.max(Number(alt) || 0, 1);
 
     const maxDim = Math.max(cNum, lNum, aNum);
-    // Fator ajustado para manter a proporção com entradas maiores em mm
     const fatorGlobal = 230 / maxDim;
 
     const w = cNum * fatorGlobal; 
@@ -524,10 +519,14 @@ return(
           strokeWidth="3"
         />
 
-        {/* TEXTOS DE MEDIDA EM MILÍMETROS */}
+        {/* TEXTOS DE MEDIDA (com a altura rotacionada na vertical) */}
         <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{comp} mm</text>
         <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{larg} mm</text>
-        <text x={cx - w - 45} y={cy - w/2 - h/2 + 15} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{alt} mm</text>
+        
+        {/* Texto da altura rotacionado em -90 graus na vertical */}
+        <g transform={`translate(${cx - w - 40}, ${cy - w/2 - h/2})`}>
+          <text fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle" transform="rotate(-90)">{alt} mm</text>
+        </g>
       </g>
     );
   })()}
@@ -546,4 +545,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </body>
 </html>
 
-```
+
