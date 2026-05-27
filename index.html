@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#000000"/>
 
-<title>YD BOX — Calculadora</title>
+<title>YD BOX — Calculadora Especialista</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -31,7 +31,7 @@ body{
   color:white;
 }
 
-input, textarea{
+input, textarea, select{
   width:100%;
   background:#111;
   border:1px solid #2b2b2b;
@@ -43,8 +43,17 @@ input, textarea{
   outline:none;
 }
 
-input:focus, textarea:focus{
+input:focus, textarea:focus, select:focus{
   border-color:#f5d800;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f5d800' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  cursor: pointer;
 }
 
 textarea{
@@ -113,6 +122,12 @@ textarea{
   gap:12px;
 }
 
+.fields-material {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
 .label{
   margin-bottom:6px;
   color:#777;
@@ -171,7 +186,6 @@ textarea{
   font-weight:900;
 }
 
-/* Painel de Mockup que abriga os controles, marca d'água e a caixa */
 .mockup{
   background:#0d0d0d;
   border:1px solid #222;
@@ -223,7 +237,6 @@ textarea{
   color: #f5d800;
 }
 
-/* Logo Gigante absoluto que funciona como fundo marca d'água atrás do desenho */
 .mockup-watermark-bg {
   position: absolute;
   top: 50%;
@@ -231,12 +244,11 @@ textarea{
   transform: translate(-50%, -55%);
   width: 520px;
   height: 520px;
-  opacity: 0.04; /* Controle de transparência elegante */
+  opacity: 0.04;
   pointer-events: none;
   z-index: 1;
 }
 
-/* Container do SVG da Caixa Dinâmica sobreposto ao logo de fundo */
 .box-svg-container {
   width: 100%;
   display: flex;
@@ -293,7 +305,7 @@ svg.main-box-svg {
 
 <script type="text/babel">
 
-const {useState,useMemo}=React;
+const {useState,useMemo,useEffect}=React;
 
 const fmt=(n,d=2)=>
 n.toLocaleString('pt-BR',{
@@ -303,31 +315,49 @@ maximumFractionDigits:d
 
 const money=(n)=>"R$ "+fmt(n);
 
+// Estrutura de dados com as tabelas de preços ocultas conforme solicitado
+const tabelaMateriais = {
+  duplex: [
+    { label: "290g (3.8 Coluna)", gramatura: 290, custo: 8.79, venda: 17.58 },
+    { label: "355g (4.2 Coluna)", gramatura: 355, custo: 7.10, venda: 14.20 }
+  ],
+  triplex: [
+    { label: "470g (6.5 Coluna)", gramatura: 470, custo: 8.79, venda: 17.58 },
+    { label: "610g (7.0 Coluna)", gramatura: 610, custo: 7.10, venda: 14.20 }
+  ]
+};
+
 function App(){
 
 const [comp,setComp]=useState(300);
 const [larg,setLarg]=useState(200);
 const [alt,setAlt]=useState(150);
-
-const [gram,setGram]=useState(380);
-const [venda,setVenda]=useState(14);
-const [custo,setCusto]=useState(8);
-
 const [qtd,setQtd]=useState(100);
 const [zoom, setZoom] = useState(1.0);
+
+// Estados dos filtros dinâmicos de materiais
+const [onda, setOnda] = useState("duplex");
+const [materialSelecionado, setMaterialSelecionado] = useState(tabelaMateriais.duplex[0]);
 
 const [manualDesc, setManualDesc] = useState(
   "Caixa de Papelão Ondulado Estruturada no Formato Maleta Normal RSC. Ideal para empacotamento, envios logísticos estáveis e armazenamento seguro."
 );
 
+// Reseta o material interno sempre que o usuário mudar a categoria da onda
+useEffect(() => {
+  setMaterialSelecionado(tabelaMateriais[onda][0]);
+}, [onda]);
+
 const calc=useMemo(()=>{
 const c=Number(comp)||0;
 const l=Number(larg)||0;
 const a=Number(alt)||0;
-const g=Number(gram)||0;
-const pv=Number(venda)||0;
-const pc=Number(custo)||0;
 const q=Number(qtd)||0;
+
+// Resgata os valores ocultos mapeados pelo filtro de forma automatizada
+const g=materialSelecionado.gramatura;
+const pc=materialSelecionado.custo;
+const pv=materialSelecionado.venda;
 
 const cVar=c+4;
 const lVar=l+4;
@@ -357,7 +387,7 @@ vendaTotal:vendaUnit*q,
 lucroTotal:lucroUnit*q,
 margem:vendaUnit > 0 ? (lucroUnit/vendaUnit)*100 : 0
 };
-},[comp,larg,alt,gram,venda,custo,qtd]);
+},[comp,larg,alt,qtd,materialSelecionado]);
 
 const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.15, 2.0));
 const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.15, 0.4));
@@ -410,7 +440,7 @@ return(
 
 <div className="grid">
 
-{/* COLUNA ESQUERDA - INTERFACE DE CÁLCULO */}
+{/* COLUNA ESQUERDA - INTERFACE CONFIGURADA */}
 <div>
 <div className="card">
 <div className="section-title">MEDIDAS (EM MILÍMETROS)</div>
@@ -430,20 +460,30 @@ return(
 </div>
 </div>
 
+{/* NOVA SEÇÃO DE FILTROS AVANÇADOS COM CUSTOS E VALORES DE VENDA TOTALMENTE OCULTOS */}
 <div className="card">
-<div className="section-title">MATERIAL</div>
-<div className="fields">
+<div className="section-title">ESTRUTURA DO MATERIAL</div>
+<div className="fields-material">
 <div>
-<div className="label">GRAMATURA (g/m²)</div>
-<input type="number" value={gram} onChange={(e)=>setGram(e.target.value)}/>
+<div className="label">TIPO DE ONDA</div>
+<select value={onda} onChange={(e)=>setOnda(e.target.value)}>
+  <option value="duplex">Duplex (Uma onda)</option>
+  <option value="triplex">Triplex (Duas ondas)</option>
+</select>
 </div>
 <div>
-<div className="label">VENDA R$/KG</div>
-<input type="number" value={venda} onChange={(e)=>setVenda(e.target.value)}/>
-</div>
-<div>
-<div className="label">CUSTO R$/KG</div>
-<input type="number" value={custo} onChange={(e)=>setCusto(e.target.value)}/>
+<div className="label">ESPECIFICAÇÃO</div>
+<select 
+  value={materialSelecionado.label} 
+  onChange={(e) => {
+    const escolhido = tabelaMateriais[onda].find(item => item.label === e.target.value);
+    if(escolhido) setMaterialSelecionado(escolhido);
+  }}
+>
+  {tabelaMateriais[onda].map((item, idx) => (
+    <option key={idx} value={item.label}>{item.label}</option>
+  ))}
+</select>
 </div>
 </div>
 </div>
@@ -455,10 +495,11 @@ return(
 
 <div className="card">
 <div className="section-title">CÁLCULO</div>
+<div className="result"><div className="result-name">Estrutura Aplicada</div><div className="result-value" style={{textTransform:'uppercase'}}>{onda} ({materialSelecionado.gramatura}g)</div></div>
 <div className="result"><div className="result-name">Área Total</div><div className="result-value">{fmt(calc.areaMm2, 0)} mm²</div></div>
 <div className="result"><div className="result-name">Peso por Caixa</div><div className="result-value">{fmt(calc.pesoGramas)} g</div></div>
 <div className="result"><div className="result-name">Peso Total do Pedido</div><div className="result-value" style={{color:'#f5d800'}}>{fmt(calc.pesoTotalKg)} kg</div></div>
-<div className="result"><div className="result-name">Margem</div><div className="result-value">{fmt(calc.margem)}%</div></div>
+<div className="result"><div className="result-name">Margem de Lucro</div><div className="result-value">{fmt(calc.margem)}%</div></div>
 </div>
 
 <div className="total-box">
@@ -471,7 +512,7 @@ return(
 </div>
 </div>
 
-{/* COLUNA DIREITA - PAINEL MOCKUP COM LOGO ATRÁS E CENTRALIZAÇÃO */}
+{/* COLUNA DIREITA - PAINEL MOCKUP COM MARCA D'ÁGUA GIGANTE ATRÁS */}
 <div>
 <div className="mockup">
   
@@ -482,12 +523,12 @@ return(
     <button className="action-btn pdf-btn" onClick={exportToPDF}>Exportar PDF</button>
   </div>
 
-  {/* Logo gigante e transparente centralizado no fundo (Z-INDEX 1) */}
+  {/* Logotipo gigante transparente centralizado perfeitamente no fundo */}
   <div className="mockup-watermark-bg">
     <LogoOriginalSVG />
   </div>
 
-  {/* Caixa renderizada por cima do logo (Z-INDEX 2) e centralizada perfeitamente */}
+  {/* Desenho da caixa flutuando sobreposto ao logotipo de fundo */}
   <div className="box-svg-container">
   <svg className="main-box-svg" viewBox="0 0 900 700" style={{ transform: `scale(${zoom})` }}>
   <defs>
@@ -512,30 +553,24 @@ return(
     const flapSize = d / 2;
 
     const cx = 450;
-    // Centralização física perfeita recalculada para o meio do plano (350)
     const cy = 350 + (h / 2) - ((w / 4) + (d / 4)) / 2;
 
     return (
       <g>
-        {/* LADO INTERNO */}
         <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`} fill="#6a3b08" stroke="#422403" strokeWidth="1.5" />
         <polygon points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`} fill="#7d470d" />
         <polygon points={`${cx + d},${cy - d/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx + d},${cy - d/2 - h}`} fill="#8e5313" />
         <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`} fill="url(#innerShadow)" style={{mixBlendMode: 'multiply'}} />
 
-        {/* ABAS TRASEIRAS */}
         <polygon points={`${cx - w},${cy - w/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d - flapSize},${cy - w/2 - d/2 - h - flapSize/2} ${cx - w - flapSize},${cy - w/2 - h - flapSize/2}`} fill="#a06320" stroke="#73420f" strokeWidth="2" />
         <polygon points={`${cx + d},${cy - d/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d + flapSize},${cy - w/2 - d/2 - h - flapSize/2} ${cx + d + flapSize},${cy - d/2 - h - flapSize/2}`} fill="#ad6d25" stroke="#73420f" strokeWidth="2" />
 
-        {/* FACES DIANTEIRAS */}
         <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`} fill="#c8893d" stroke="#8b5c1c" strokeWidth="3" />
         <polygon points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`} fill="#b67831" stroke="#8b5c1c" strokeWidth="3" />
 
-        {/* ABAS DIANTEIRAS COBERTURA */}
         <polygon points={`${cx},${cy - h} ${cx - w},${cy - w/2 - h} ${cx - w - flapSize},${cy - w/2 - h + flapSize/2} ${cx - flapSize},${cy - h + flapSize/2}`} fill="#dca04d" stroke="#8b5c1c" strokeWidth="3" />
         <polygon points={`${cx},${cy - h} ${cx + d},${cy - d/2 - h} ${cx + d + flapSize},${cy - d/2 - h + flapSize/2} ${cx + flapSize},${cy - h + flapSize/2}`} fill="#e4aa57" stroke="#8b5c1c" strokeWidth="3" />
 
-        {/* INDICADORES DE MEDIDA */}
         <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{comp} mm</text>
         <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{larg} mm</text>
         <g transform={`translate(${cx - w - 40}, ${cy - w/2 - h/2})`}><text fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle" transform="rotate(-90)">{alt} mm</text></g>
@@ -545,7 +580,6 @@ return(
 </svg>
 </div>
 
-  {/* Painel com a Descrição Técnica Manual */}
   <div className="box-description-panel">
     <h4>ESPECIFICAÇÕES DO MODELO (TEXTO EDITÁVEL)</h4>
     <textarea 
@@ -559,7 +593,7 @@ return(
 
 </div>
 
-{/* TEMPLATE DE EXPORTAÇÃO DO PDF COMERCIAL */}
+{/* TEMPLATE DE EXPORTAÇÃO DO PDF COMPACTADO E PROTEGIDO */}
 <div id="pdf-template" style={{ background: '#080808', color: '#ffffff', fontfamily: 'sans-serif', padding: '30px' }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '3px solid #f5d800', paddingBottom: '20px', marginBottom: '25px' }}>
     <div>
@@ -575,12 +609,12 @@ return(
     <h3 style={{ color: '#f5d800', fontSize: '14px', marginBottom: '12px', letterSpacing: '1px' }}>DADOS E DIMENSÕES DA EMBALAGEM</h3>
     <table style={{ width: '100%', borderCollapse: 'collapse', color: '#ccc', fontSize: '15px' }}>
       <tbody>
-        <tr><td style={{ padding: '6px 0', color: '#777' }}>Dimensões:</td><td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fff' }}>{comp}mm x {larg}mm x {alt}mm</td></tr>
-        <tr><td style={{ padding: '6px 0', color: '#777' }}>Gramatura do Papelão:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{gram} g/m²</td></tr>
+        <tr><td style={{ padding: '6px 0', color: '#777' }}>Dimensões Solicitadas:</td><td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fff' }}>{comp}mm x {larg}mm x {alt}mm</td></tr>
+        <tr><td style={{ padding: '6px 0', color: '#777' }}>Estrutura / Onda:</td><td style={{ textAlign: 'right', fontWeight: 'bold', textTransform: 'uppercase', color: '#f5d800' }}>{onda} - {materialSelecionado.label}</td></tr>
         <tr><td style={{ padding: '6px 0', color: '#777' }}>Área de Desenvolvimento:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{fmt(calc.areaMm2, 0)} mm²</td></tr>
-        <tr><td style={{ padding: '6px 0', color: '#777' }}>Peso Unitário:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{fmt(calc.pesoGramas)} g</td></tr>
-        <tr><td style={{ padding: '6px 0', color: '#777' }}>Quantidade Solicitada:</td><td style={{ textAlign: 'right', fontWeight: 'bold', color: '#f5d800' }}>{qtd} un</td></tr>
-        <tr><td style={{ padding: '6px 0', color: '#777' }}>Peso Total do Pedido:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{fmt(calc.pesoTotalKg)} kg</td></tr>
+        <tr><td style={{ padding: '6px 0', color: '#777' }}>Peso Unitário da Caixa:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{fmt(calc.pesoGramas)} g</td></tr>
+        <tr><td style={{ padding: '6px 0', color: '#777' }}>Quantidade Solicitada:</td><td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fff' }}>{qtd} un</td></tr>
+        <tr><td style={{ padding: '6px 0', color: '#777' }}>Peso Bruto Total do Lote:</td><td style={{ textAlign: 'right', fontWeight: 'bold' }}>{fmt(calc.pesoTotalKg)} kg</td></tr>
       </tbody>
     </table>
   </div>
@@ -594,9 +628,8 @@ return(
     </div>
   </div>
 
-  {/* Descrição informada pelo usuário no campo manual impressa perfeitamente no PDF */}
   <div style={{ background: '#0d0d0d', border: '1px solid #222', padding: '15px', borderRadius: '12px', marginBottom: '20px' }}>
-    <h3 style={{ color: '#f5d800', fontSize: '13px', marginBottom: '6px' }}>DESCRIÇÃO COMERCIAL</h3>
+    <h3 style={{ color: '#f5d800', fontSize: '13px', marginBottom: '6px' }}>DESCRIÇÃO COMERCIAL INFORMADA</h3>
     <p style={{ fontSize: '15px', color: '#ccc', lineHeight: '1.4', margin: 0 }}>{manualDesc}</p>
   </div>
 
@@ -646,4 +679,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </body>
 </html>
 
-Criado por Douglas Lima 
