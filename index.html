@@ -5,8 +5,6 @@
 
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#000000"/>
-
 <title>YD BOX — Calculadora</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -46,7 +44,7 @@ input:focus{
 }
 
 .container{
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
   padding:20px;
 }
@@ -107,7 +105,6 @@ input:focus{
   margin-bottom:6px;
   color:#777;
   font-size:12px;
-  letter-spacing:1px;
 }
 
 .result{
@@ -167,29 +164,26 @@ input:focus{
   border:1px solid #222;
   border-radius:18px;
   min-height:700px;
-  position:sticky;
-  top:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:hidden;
+  padding:20px;
 }
 
 svg{
   width:100%;
-  max-width:650px;
+  max-width:700px;
 }
 
 @media(max-width:900px){
 
-  .grid{
-    grid-template-columns:1fr;
-  }
+.grid{
+  grid-template-columns:1fr;
+}
 
-  .mockup{
-    min-height:450px;
-    position:relative;
-  }
+.mockup{
+  min-height:450px;
+}
 
 }
 
@@ -256,28 +250,29 @@ const custoUnit=pesoKg*pc;
 const vendaUnit=pesoKg*pv;
 const lucroUnit=vendaUnit-custoUnit;
 
-const custoTotal=custoUnit*q;
-const vendaTotal=vendaUnit*q;
-const lucroTotal=lucroUnit*q;
-
-const margem=(lucroUnit/vendaUnit)*100;
-
 return{
 devHoriz,
 devVert,
 areaCm2,
 pesoKg,
 pesoGramas,
-custoUnit,
-vendaUnit,
-lucroUnit,
-custoTotal,
-vendaTotal,
-lucroTotal,
-margem
+custoTotal:custoUnit*q,
+vendaTotal:vendaUnit*q,
+lucroTotal:lucroUnit*q,
+margem:(lucroUnit/vendaUnit)*100
 };
 
 },[comp,larg,alt,gram,venda,custo,qtd]);
+
+/* ESCALA PROPORCIONAL */
+
+const largura = Math.max(comp * 6,180);
+const profundidade = Math.max(larg * 4,100);
+const altura = Math.max(alt * 5,120);
+
+/* ABAS METADE DA LARGURA */
+
+const aba = largura / 2;
 
 return(
 
@@ -299,6 +294,8 @@ CALCULADORA DE PAPELÃO
 
 <div className="grid">
 
+{/* ESQUERDA */}
+
 <div>
 
 <div className="card">
@@ -310,9 +307,7 @@ MEDIDAS
 <div className="fields">
 
 <div>
-<div className="label">
-COMPRIMENTO
-</div>
+<div className="label">COMPRIMENTO</div>
 
 <input
 type="number"
@@ -322,9 +317,7 @@ onChange={(e)=>setComp(e.target.value)}
 </div>
 
 <div>
-<div className="label">
-LARGURA
-</div>
+<div className="label">LARGURA</div>
 
 <input
 type="number"
@@ -334,9 +327,7 @@ onChange={(e)=>setLarg(e.target.value)}
 </div>
 
 <div>
-<div className="label">
-ALTURA
-</div>
+<div className="label">ALTURA</div>
 
 <input
 type="number"
@@ -358,9 +349,7 @@ MATERIAL
 <div className="fields">
 
 <div>
-<div className="label">
-GRAMATURA
-</div>
+<div className="label">GRAMATURA</div>
 
 <input
 type="number"
@@ -370,9 +359,7 @@ onChange={(e)=>setGram(e.target.value)}
 </div>
 
 <div>
-<div className="label">
-VENDA R$/KG
-</div>
+<div className="label">VENDA R$/KG</div>
 
 <input
 type="number"
@@ -382,9 +369,7 @@ onChange={(e)=>setVenda(e.target.value)}
 </div>
 
 <div>
-<div className="label">
-CUSTO R$/KG
-</div>
+<div className="label">CUSTO R$/KG</div>
 
 <input
 type="number"
@@ -418,53 +403,18 @@ CÁLCULO
 </div>
 
 <div className="result">
-<div className="result-name">
-Desenvolvimento Horizontal
-</div>
-
-<div className="result-value">
-{fmt(calc.devHoriz)} cm
-</div>
+<div className="result-name">Área Total</div>
+<div className="result-value">{fmt(calc.areaCm2)} cm²</div>
 </div>
 
 <div className="result">
-<div className="result-name">
-Desenvolvimento Vertical
-</div>
-
-<div className="result-value">
-{fmt(calc.devVert)} cm
-</div>
+<div className="result-name">Peso por Caixa</div>
+<div className="result-value">{fmt(calc.pesoGramas)} g</div>
 </div>
 
 <div className="result">
-<div className="result-name">
-Área Total
-</div>
-
-<div className="result-value">
-{fmt(calc.areaCm2)} cm²
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Peso por Caixa
-</div>
-
-<div className="result-value">
-{fmt(calc.pesoGramas)} g
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Margem
-</div>
-
-<div className="result-value">
-{fmt(calc.margem)}%
-</div>
+<div className="result-name">Margem</div>
+<div className="result-value">{fmt(calc.margem)}%</div>
 </div>
 
 </div>
@@ -504,75 +454,102 @@ TOTAL DO PEDIDO
 
 </div>
 
+{/* DIREITA */}
+
 <div className="mockup">
 
 <svg
-viewBox="0 0 600 500"
+viewBox="0 0 900 700"
 >
 
 {/* TOPO */}
 
 <polygon
-points="200,120 420,120 500,180 280,180"
+points={`
+220,180
+${220+largura},180
+${220+largura+profundidade},${180+profundidade}
+${220+profundidade},${180+profundidade}
+`}
 fill="#d89a47"
 stroke="#8b5c1c"
-strokeWidth="3"
+strokeWidth="4"
 />
 
 {/* FRENTE */}
 
 <polygon
-points="200,120 280,180 280,340 200,280"
+points={`
+220,180
+${220+profundidade},${180+profundidade}
+${220+profundidade},${180+profundidade+altura}
+220,${180+altura}
+`}
 fill="#c8893d"
 stroke="#8b5c1c"
-strokeWidth="3"
+strokeWidth="4"
 />
 
 {/* LATERAL */}
 
 <polygon
-points="280,180 500,180 500,340 280,340"
+points={`
+${220+profundidade},${180+profundidade}
+${220+largura+profundidade},${180+profundidade}
+${220+largura+profundidade},${180+profundidade+altura}
+${220+profundidade},${180+profundidade+altura}
+`}
 fill="#b67831"
 stroke="#8b5c1c"
-strokeWidth="3"
+strokeWidth="4"
 />
 
 {/* ABA ESQUERDA */}
 
 <polygon
-points="180,80 300,80 340,120 220,120"
+points={`
+220,180
+${220+(aba/2)},120
+${220+aba},180
+${220+profundidade},${180+profundidade}
+`}
 fill="#e4aa57"
 stroke="#8b5c1c"
-strokeWidth="3"
+strokeWidth="4"
 />
 
 {/* ABA DIREITA */}
 
 <polygon
-points="320,80 440,80 480,120 360,120"
+points={`
+${220+aba},180
+${220+aba+(aba/2)},120
+${220+largura},180
+${220+largura+profundidade},${180+profundidade}
+`}
 fill="#e4aa57"
 stroke="#8b5c1c"
-strokeWidth="3"
+strokeWidth="4"
 />
 
-{/* LINHAS */}
+{/* LINHA CENTRAL */}
 
 <line
-x1="280"
+x1={220+aba}
 y1="180"
-x2="280"
-y2="340"
+x2={220+aba+(profundidade/2)}
+y2={180+profundidade}
 stroke="#8b5c1c"
-strokeWidth="2"
+strokeWidth="3"
 />
 
 {/* MEDIDAS */}
 
 <text
-x="350"
-y="390"
+x={220+(largura/2)}
+y={600}
 fill="#f5d800"
-fontSize="28"
+fontSize="34"
 fontWeight="900"
 textAnchor="middle"
 >
@@ -580,20 +557,20 @@ textAnchor="middle"
 </text>
 
 <text
-x="530"
-y="260"
+x={220+largura+profundidade+40}
+y={280+(altura/2)}
 fill="#f5d800"
-fontSize="28"
+fontSize="34"
 fontWeight="900"
 >
 {larg} cm
 </text>
 
 <text
-x="140"
-y="240"
+x="120"
+y={280+(altura/2)}
 fill="#f5d800"
-fontSize="28"
+fontSize="34"
 fontWeight="900"
 >
 {alt} cm
