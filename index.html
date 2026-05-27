@@ -14,11 +14,7 @@
 
 <style>
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   background:#080808;
@@ -38,9 +34,7 @@ input{
   outline:none;
 }
 
-input:focus{
-  border-color:#f5d800;
-}
+input:focus{border-color:#f5d800;}
 
 .container{
   max-width:1100px;
@@ -57,20 +51,9 @@ input:focus{
   padding-bottom:20px;
 }
 
-.logo{
-  font-size:42px;
-  font-weight:900;
-}
-
-.logo span{
-  color:#f5d800;
-}
-
-.subtitle{
-  color:#666;
-  font-size:14px;
-  letter-spacing:3px;
-}
+.logo{font-size:42px;font-weight:900;}
+.logo span{color:#f5d800;}
+.subtitle{color:#666;font-size:14px;letter-spacing:3px;}
 
 .grid{
   display:grid;
@@ -100,12 +83,7 @@ input:focus{
   gap:12px;
 }
 
-.label{
-  margin-bottom:6px;
-  color:#777;
-  font-size:12px;
-  letter-spacing:1px;
-}
+.label{margin-bottom:6px;color:#777;font-size:12px;}
 
 .result{
   display:flex;
@@ -114,18 +92,9 @@ input:focus{
   border-bottom:1px solid #1f1f1f;
 }
 
-.result:last-child{
-  border:none;
-}
-
-.result-name{
-  color:#777;
-}
-
-.result-value{
-  font-weight:800;
-  color:#f5d800;
-}
+.result:last-child{border:none;}
+.result-name{color:#777;}
+.result-value{font-weight:800;color:#f5d800;}
 
 .total-box{
   background:#000;
@@ -148,29 +117,19 @@ input:focus{
   text-align:center;
 }
 
-.total-item h3{
-  color:#666;
-  font-size:12px;
-  margin-bottom:8px;
-}
-
-.total-item p{
-  font-size:22px;
-  font-weight:900;
-}
+.total-item h3{color:#666;font-size:12px;margin-bottom:8px;}
+.total-item p{font-size:22px;font-weight:900;}
 
 .mockup{
   background:#0d0d0d;
   border:1px solid #222;
   border-radius:18px;
-  height:100%;
   min-height:700px;
   position:sticky;
   top:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  overflow:hidden;
 }
 
 .box-scene{
@@ -187,13 +146,10 @@ input:focus{
   left:50%;
   top:50%;
   transform-style:preserve-3d;
-  transform:
-    translate(-50%,-50%)
-    rotateX(-20deg)
-    rotateY(-30deg);
-  animation:float 5s ease-in-out infinite;
+  transform:translate(-50%,-50%) rotateX(-20deg) rotateY(-30deg);
 }
 
+/* CAIXA BASE */
 .face{
   position:absolute;
   background:#c88d3d;
@@ -210,9 +166,7 @@ input:focus{
   width:120px;
   height:180px;
   left:220px;
-  transform:
-    rotateY(90deg)
-    translateZ(60px);
+  transform:rotateY(90deg) translateZ(60px);
   background:#b87f32;
 }
 
@@ -220,11 +174,10 @@ input:focus{
   width:220px;
   height:120px;
   background:#d49a47;
-  transform:
-    rotateX(90deg)
-    translateZ(60px);
+  transform:rotateX(90deg) translateZ(60px);
 }
 
+/* ABAS ABERTAS FIXAS */
 .flap-left,
 .flap-right{
   position:absolute;
@@ -236,14 +189,15 @@ input:focus{
   transform-origin:bottom;
 }
 
+/* FIXO ABERTO (sem animação) */
 .flap-left{
   left:0;
-  animation:flapLeft 4s ease-in-out infinite;
+  transform:rotateX(-75deg);
 }
 
 .flap-right{
   right:0;
-  animation:flapRight 4s ease-in-out infinite;
+  transform:rotateX(-75deg);
 }
 
 .measure{
@@ -254,85 +208,25 @@ input:focus{
   text-shadow:0 0 12px #000;
 }
 
-.measure.c{
-  bottom:-50px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-.measure.l{
-  right:-60px;
-  top:50%;
-  transform:translateY(-50%);
-}
-
-.measure.a{
-  left:-40px;
-  top:50%;
-  transform:translateY(-50%);
-}
+.measure.c{bottom:-50px;left:50%;transform:translateX(-50%);}
+.measure.l{right:-60px;top:50%;transform:translateY(-50%);}
+.measure.a{left:-40px;top:50%;transform:translateY(-50%);}
 
 .measure small{
   display:block;
   color:#888;
   font-size:12px;
-  text-align:center;
-}
-
-@keyframes flapLeft{
-  0%,100%{
-    transform:rotateX(0deg);
-  }
-  50%{
-    transform:rotateX(-75deg);
-  }
-}
-
-@keyframes flapRight{
-  0%,100%{
-    transform:rotateX(0deg);
-  }
-  50%{
-    transform:rotateX(-75deg);
-  }
-}
-
-@keyframes float{
-  0%,100%{
-    transform:
-      translate(-50%,-50%)
-      rotateX(-20deg)
-      rotateY(-30deg)
-      translateY(0px);
-  }
-
-  50%{
-    transform:
-      translate(-50%,-50%)
-      rotateX(-20deg)
-      rotateY(-30deg)
-      translateY(-10px);
-  }
 }
 
 @media(max-width:900px){
-
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .mockup{
-    min-height:450px;
-    position:relative;
-  }
-
+  .grid{grid-template-columns:1fr;}
+  .mockup{min-height:450px;position:relative;}
 }
 
 </style>
 </head>
 
 <body>
-
 <div id="root"></div>
 
 <script type="text/babel">
@@ -340,10 +234,7 @@ input:focus{
 const {useState,useMemo}=React;
 
 const fmt=(n,d=2)=>
-n.toLocaleString('pt-BR',{
-minimumFractionDigits:d,
-maximumFractionDigits:d
-});
+n.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 
 const money=(n)=>"R$ "+fmt(n);
 
@@ -356,7 +247,6 @@ const [alt,setAlt]=useState(15);
 const [gram,setGram]=useState(380);
 const [venda,setVenda]=useState(14);
 const [custo,setCusto]=useState(8);
-
 const [qtd,setQtd]=useState(100);
 
 const calc=useMemo(()=>{
@@ -364,7 +254,6 @@ const calc=useMemo(()=>{
 const c=Number(comp)||0;
 const l=Number(larg)||0;
 const a=Number(alt)||0;
-
 const g=Number(gram)||0;
 const pv=Number(venda)||0;
 const pc=Number(custo)||0;
@@ -374,318 +263,113 @@ const cVar=c+0.4;
 const lVar=l+0.4;
 
 const devHoriz=(2*cVar)+(2*lVar)+3;
-
 const abaTop=lVar/2;
 const abaBot=cVar/2;
-
 const devVert=a+abaTop+abaBot;
 
 const areaCm2=devHoriz*devVert;
 const areaM2=areaCm2/10000;
 
-const pesoGramas=areaM2*g;
-const pesoKg=pesoGramas/1000;
+const pesoKg=(areaM2*g)/1000;
 
 const custoUnit=pesoKg*pc;
 const vendaUnit=pesoKg*pv;
 const lucroUnit=vendaUnit-custoUnit;
-
-const custoTotal=custoUnit*q;
-const vendaTotal=vendaUnit*q;
-const lucroTotal=lucroUnit*q;
-
-const margem=(lucroUnit/vendaUnit)*100;
 
 return{
 devHoriz,
 devVert,
 areaCm2,
 pesoKg,
-pesoGramas,
-custoUnit,
-vendaUnit,
-lucroUnit,
-custoTotal,
-vendaTotal,
-lucroTotal,
-margem
+custoTotal:custoUnit*q,
+vendaTotal:vendaUnit*q,
+lucroTotal:lucroUnit*q,
+margem:(lucroUnit/vendaUnit)*100
 };
 
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
 return(
-
 <div className="container">
 
 <div className="header">
-
 <div>
-<div className="logo">
-YD <span>BOX</span>
+<div className="logo">YD <span>BOX</span></div>
+<div className="subtitle">CALCULADORA DE PAPELÃO</div>
 </div>
-
-<div className="subtitle">
-CALCULADORA DE PAPELÃO
-</div>
-</div>
-
 </div>
 
 <div className="grid">
 
+{/* COLUNA ESQUERDA */}
 <div>
-
 <div className="card">
-
-<div className="section-title">
-MEDIDAS
-</div>
+<div className="section-title">MEDIDAS</div>
 
 <div className="fields">
-
-<div>
-<div className="label">
-COMPRIMENTO
+<input value={comp} onChange={e=>setComp(e.target.value)} placeholder="Comprimento"/>
+<input value={larg} onChange={e=>setLarg(e.target.value)} placeholder="Largura"/>
+<input value={alt} onChange={e=>setAlt(e.target.value)} placeholder="Altura"/>
 </div>
-
-<input
-type="number"
-value={comp}
-onChange={(e)=>setComp(e.target.value)}
-/>
-</div>
-
-<div>
-<div className="label">
-LARGURA
-</div>
-
-<input
-type="number"
-value={larg}
-onChange={(e)=>setLarg(e.target.value)}
-/>
-</div>
-
-<div>
-<div className="label">
-ALTURA
-</div>
-
-<input
-type="number"
-value={alt}
-onChange={(e)=>setAlt(e.target.value)}
-/>
-</div>
-
-</div>
-
 </div>
 
 <div className="card">
+<div className="section-title">CÁLCULO</div>
 
-<div className="section-title">
-MATERIAL
-</div>
-
-<div className="fields">
-
-<div>
-<div className="label">
-GRAMATURA
-</div>
-
-<input
-type="number"
-value={gram}
-onChange={(e)=>setGram(e.target.value)}
-/>
-</div>
-
-<div>
-<div className="label">
-VENDA R$/KG
-</div>
-
-<input
-type="number"
-value={venda}
-onChange={(e)=>setVenda(e.target.value)}
-/>
-</div>
-
-<div>
-<div className="label">
-CUSTO R$/KG
-</div>
-
-<input
-type="number"
-value={custo}
-onChange={(e)=>setCusto(e.target.value)}
-/>
-</div>
-
-</div>
-
-</div>
-
-<div className="card">
-
-<div className="section-title">
-QUANTIDADE
-</div>
-
-<input
-type="number"
-value={qtd}
-onChange={(e)=>setQtd(e.target.value)}
-/>
-
-</div>
-
-<div className="card">
-
-<div className="section-title">
-CÁLCULO
-</div>
-
-<div className="result">
-<div className="result-name">
-Desenvolvimento Horizontal
-</div>
-
-<div className="result-value">
-{fmt(calc.devHoriz)} cm
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Desenvolvimento Vertical
-</div>
-
-<div className="result-value">
-{fmt(calc.devVert)} cm
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Área Total
-</div>
-
-<div className="result-value">
-{fmt(calc.areaCm2)} cm²
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Peso por Caixa
-</div>
-
-<div className="result-value">
-{fmt(calc.pesoGramas)} g
-</div>
-</div>
-
-<div className="result">
-<div className="result-name">
-Margem
-</div>
-
-<div className="result-value">
-{fmt(calc.margem)}%
-</div>
-</div>
-
+<div className="result"><span>Área</span><b>{fmt(calc.areaCm2)} cm²</b></div>
+<div className="result"><span>Peso</span><b>{fmt(calc.pesoKg)} kg</b></div>
+<div className="result"><span>Margem</span><b>{fmt(calc.margem)}%</b></div>
 </div>
 
 <div className="total-box">
-
-<h2 style={{fontSize:'28px'}}>
-TOTAL DO PEDIDO
-</h2>
-
+<h2>TOTAL</h2>
 <div className="total-grid">
 
 <div className="total-item">
 <h3>CUSTO</h3>
-<p style={{color:'#999'}}>
-{money(calc.custoTotal)}
-</p>
+<p>{money(calc.custoTotal)}</p>
 </div>
 
 <div className="total-item">
 <h3>VENDA</h3>
-<p style={{color:'#f5d800'}}>
-{money(calc.vendaTotal)}
-</p>
+<p>{money(calc.vendaTotal)}</p>
 </div>
 
 <div className="total-item">
 <h3>LUCRO</h3>
-<p style={{color:'#4dcc7a'}}>
-{money(calc.lucroTotal)}
-</p>
+<p>{money(calc.lucroTotal)}</p>
+</div>
+
+</div>
 </div>
 
 </div>
 
-</div>
-
-</div>
-
+{/* MOCKUP */}
 <div className="mockup">
-
 <div className="box-scene">
-
 <div className="box3d">
-
-<div className="face front"></div>
-
-<div className="face side"></div>
-
-<div className="face top"></div>
-
+<div className="front face"></div>
+<div className="side face"></div>
+<div className="top face"></div>
 <div className="flap-left"></div>
-
 <div className="flap-right"></div>
-
 </div>
 
-<div className="measure c">
-{comp} cm
-<small>Comprimento</small>
-</div>
+<div className="measure c">{comp} cm</div>
+<div className="measure l">{larg} cm</div>
+<div className="measure a">{alt} cm</div>
 
-<div className="measure l">
-{larg} cm
-<small>Largura</small>
 </div>
-
-<div className="measure a">
-{alt} cm
-<small>Altura</small>
 </div>
 
 </div>
-
 </div>
-
-</div>
-
-</div>
-
 );
 
 }
 
-ReactDOM
-.createRoot(document.getElementById('root'))
-.render(<App/>);
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 
 </script>
 
