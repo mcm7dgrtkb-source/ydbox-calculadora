@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#000000"/>
 
-<title>YD BOX — Calculadora Especialista</title>
+<title>YD BOX — Calculadora Avançada</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -96,7 +96,7 @@ textarea{
 
 .grid{
   display:grid;
-  grid-template-columns:420px 1fr;
+  grid-template-columns:410px 1fr;
   gap:30px;
 }
 
@@ -106,6 +106,14 @@ textarea{
   border-radius:18px;
   padding:22px;
   margin-bottom:18px;
+}
+
+.card-highlight-filter {
+  background: #11110b;
+  border: 1px dashed #f5d800;
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 18px;
 }
 
 .section-title{
@@ -239,14 +247,17 @@ textarea{
 
 .mockup-watermark-bg {
   position: absolute;
-  top: 46%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 320px;
-  height: 320px;
-  opacity: 0.05;
+  width: 480px;
+  height: 480px;
+  opacity: 0.06;
   pointer-events: none;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .box-svg-container {
@@ -292,7 +303,7 @@ svg.main-box-svg {
 @media(max-width:900px){
   .grid{ grid-template-columns:1fr; }
   .mockup{ min-height:550px; }
-  .mockup-watermark-bg { width: 240px; height: 240px; }
+  .mockup-watermark-bg { width: 300px; height: 300px; }
 }
 
 </style>
@@ -441,20 +452,32 @@ const DesenhoCaixaSVG = ({ widthMm, heightMm, depthMm }) => {
 
   return (
     <g>
+      <defs>
+        <linearGradient id="pdfInnerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#000000" stopOpacity="0.65" />
+          <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+
+      {/* LADO INTERNO */}
       <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`} fill="#6a3b08" stroke="#422403" strokeWidth="1.5" />
       <polygon points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`} fill="#7d470d" />
       <polygon points={`${cx + d},${cy - d/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx + d},${cy - d/2 - h}`} fill="#8e5313" />
-      <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`} fill="url(#innerShadow)" style={{mixBlendMode: 'multiply'}} />
+      <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`} fill="url(#pdfInnerShadow)" style={{mixBlendMode: 'multiply'}} />
 
+      {/* ABAS TRASEIRAS */}
       <polygon points={`${cx - w},${cy - w/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d - flapSize},${cy - w/2 - d/2 - h - flapSize/2} ${cx - w - flapSize},${cy - w/2 - h - flapSize/2}`} fill="#a06320" stroke="#73420f" strokeWidth="2" />
       <polygon points={`${cx + d},${cy - d/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d + flapSize},${cy - w/2 - d/2 - h - flapSize/2} ${cx + d + flapSize},${cy - d/2 - h - flapSize/2}`} fill="#ad6d25" stroke="#73420f" strokeWidth="2" />
 
+      {/* FACES DIANTEIRAS */}
       <polygon points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`} fill="#c8893d" stroke="#8b5c1c" strokeWidth="3" />
       <polygon points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`} fill="#b67831" stroke="#8b5c1c" strokeWidth="3" />
 
+      {/* ABAS DIANTEIRAS COBERTURA */}
       <polygon points={`${cx},${cy - h} ${cx - w},${cy - w/2 - h} ${cx - w - flapSize},${cy - w/2 - h + flapSize/2} ${cx - flapSize},${cy - h + flapSize/2}`} fill="#dca04d" stroke="#8b5c1c" strokeWidth="3" />
       <polygon points={`${cx},${cy - h} ${cx + d},${cy - d/2 - h} ${cx + d + flapSize},${cy - d/2 - h + flapSize/2} ${cx + flapSize},${cy - h + flapSize/2}`} fill="#e4aa57" stroke="#8b5c1c" strokeWidth="3" />
 
+      {/* INDICADORES DE MEDIDA */}
       <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{widthMm} mm</text>
       <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{heightMm} mm</text>
       <g transform={`translate(${cx - w - 40}, ${cy - w/2 - h/2})`}><text fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle" transform="rotate(-90)">{depthMm} mm</text></g>
@@ -475,7 +498,7 @@ return(
 
 <div className="grid">
 
-{/* COLUNA ESQUERDA */}
+{/* COLUNA ESQUERDA - PARAMETROS */}
 <div>
 <div className="card">
 <div className="section-title">MEDIDAS (EM MILÍMETROS)</div>
@@ -495,20 +518,25 @@ return(
 </div>
 </div>
 
-<div className="card">
-<div className="section-title">ESTRUTURA DO MATERIAL</div>
+{/* FILTRO DE MATERIAL COM ENFASE VISUAL ADICIONADA */}
+<div className="card-highlight-filter">
+<div className="section-title" style={{color:'#f5d800', display:'flex', justifyContent:'space-between'}}>
+  <span>ESTRUTURA DO MATERIAL</span> 
+  <span style={{fontSize:'10px', color:'#fff', background:'#ccaa00', padding:'2px 6px', borderRadius:'4px'}}>SELECIONE ABAIXO:</span>
+</div>
 <div className="fields-material">
 <div>
-<div className="label">TIPO DE ONDA</div>
-<select value={onda} onChange={(e)=>setOnda(e.target.value)}>
+<div className="label" style={{color:'#aaa', fontWeight:'bold'}}>TIPO DE ONDA</div>
+<select value={onda} onChange={(e)=>setOnda(e.target.value)} style={{borderColor:'#f5d800', background:'#1a1a12'}}>
   <option value="duplex">Duplex (Uma onda)</option>
   <option value="triplex">Triplex (Duas ondas)</option>
 </select>
 </div>
 <div>
-<div className="label">ESPECIFICAÇÃO</div>
+<div className="label" style={{color:'#aaa', fontWeight:'bold'}}>ESPECIFICAÇÃO</div>
 <select 
   value={materialSelecionado.label} 
+  style={{borderColor:'#f5d800', background:'#1a1a12'}}
   onChange={(e) => {
     const escolhido = tabelaMateriais[onda].find(item => item.label === e.target.value);
     if(escolhido) setMaterialSelecionado(escolhido);
@@ -546,7 +574,7 @@ return(
 </div>
 </div>
 
-{/* COLUNA DIREITA */}
+{/* COLUNA DIREITA - VISUALIZADOR MOCKUP */}
 <div>
 <div className="mockup">
   
@@ -557,20 +585,14 @@ return(
     <button className="action-btn pdf-btn" onClick={exportToPDF}>Exportar PDF</button>
   </div>
 
-  {/* Logotipo oficial centralizado perfeitamente ao fundo com marca d'água */}
+  {/* Logo oficial da YD BOX centralizado no plano de fundo com opacidade controlada */}
   <div className="mockup-watermark-bg">
     <LogoOriginalSVG />
   </div>
 
-  {/* Caixa renderizada de forma centralizada que se sobrepõe ao logo */}
+  {/* Caixa estruturada em 3D sobreposta ao logo */}
   <div className="box-svg-container">
   <svg className="main-box-svg" viewBox="0 0 900 700" style={{ transform: `scale(${zoom})` }}>
-    <defs>
-      <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#000000" stopOpacity="0.65" />
-        <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-      </linearGradient>
-    </defs>
     <DesenhoCaixaSVG widthMm={comp} heightMm={larg} depthMm={alt} />
   </svg>
   </div>
@@ -588,7 +610,7 @@ return(
 
 </div>
 
-{/* TEMPLATE DO PDF INDUSTRIAL COMPACTADO EM 1 PÁGINA A4 */}
+{/* TEMPLATE DO PDF CONFIGURADO PARA 1 PÁGINA COM CAIXA GARANTIDA */}
 <div id="pdf-template" style={{ background: '#080808', color: '#ffffff', fontFamily: 'sans-serif', padding: '15px', width: '190mm', margin: '0 auto' }}>
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #f5d800', paddingBottom: '10px', marginBottom: '15px' }}>
     <div>
@@ -629,7 +651,7 @@ return(
 
   <h3 style={{ color: '#f5d800', fontSize: '11px', marginBottom: '6px', letterSpacing: '1px' }}>PERSPECTIVA TÉCNICA 3D DA CAIXA</h3>
   <div style={{ background: '#0d0d0d', border: '1px solid #222', borderRadius: '10px', padding: '10px', display: 'flex', justifyContent: 'center' }}>
-    <div style={{ width: '68%' }}>
+    <div style={{ width: '64%' }}>
       <svg viewBox="0 0 900 700" style={{ width: '100%', height: 'auto' }}>
         <DesenhoCaixaSVG widthMm={comp} heightMm={larg} depthMm={alt} />
       </svg>
