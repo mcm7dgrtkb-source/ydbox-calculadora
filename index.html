@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -17,6 +18,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
+
     *{
       box-sizing:border-box;
       margin:0;
@@ -53,10 +55,9 @@
 
     .box-container{
       position:fixed;
-      top:100px;
-      right:15px;
+      top:120px;
+      right:20px;
       z-index:999;
-      pointer-events:none;
     }
 
     .box{
@@ -65,19 +66,19 @@
     }
 
     .lid{
-      width:90px;
-      height:18px;
+      width:120px;
+      height:24px;
       background:#facc15;
       position:absolute;
-      top:-15px;
+      top:-20px;
       border-radius:8px 8px 0 0;
       transform-origin:bottom;
       animation:openBox 3s ease-in-out infinite;
     }
 
     .body-box{
-      width:90px;
-      height:70px;
+      width:120px;
+      height:90px;
       background:#eab308;
       border:3px solid #fde047;
       border-radius:10px;
@@ -92,25 +93,23 @@
     }
 
     .body-box h1{
-      font-size:26px;
+      font-size:32px;
       margin:0;
-      line-height:1;
     }
 
     .body-box p{
       margin:0;
-      letter-spacing:3px;
-      font-size:14px;
+      letter-spacing:4px;
     }
 
     .shadow{
-      width:80px;
-      height:14px;
+      width:100px;
+      height:16px;
       background:rgba(255,255,0,0.2);
       border-radius:50%;
       position:absolute;
-      bottom:-18px;
-      left:5px;
+      bottom:-24px;
+      left:10px;
       filter:blur(8px);
       animation:shadow 3s ease-in-out infinite;
     }
@@ -143,412 +142,503 @@
         opacity:0.2;
       }
     }
+
   </style>
 </head>
 
 <body>
 
-<!-- CAIXA ANIMADA -->
+  <!-- CAIXA ANIMADA -->
 
-<div class="box-container">
-  <div class="box">
+  <div class="box-container">
+    <div class="box">
 
-    <div class="lid"></div>
+      <div class="lid"></div>
 
-    <div class="body-box">
-      <h1>YD</h1>
-      <p>BOX</p>
+      <div class="body-box">
+        <h1>YD</h1>
+        <p>BOX</p>
+      </div>
+
+      <div class="shadow"></div>
+
     </div>
-
-    <div class="shadow"></div>
-
   </div>
-</div>
 
-<div id="root"></div>
+  <!-- APP -->
 
-<script type="text/babel">
+  <div id="root"></div>
 
-const { useState, useMemo } = React;
+  <script type="text/babel">
 
-const fmt = (n, d=2) =>
-  n.toLocaleString("pt-BR",{
-    minimumFractionDigits:d,
-    maximumFractionDigits:d
-  });
+    const { useState, useMemo } = React;
 
-const fmtBRL = (n) => "R$ " + fmt(n,2);
+    const fmt = (n, d=2) =>
+      n.toLocaleString("pt-BR",{
+        minimumFractionDigits:d,
+        maximumFractionDigits:d
+      });
 
-function Field({label,value,onChange,unit,hint,step="any",min=0}){
+    const fmtBRL = (n) => "R$ " + fmt(n,2);
 
-  const [focused,setFocused]=useState(false);
+    function Field({
+      label,
+      value,
+      onChange,
+      unit,
+      hint,
+      step="any",
+      min=0
+    }){
 
-  return(
-    <div style={{display:"flex",flexDirection:"column",gap:6}}>
+      const [focused,setFocused]=useState(false);
 
-      <label style={{
-        fontSize:9,
-        fontWeight:800,
-        letterSpacing:"0.18em",
-        textTransform:"uppercase",
-        color:focused?"#f5d800":"#666"
-      }}>
-        {label}
-      </label>
-
-      <div style={{
-        display:"flex",
-        alignItems:"center",
-        background:"#111",
-        border:`1.5px solid ${focused?"#f5d800":"#333"}`,
-        borderRadius:6,
-        overflow:"hidden"
-      }}>
-
-        <input
-          type="number"
-          min={min}
-          step={step}
-          value={value}
-          onFocus={()=>setFocused(true)}
-          onBlur={()=>setFocused(false)}
-          onChange={e=>onChange(e.target.value===""?"":Number(e.target.value))}
-          style={{
-            flex:1,
-            border:"none",
-            background:"transparent",
-            padding:"12px 14px",
-            fontSize:18,
-            fontFamily:"'Barlow Condensed',sans-serif",
-            fontWeight:600,
-            color:"#fff",
-            outline:"none",
-            width:0
-          }}
-        />
-
-        {unit &&
-          <span style={{
-            padding:"0 12px",
-            color:focused?"#f5d800":"#555",
-            fontSize:11,
-            fontWeight:700
-          }}>
-            {unit}
-          </span>
-        }
-
-      </div>
-
-      {hint &&
-        <span style={{
-          fontSize:9,
-          color:"#444"
-        }}>
-          {hint}
-        </span>
-      }
-
-    </div>
-  );
-}
-
-function Section({num,title,children}){
-  return(
-    <div style={{marginBottom:16}}>
-
-      <div style={{
-        display:"flex",
-        alignItems:"center",
-        gap:10,
-        marginBottom:12
-      }}>
-
+      return(
         <div style={{
-          width:24,
-          height:24,
-          background:"#f5d800",
-          borderRadius:4,
           display:"flex",
-          alignItems:"center",
-          justifyContent:"center",
-          fontSize:11,
-          fontWeight:900,
-          color:"#000"
+          flexDirection:"column",
+          gap:6
         }}>
-          {num}
+
+          <label style={{
+            fontSize:9,
+            fontWeight:800,
+            letterSpacing:"0.18em",
+            textTransform:"uppercase",
+            color:focused ? "#f5d800" : "#666"
+          }}>
+            {label}
+          </label>
+
+          <div style={{
+            display:"flex",
+            alignItems:"center",
+            background:"#111",
+            border:`1.5px solid ${focused ? "#f5d800" : "#333"}`,
+            borderRadius:6,
+            overflow:"hidden"
+          }}>
+
+            <input
+              type="number"
+              min={min}
+              step={step}
+              value={value}
+              onFocus={()=>setFocused(true)}
+              onBlur={()=>setFocused(false)}
+              onChange={e=>onChange(
+                e.target.value==="" ? "" : Number(e.target.value)
+              )}
+              style={{
+                flex:1,
+                border:"none",
+                background:"transparent",
+                padding:"12px 14px",
+                fontSize:18,
+                color:"#fff",
+                outline:"none"
+              }}
+            />
+
+            {unit &&
+              <span style={{
+                padding:"0 12px",
+                color:"#666",
+                fontSize:11,
+                fontWeight:700
+              }}>
+                {unit}
+              </span>
+            }
+
+          </div>
+
+          {hint &&
+            <span style={{
+              fontSize:9,
+              color:"#444"
+            }}>
+              {hint}
+            </span>
+          }
+
         </div>
-
-        <span style={{
-          fontSize:11,
-          fontWeight:800,
-          letterSpacing:"0.14em",
-          textTransform:"uppercase",
-          color:"#aaa"
-        }}>
-          {title}
-        </span>
-
-        <div style={{
-          flex:1,
-          height:1,
-          background:"#222"
-        }}/>
-
-      </div>
-
-      <div style={{
-        background:"#0d0d0d",
-        borderRadius:10,
-        padding:"18px 16px",
-        border:"1px solid #222"
-      }}>
-        {children}
-      </div>
-
-    </div>
-  );
-}
-
-function App(){
-
-  const [comp,setComp]=useState(30);
-  const [larg,setLarg]=useState(20);
-  const [alt,setAlt]=useState(15);
-
-  const [gram,setGram]=useState(380);
-  const [precoVenda,setPrecoVenda]=useState(14);
-  const [precoCusto,setPrecoCusto]=useState(8);
-
-  const [qtd,setQtd]=useState(100);
-
-  const calc=useMemo(()=>{
-
-    const c=Number(comp)||0;
-    const l=Number(larg)||0;
-    const a=Number(alt)||0;
-
-    const g=Number(gram)||0;
-    const pv=Number(precoVenda)||0;
-    const pc=Number(precoCusto)||0;
-
-    const q=Number(qtd)||0;
-
-    if(!c||!l||!a||!g||!pv||!pc||!q){
-      return null;
+      );
     }
 
-    const cVar=c+0.4;
-    const lVar=l+0.4;
+    function Section({num,title,children}){
 
-    const devHoriz=(2*cVar)+(2*lVar)+3;
-
-    const abaTop=lVar/2;
-    const abaBot=cVar/2;
-
-    const devVert=a+abaTop+abaBot;
-
-    const areaCm2=devHoriz*devVert;
-    const areaM2=areaCm2/10000;
-
-    const pesoGramas=areaM2*g;
-    const pesoKg=pesoGramas/1000;
-
-    const custoUnit=pesoKg*pc;
-    const vendaUnit=pesoKg*pv;
-
-    const lucroUnit=vendaUnit-custoUnit;
-
-    const custoTotal=custoUnit*q;
-    const vendaTotal=vendaUnit*q;
-    const lucroTotal=lucroUnit*q;
-
-    const margemPct=(lucroUnit/vendaUnit)*100;
-
-    return{
-      pesoKg,
-      custoUnit,
-      vendaUnit,
-      lucroUnit,
-      custoTotal,
-      vendaTotal,
-      lucroTotal,
-      margemPct
-    };
-
-  },[
-    comp,
-    larg,
-    alt,
-    gram,
-    precoVenda,
-    precoCusto,
-    qtd
-  ]);
-
-  return(
-
-    <div style={{
-      minHeight:"100vh",
-      background:"#080808",
-      fontFamily:"'Barlow Condensed',sans-serif",
-      paddingBottom:60
-    }}>
-
-      <!-- HEADER -->
-
-      <div style={{
-        background:"#000",
-        borderBottom:"3px solid #f5d800",
-        padding:"18px 20px 16px",
-        display:"flex",
-        alignItems:"center",
-        gap:14,
-        position:"sticky",
-        top:0,
-        zIndex:10
-      }}>
-
-        <div>
+      return(
+        <div style={{marginBottom:16}}>
 
           <div style={{
-            fontSize:28,
-            fontWeight:900,
-            color:"#fff",
-            letterSpacing:"0.08em"
+            display:"flex",
+            alignItems:"center",
+            gap:10,
+            marginBottom:12
           }}>
-            YD <span style={{color:"#f5d800"}}>BOX</span>
+
+            <div style={{
+              width:24,
+              height:24,
+              background:"#f5d800",
+              borderRadius:4,
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              fontSize:11,
+              fontWeight:900,
+              color:"#000"
+            }}>
+              {num}
+            </div>
+
+            <span style={{
+              fontSize:11,
+              fontWeight:800,
+              letterSpacing:"0.14em",
+              textTransform:"uppercase",
+              color:"#aaa"
+            }}>
+              {title}
+            </span>
+
+            <div style={{
+              flex:1,
+              height:1,
+              background:"#222"
+            }}/>
+
           </div>
 
           <div style={{
-            fontSize:10,
-            color:"#555",
-            fontWeight:700,
-            letterSpacing:"0.2em",
-            marginTop:2
+            background:"#0d0d0d",
+            borderRadius:10,
+            padding:"18px 16px",
+            border:"1px solid #222"
           }}>
-            CALCULADORA DE PAPELÃO
+            {children}
           </div>
 
         </div>
+      );
+    }
 
-      </div>
+    function App(){
 
-      <div style={{
-        maxWidth:600,
-        margin:"0 auto",
-        padding:"24px 16px 0"
-      }}>
+      const [comp,setComp]=useState(30);
+      const [larg,setLarg]=useState(20);
+      const [alt,setAlt]=useState(15);
 
-        <Section num="1" title="Medidas internas da caixa">
+      const [gram,setGram]=useState(380);
+
+      const [precoVenda,setPrecoVenda]=useState(14);
+      const [precoCusto,setPrecoCusto]=useState(8);
+
+      const [qtd,setQtd]=useState(100);
+
+      const calc = useMemo(()=>{
+
+        const c=Number(comp)||0;
+        const l=Number(larg)||0;
+        const a=Number(alt)||0;
+
+        const g=Number(gram)||0;
+        const pv=Number(precoVenda)||0;
+        const pc=Number(precoCusto)||0;
+
+        const q=Number(qtd)||0;
+
+        if(!c || !l || !a || !g || !pv || !pc || !q){
+          return null;
+        }
+
+        const cVar=c+0.4;
+        const lVar=l+0.4;
+
+        const devHoriz=(2*cVar)+(2*lVar)+3;
+
+        const abaTop=lVar/2;
+        const abaBot=cVar/2;
+
+        const devVert=a+abaTop+abaBot;
+
+        const areaCm2=devHoriz*devVert;
+        const areaM2=areaCm2/10000;
+
+        const pesoGramas=areaM2*g;
+        const pesoKg=pesoGramas/1000;
+
+        const custoUnit=pesoKg*pc;
+        const vendaUnit=pesoKg*pv;
+
+        const lucroUnit=vendaUnit-custoUnit;
+
+        const custoTotal=custoUnit*q;
+        const vendaTotal=vendaUnit*q;
+        const lucroTotal=lucroUnit*q;
+
+        const margemPct=(lucroUnit/vendaUnit)*100;
+
+        return{
+          devHoriz,
+          devVert,
+          areaCm2,
+          pesoGramas,
+          pesoKg,
+          custoUnit,
+          vendaUnit,
+          lucroUnit,
+          custoTotal,
+          vendaTotal,
+          lucroTotal,
+          margemPct
+        };
+
+      },[
+        comp,
+        larg,
+        alt,
+        gram,
+        precoVenda,
+        precoCusto,
+        qtd
+      ]);
+
+      return(
+
+        <div style={{
+          minHeight:"100vh",
+          background:"#080808",
+          paddingBottom:60
+        }}>
+
+          <!-- HEADER -->
 
           <div style={{
-            display:"grid",
-            gridTemplateColumns:"1fr 1fr 1fr",
-            gap:12
+            background:"#000",
+            borderBottom:"3px solid #f5d800",
+            padding:"18px 20px 16px",
+            position:"sticky",
+            top:0,
+            zIndex:10
           }}>
 
-            <Field label="Comprimento" value={comp} onChange={setComp} unit="cm"/>
-            <Field label="Largura" value={larg} onChange={setLarg} unit="cm"/>
-            <Field label="Altura" value={alt} onChange={setAlt} unit="cm"/>
+            <div style={{
+              fontSize:28,
+              fontWeight:900,
+              color:"#fff"
+            }}>
+              YD <span style={{color:"#f5d800"}}>BOX</span>
+            </div>
+
+            <div style={{
+              fontSize:10,
+              color:"#555",
+              marginTop:2,
+              letterSpacing:"0.2em"
+            }}>
+              CALCULADORA DE PAPELÃO
+            </div>
 
           </div>
 
-        </Section>
-
-        <Section num="2" title="Material e preços">
-
           <div style={{
-            display:"grid",
-            gridTemplateColumns:"1fr 1fr 1fr",
-            gap:12
+            maxWidth:600,
+            margin:"0 auto",
+            padding:"24px 16px 0"
           }}>
 
-            <Field label="Gramatura" value={gram} onChange={setGram} unit="g/m²"/>
-            <Field label="Venda" value={precoVenda} onChange={setPrecoVenda} unit="R$/kg"/>
-            <Field label="Custo" value={precoCusto} onChange={setPrecoCusto} unit="R$/kg"/>
-
-          </div>
-
-        </Section>
-
-        <Section num="3" title="Quantidade">
-
-          <Field
-            label="Quantidade"
-            value={qtd}
-            onChange={setQtd}
-            unit="un"
-            min={1}
-            step="1"
-          />
-
-        </Section>
-
-        {calc && (
-
-          <div className="fadeUp">
-
-            <Section num="4" title="Resultado">
+            <Section
+              num="1"
+              title="Medidas internas da caixa"
+            >
 
               <div style={{
                 display:"grid",
-                gridTemplateColumns:"1fr 1fr",
+                gridTemplateColumns:"1fr 1fr 1fr",
                 gap:12
               }}>
 
-                <div style={{
-                  background:"#111",
-                  padding:16,
-                  borderRadius:10,
-                  border:"1px solid #222"
-                }}>
-                  <div style={{fontSize:10,color:"#555"}}>Venda Total</div>
-                  <div style={{
-                    fontSize:28,
-                    color:"#f5d800",
-                    fontWeight:900
-                  }}>
-                    {fmtBRL(calc.vendaTotal)}
-                  </div>
-                </div>
+                <Field
+                  label="Comprimento"
+                  value={comp}
+                  onChange={setComp}
+                  unit="cm"
+                />
 
-                <div style={{
-                  background:"#111",
-                  padding:16,
-                  borderRadius:10,
-                  border:"1px solid #222"
-                }}>
-                  <div style={{fontSize:10,color:"#555"}}>Lucro</div>
-                  <div style={{
-                    fontSize:28,
-                    color:"#4dcc7a",
-                    fontWeight:900
-                  }}>
-                    {fmtBRL(calc.lucroTotal)}
-                  </div>
-                </div>
+                <Field
+                  label="Largura"
+                  value={larg}
+                  onChange={setLarg}
+                  unit="cm"
+                />
+
+                <Field
+                  label="Altura"
+                  value={alt}
+                  onChange={setAlt}
+                  unit="cm"
+                />
 
               </div>
 
             </Section>
 
+            <Section
+              num="2"
+              title="Material e preços"
+            >
+
+              <div style={{
+                display:"grid",
+                gridTemplateColumns:"1fr 1fr 1fr",
+                gap:12
+              }}>
+
+                <Field
+                  label="Gramatura"
+                  value={gram}
+                  onChange={setGram}
+                  unit="g/m²"
+                />
+
+                <Field
+                  label="Venda"
+                  value={precoVenda}
+                  onChange={setPrecoVenda}
+                  unit="R$/kg"
+                />
+
+                <Field
+                  label="Custo"
+                  value={precoCusto}
+                  onChange={setPrecoCusto}
+                  unit="R$/kg"
+                />
+
+              </div>
+
+            </Section>
+
+            <Section
+              num="3"
+              title="Quantidade"
+            >
+
+              <Field
+                label="Quantidade"
+                value={qtd}
+                onChange={setQtd}
+                unit="un"
+              />
+
+            </Section>
+
+            {calc && (
+
+              <div className="fadeUp">
+
+                <div style={{
+                  background:"#000",
+                  border:"2px solid #f5d800",
+                  borderRadius:12,
+                  overflow:"hidden"
+                }}>
+
+                  <div style={{
+                    background:"#f5d800",
+                    padding:"10px 18px",
+                    color:"#000",
+                    fontWeight:900
+                  }}>
+                    RESULTADO
+                  </div>
+
+                  <div style={{
+                    padding:"20px"
+                  }}>
+
+                    <div style={{
+                      marginBottom:14
+                    }}>
+                      Peso por caixa:
+                      <b style={{
+                        color:"#f5d800",
+                        marginLeft:6
+                      }}>
+                        {fmt(calc.pesoGramas,2)} g
+                      </b>
+                    </div>
+
+                    <div style={{
+                      marginBottom:14
+                    }}>
+                      Venda unitária:
+                      <b style={{
+                        color:"#f5d800",
+                        marginLeft:6
+                      }}>
+                        {fmtBRL(calc.vendaUnit)}
+                      </b>
+                    </div>
+
+                    <div style={{
+                      marginBottom:14
+                    }}>
+                      Lucro unitário:
+                      <b style={{
+                        color:"#4dcc7a",
+                        marginLeft:6
+                      }}>
+                        {fmtBRL(calc.lucroUnit)}
+                      </b>
+                    </div>
+
+                    <div style={{
+                      marginBottom:14
+                    }}>
+                      Venda total:
+                      <b style={{
+                        color:"#f5d800",
+                        marginLeft:6
+                      }}>
+                        {fmtBRL(calc.vendaTotal)}
+                      </b>
+                    </div>
+
+                    <div>
+                      Margem:
+                      <b style={{
+                        color:"#f5d800",
+                        marginLeft:6
+                      }}>
+                        {fmt(calc.margemPct,1)}%
+                      </b>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )}
+
           </div>
 
-        )}
+        </div>
 
-      </div>
+      );
 
-    </div>
+    }
 
-  );
-}
+    ReactDOM
+      .createRoot(document.getElementById("root"))
+      .render(<App/>);
 
-ReactDOM
-  .createRoot(document.getElementById("root"))
-  .render(<App/>);
-
-</script>
+  </script>
 
 </body>
+
 </html>
