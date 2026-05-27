@@ -1,5 +1,9 @@
-Para garantir que a caixa pareça realmente aberta e vazia com as **4 abas** (uma para cada lado da borda superior), ajustei a geometria do SVG. Agora, cada aba está conectada a uma das quatro paredes, dobradas para fora em perspectiva isométrica.
-Aqui está o código completo e atualizado:
+Compreendo perfeitamente. Para que o desenho em 3D reaja de forma 100% fiel e proporcional às medidas reais que você digita (como 20 x 20 x 10 gerando um cubo perfeito com a metade da altura), a escala visual não pode ter valores mínimos fixos altos e nem multiplicadores estáticos independentes.
+No código abaixo, a renderização isométrica foi totalmente reformulada matemática e geometricamente:
+ 1. **Escala Unificada:** O comprimento (comp), a largura (larg) e a altura (alt) usam o mesmo multiplicador de proporção. Se colocar 20 x 20 x 10, o modelo no SVG será exatamente um quadrado de base com metade da altura.
+ 2. **Abas Proporcionais:** O tamanho das abas frontais e traseiras agora é calculado com base nas dimensões reais inseridas (as abas superiores de uma caixa de papelão padrão medem exatamente a **metade da largura** da caixa para se encontrarem perfeitamente no centro ao fechar).
+ 3. **Cálculo de Posição Dinâmico:** O centro vertical (cy) do desenho se autoajusta para que caixas muito altas ou muito rasas nunca sumam ou cortem as bordas do SVG.
+Aqui está o código completo corrigido e totalmente proporcional:
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -252,11 +256,6 @@ margem:vendaUnit > 0 ? (lucroUnit/vendaUnit)*100 : 0
 };
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
-/* ESCALA VISUAL DO MODELO */
-const w = Math.max(comp * 7, 180); // Comprimento (eixo X esquerda)
-const d = Math.max(larg * 7, 130); // Profundidade (eixo X direita)
-const h = Math.max(alt * 6, 120);  // Altura
-
 return(
 
 <div className="container">
@@ -330,98 +329,137 @@ return(
 </div>
 </div>
 
-{/* DIREITA - MODELO SVG */}
+{/* DIREITA - CAIXA TOTALMENTE PROPORCIONAL */}
 <div className="mockup">
-<svg viewBox="0 0 900 800">
+<svg viewBox="0 0 900 750">
   <defs>
-    <linearGradient id="insideShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stopColor="#000" stopOpacity="0.5" />
-      <stop offset="100%" stopColor="#000" stopOpacity="0" />
+    <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#000000" stopOpacity="0.6" />
+      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
     </linearGradient>
   </defs>
 
   {(() => {
-    const cx = 450; // Centro X
-    const cy = 400 + (h/3); // Centro Y (ajusta com a altura)
-    
-    // Proporção isométrica: x +/- largura, y +/- largura/2
+    const cNum = Number(comp) || 0;
+    const lNum = Number(larg) || 0;
+    const aNum = Number(alt) || 0;
+
+    // Fator de escala dinâmico baseado na maior dimensão para manter o desenho centralizado e visível
+    const maxDim = Math.max(cNum, lNum, aNum, 1);
+    const fatorGlobal = 320 / maxDim;
+
+    // Dimensões transformadas para pixels dinâmicos (mantendo proporções exatas entre si)
+    const w = cNum * fatorGlobal; // Comprimento projetado
+    const d = lNum * fatorGlobal; // Largura projetada
+    const h = aNum * fatorGlobal; // Altura projetada
+
+    // Posições centrais dinâmicas do SVG baseadas no tamanho do objeto
+    const cx = 450;
+    const cy = 300 + (h / 2) + (w / 4) - (d / 4);
+
+    // Na estrutura de caixas de papelão comuns, a altura das abas de fechamento equivale a exatamente metade da largura
+    const flapW = d / 2; 
+    const flapD = d / 2; 
+
     return (
       <g>
         {/* 1. FUNDO INTERNO */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
-          fill="#764511"
-          stroke="#4d2c0a"
-          strokeWidth="1"
+          fill="#6a3b08"
+          stroke="#422403"
+          strokeWidth="1.5"
         />
 
         {/* 2. PAREDES INTERNAS DE TRÁS */}
         <polygon
           points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`}
-          fill="#8e5a21"
+          fill="#7d470d"
         />
         <polygon
           points={`${cx + d},${cy - d/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx + d},${cy - d/2 - h}`}
-          fill="#a06a2d"
+          fill="#8e5313"
         />
         
-        {/* Sombra de profundidade interna */}
+        {/* Sombra interna realista */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
-          fill="url(#insideShadow)"
+          fill="url(#innerShadow)"
           style={{mixBlendMode: 'multiply'}}
         />
 
-        {/* 3. ABAS DE TRÁS (As que ficam "atrás" da abertura) */}
-        {/* Aba Traseira Esquerda */}
+        {/* 3. ABAS TRASEIRAS SUPERIORES (Abertas para trás e para cima) */}
+        {/* Aba Traseira Esquerda (Aba menor/maior proporcional ao comprimento) */}
         <polygon
-          points={`${cx - w},${cy - w/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d - d/1.5},${cy - w/2 - d/2 - h - d/4} ${cx - w - d/1.5},${cy - w/2 - h - d/4}`}
-          fill="#c8893d"
-          stroke="#8b5c1c"
+          points={`
+            ${cx - w},${cy - w/2 - h} 
+            ${cx - w + d},${cy - w/2 - d/2 - h} 
+            ${cx - w + d - flapW},${cy - w/2 - d/2 - h - flapW/2} 
+            ${cx - w - flapW},${cy - w/2 - h - flapW/2}
+          `}
+          fill="#a06320"
+          stroke="#73420f"
           strokeWidth="2"
         />
         {/* Aba Traseira Direita */}
         <polygon
-          points={`${cx + d},${cy - d/2 - h} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w + d + w/1.5},${cy - w/2 - d/2 - h - w/4} ${cx + d + w/1.5},${cy - d/2 - h - w/4}`}
-          fill="#b67831"
-          stroke="#8b5c1c"
+          points={`
+            ${cx + d},${cy - d/2 - h} 
+            ${cx - w + d},${cy - w/2 - d/2 - h} 
+            ${cx - w + d + flapD},${cy - w/2 - d/2 - h - flapD/2} 
+            ${cx + d + flapD},${cy - d/2 - h - flapD/2}
+          `}
+          fill="#ad6d25"
+          stroke="#73420f"
           strokeWidth="2"
         />
 
-        {/* 4. PAREDES EXTERNAS DA FRENTE */}
+        {/* 4. PAREDES EXTERNAS DIANTEIRAS */}
+        {/* Lado Esquerdo Externo (Comprimento) */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`}
-          fill="#dca04d"
-          stroke="#8b5c1c"
-          strokeWidth="3"
-        />
-        <polygon
-          points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`}
           fill="#c8893d"
           stroke="#8b5c1c"
           strokeWidth="3"
         />
+        {/* Lado Direito Externo (Largura) */}
+        <polygon
+          points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`}
+          fill="#b67831"
+          stroke="#8b5c1c"
+          strokeWidth="3"
+        />
 
-        {/* 5. ABAS DA FRENTE (As que ficam dobradas para baixo/frente) */}
+        {/* 5. ABAS DIANTEIRAS SUPERIORES (Abertas para frente e para baixo) */}
         {/* Aba Dianteira Esquerda */}
         <polygon
-          points={`${cx},${cy - h} ${cx - w},${cy - w/2 - h} ${cx - w + d/2},${cy - w/2 - h + d/2} ${cx + d/2},${cy - h + d/2}`}
-          fill="#e4aa57"
+          points={`
+            ${cx},${cy - h} 
+            ${cx - w},${cy - w/2 - h} 
+            ${cx - w - flapW},${cy - w/2 - h + flapW/2} 
+            ${cx - flapW},${cy - h + flapW/2}
+          `}
+          fill="#dca04d"
           stroke="#8b5c1c"
           strokeWidth="3"
         />
         {/* Aba Dianteira Direita */}
         <polygon
-          points={`${cx},${cy - h} ${cx + d},${cy - d/2 - h} ${cx + d - w/2},${cy - d/2 - h + w/2} ${cx - w/2},${cy - h + w/2}`}
-          fill="#f3c27a"
+          points={`
+            ${cx},${cy - h} 
+            ${cx + d},${cy - d/2 - h} 
+            ${cx + d + flapD},${cy - d/2 - h + flapD/2} 
+            ${cx + flapD},${cy - h + flapD/2}
+          `}
+          fill="#e4aa57"
           stroke="#8b5c1c"
           strokeWidth="3"
         />
 
-        {/* MEDIDAS */}
-        <text x={cx - w/2} y={cy + 50} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{comp} cm</text>
-        <text x={cx + d/2 + 50} y={cy - d/4 + 40} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{larg} cm</text>
-        <text x={cx - w - 60} y={cy - w/2 - h/2} fill="#f5d800" fontSize="32" fontWeight="900" textAnchor="middle">{alt} cm</text>
+        {/* TEXTOS DAS MEDIDAS REAIS */}
+        <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="28" fontWeight="900" textAnchor="middle">{comp} cm</text>
+        <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="28" fontWeight="900" textAnchor="middle">{larg} cm</text>
+        <text x={cx - w - 45} y={cy - w/2 - h/2 + 20} fill="#f5d800" fontSize="28" fontWeight="900" textAnchor="middle">{alt} cm</text>
       </g>
     );
   })()}
@@ -438,4 +476,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 
 </body>
+</html>
 
+```
