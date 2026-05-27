@@ -1,4 +1,5 @@
-
+Aqui está o código completo alterado. Removi o logotipo transparente de fundo e criei uma malha de linhas geométricas despojadas cruzando o painel em ângulos modernos utilizando as cores **preto, branco e amarelo**, dando uma estética de desenho técnico industrial super moderna por trás da caixa.
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -245,19 +246,15 @@ textarea{
   color: #f5d800;
 }
 
-.mockup-watermark-bg {
+/* Novo container para as linhas despojadas de fundo */
+.mockup-lines-bg {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 480px;
-  height: 480px;
-  opacity: 0.06;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .box-svg-container {
@@ -303,7 +300,6 @@ svg.main-box-svg {
 @media(max-width:900px){
   .grid{ grid-template-columns:1fr; }
   .mockup{ min-height:550px; }
-  .mockup-watermark-bg { width: 300px; height: 300px; }
 }
 
 </style>
@@ -434,6 +430,26 @@ const LogoOriginalSVG = () => (
   </svg>
 );
 
+// Componente para renderizar o fundo geométrico despojado (Preto, Branco e Amarelo)
+const FundoLinhasDespojadas = () => (
+  <svg viewBox="0 0 800 600" width="100%" height="100%" preserveAspectRatio="none">
+    {/* Linhas pretas estruturais grossas */}
+    <line x1="-50" y1="100" x2="850" y2="400" stroke="#000000" strokeWidth="5" opacity="0.4" />
+    <line x1="200" y1="-50" x2="600" y2="650" stroke="#000000" strokeWidth="3" opacity="0.3" />
+    
+    {/* Linhas brancas despojadas */}
+    <line x1="0" y1="500" x2="800" y2="100" stroke="#ffffff" strokeWidth="1" strokeDasharray="5,5" opacity="0.12" />
+    <line x1="100" y1="-20" x2="750" y2="620" stroke="#ffffff" strokeWidth="1.5" opacity="0.08" />
+    <line x1="-10" y1="250" x2="810" y2="250" stroke="#ffffff" strokeWidth="0.8" opacity="0.15" />
+    
+    {/* Linhas Amarelas em destaque técnico */}
+    <line x1="50" y1="650" x2="850" y2="-50" stroke="#f5d800" strokeWidth="2" opacity="0.18" />
+    <line x1="-10" y1="40" x2="600" y2="650" stroke="#f5d800" strokeWidth="1" strokeDasharray="12,6" opacity="0.15" />
+    <circle cx="400" cy="300" r="180" fill="none" stroke="#f5d800" strokeWidth="1" strokeDasharray="4,10" opacity="0.1" />
+    <circle cx="400" cy="300" r="240" fill="none" stroke="#ffffff" strokeWidth="0.5" opacity="0.05" />
+  </svg>
+);
+
 const DesenhoCaixaSVG = ({ widthMm, heightMm, depthMm }) => {
   const cNum = Math.max(Number(widthMm) || 0, 1);
   const lNum = Math.max(Number(heightMm) || 0, 1);
@@ -518,7 +534,7 @@ return(
 </div>
 </div>
 
-{/* FILTRO DE MATERIAL COM ENFASE VISUAL ADICIONADA */}
+{/* FILTRO DE MATERIAL COM ENFASE VISUAL E INDICAÇÃO CLARA */}
 <div className="card-highlight-filter">
 <div className="section-title" style={{color:'#f5d800', display:'flex', justifyContent:'space-between'}}>
   <span>ESTRUTURA DO MATERIAL</span> 
@@ -585,12 +601,12 @@ return(
     <button className="action-btn pdf-btn" onClick={exportToPDF}>Exportar PDF</button>
   </div>
 
-  {/* Logo oficial da YD BOX centralizado no plano de fundo com opacidade controlada */}
-  <div className="mockup-watermark-bg">
-    <LogoOriginalSVG />
+  {/* Linhas geométricas despojadas de fundo (substituindo o logo transparente) */}
+  <div className="mockup-lines-bg">
+    <FundoLinhasDespojadas />
   </div>
 
-  {/* Caixa estruturada em 3D sobreposta ao logo */}
+  {/* Caixa estruturada em 3D sobreposta às linhas */}
   <div className="box-svg-container">
   <svg className="main-box-svg" viewBox="0 0 900 700" style={{ transform: `scale(${zoom})` }}>
     <DesenhoCaixaSVG widthMm={comp} heightMm={larg} depthMm={alt} />
@@ -674,4 +690,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </body>
 </html>
 
-Desenvolvedor: Douglas Lima 
+```
