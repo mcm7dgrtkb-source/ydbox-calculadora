@@ -18,7 +18,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 
   <style>
-
     *{
       box-sizing:border-box;
       margin:0;
@@ -50,513 +49,489 @@
     .fadeUp{
       animation:fadeUp 0.3s ease both;
     }
-
-    /* ANIMAÇÃO DA CAIXA */
-
-    .box-container{
-      position:fixed;
-      top:110px;
-      right:20px;
-      z-index:999;
-      pointer-events:none;
-    }
-
-    .box{
-      position:relative;
-      animation:float 3s ease-in-out infinite;
-    }
-
-    .lid{
-      width:90px;
-      height:18px;
-      background:#facc15;
-      position:absolute;
-      top:-15px;
-      border-radius:6px 6px 0 0;
-      transform-origin:bottom;
-      animation:openBox 3s ease-in-out infinite;
-    }
-
-    .body-box{
-      width:90px;
-      height:70px;
-      background:#eab308;
-      border:3px solid #fde047;
-      border-radius:10px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      color:black;
-      font-family:Arial;
-      font-weight:bold;
-      box-shadow:0 10px 25px rgba(255,255,0,0.25);
-    }
-
-    .body-box h1{
-      font-size:24px;
-      margin:0;
-      line-height:1;
-    }
-
-    .body-box p{
-      margin:0;
-      font-size:12px;
-      letter-spacing:3px;
-    }
-
-    .shadow{
-      width:70px;
-      height:12px;
-      background:rgba(255,255,0,0.18);
-      border-radius:50%;
-      position:absolute;
-      bottom:-18px;
-      left:10px;
-      filter:blur(8px);
-      animation:shadow 3s ease-in-out infinite;
-    }
-
-    @keyframes openBox{
-      0%,100%{
-        transform:rotateX(0deg);
-      }
-      50%{
-        transform:rotateX(-120deg);
-      }
-    }
-
-    @keyframes float{
-      0%,100%{
-        transform:translateY(0px);
-      }
-      50%{
-        transform:translateY(-10px);
-      }
-    }
-
-    @keyframes shadow{
-      0%,100%{
-        transform:scale(1);
-        opacity:0.4;
-      }
-      50%{
-        transform:scale(0.8);
-        opacity:0.2;
-      }
-    }
-
   </style>
 </head>
 
 <body>
 
-  <!-- CAIXA ANIMADA -->
+<div id="root"></div>
 
-  <div class="box-container">
-    <div class="box">
+<script type="text/babel">
 
-      <div class="lid"></div>
+const { useState, useMemo } = React;
 
-      <div class="body-box">
-        <h1>YD</h1>
-        <p>BOX</p>
-      </div>
+const fmt = (n, d=2) =>
+  n.toLocaleString("pt-BR",{
+    minimumFractionDigits:d,
+    maximumFractionDigits:d
+  });
 
-      <div class="shadow"></div>
+const fmtBRL = (n) => "R$ " + fmt(n,2);
 
-    </div>
-  </div>
+function Field({
+  label,
+  value,
+  onChange,
+  unit,
+  hint,
+  step="any",
+  min=0
+}){
 
-  <!-- APP -->
+  const [focused,setFocused]=useState(false);
 
-  <div id="root"></div>
+  return(
+    <div style={{
+      display:"flex",
+      flexDirection:"column",
+      gap:6
+    }}>
 
-  <script type="text/babel">
+      <label style={{
+        fontSize:9,
+        fontWeight:800,
+        letterSpacing:"0.18em",
+        textTransform:"uppercase",
+        color:focused ? "#f5d800" : "#666"
+      }}>
+        {label}
+      </label>
 
-    const { useState, useMemo } = React;
+      <div style={{
+        display:"flex",
+        alignItems:"center",
+        background:"#111",
+        border:`1.5px solid ${focused ? "#f5d800" : "#333"}`,
+        borderRadius:6,
+        overflow:"hidden",
+        transition:"border-color 0.2s"
+      }}>
 
-    const fmt = (n, d=2) =>
-      n.toLocaleString("pt-BR",{
-        minimumFractionDigits:d,
-        maximumFractionDigits:d
-      });
+        <input
+          type="number"
+          min={min}
+          step={step}
+          value={value}
+          onFocus={()=>setFocused(true)}
+          onBlur={()=>setFocused(false)}
+          onChange={e=>onChange(
+            e.target.value==="" ? "" : Number(e.target.value)
+          )}
+          style={{
+            flex:1,
+            border:"none",
+            background:"transparent",
+            padding:"12px 14px",
+            fontSize:18,
+            fontFamily:"'Barlow Condensed',sans-serif",
+            fontWeight:600,
+            color:"#fff",
+            outline:"none",
+            width:0
+          }}
+        />
 
-    const fmtBRL = (n) => "R$ " + fmt(n,2);
-
-    function Field({label,value,onChange,unit,hint,step="any",min=0}){
-
-      const [focused,setFocused]=useState(false);
-
-      return(
-        <div style={{
-          display:"flex",
-          flexDirection:"column",
-          gap:6
-        }}>
-
-          <label style={{
-            fontSize:9,
-            fontWeight:800,
-            letterSpacing:"0.18em",
-            textTransform:"uppercase",
-            color:focused?"#f5d800":"#666"
-          }}>
-            {label}
-          </label>
-
-          <div style={{
-            display:"flex",
-            alignItems:"center",
-            background:"#111",
-            border:`1.5px solid ${focused?"#f5d800":"#333"}`,
-            borderRadius:6,
-            overflow:"hidden"
-          }}>
-
-            <input
-              type="number"
-              min={min}
-              step={step}
-              value={value}
-              onFocus={()=>setFocused(true)}
-              onBlur={()=>setFocused(false)}
-              onChange={e=>onChange(
-                e.target.value===""?"":Number(e.target.value)
-              )}
-              style={{
-                flex:1,
-                border:"none",
-                background:"transparent",
-                padding:"12px 14px",
-                fontSize:18,
-                fontFamily:"'Barlow Condensed',sans-serif",
-                fontWeight:600,
-                color:"#fff",
-                outline:"none",
-                width:0
-              }}
-            />
-
-            {unit &&
-              <span style={{
-                padding:"0 12px",
-                color:focused?"#f5d800":"#555",
-                fontSize:11,
-                fontWeight:700,
-                whiteSpace:"nowrap"
-              }}>
-                {unit}
-              </span>
-            }
-
-          </div>
-
-          {hint &&
-            <span style={{
-              fontSize:9,
-              color:"#444"
-            }}>
-              {hint}
-            </span>
-          }
-
-        </div>
-      );
-
-    }
-
-    function Section({num,title,children}){
-
-      return(
-        <div style={{marginBottom:16}}>
-
-          <div style={{
-            display:"flex",
-            alignItems:"center",
-            gap:10,
-            marginBottom:12
-          }}>
-
-            <div style={{
-              width:24,
-              height:24,
-              background:"#f5d800",
-              borderRadius:4,
-              display:"flex",
-              alignItems:"center",
-              justifyContent:"center",
-              fontSize:11,
-              fontWeight:900,
-              color:"#000"
-            }}>
-              {num}
-            </div>
-
-            <span style={{
-              fontSize:11,
-              fontWeight:800,
-              letterSpacing:"0.14em",
-              textTransform:"uppercase",
-              color:"#aaa"
-            }}>
-              {title}
-            </span>
-
-            <div style={{
-              flex:1,
-              height:1,
-              background:"#222"
-            }}/>
-
-          </div>
-
-          <div style={{
-            background:"#0d0d0d",
-            borderRadius:10,
-            padding:"18px 16px",
-            border:"1px solid #222"
-          }}>
-            {children}
-          </div>
-
-        </div>
-      );
-
-    }
-
-    function CalcRow({label,formula,result,yellow,last}){
-
-      return(
-        <div style={{
-          display:"flex",
-          justifyContent:"space-between",
-          alignItems:"flex-start",
-          padding:"10px 0",
-          borderBottom:last?"none":"1px solid #1a1a1a",
-          gap:12
-        }}>
-
-          <div style={{flex:1,minWidth:0}}>
-
-            <div style={{
-              fontSize:9,
-              color:"#555",
-              fontWeight:700,
-              letterSpacing:"0.1em",
-              textTransform:"uppercase",
-              marginBottom:3
-            }}>
-              {label}
-            </div>
-
-            <div style={{
-              fontSize:11,
-              color:"#444"
-            }}>
-              {formula}
-            </div>
-
-          </div>
-
-          <div style={{
-            fontSize:16,
+        {
+          unit &&
+          <span style={{
+            padding:"0 12px",
+            color:focused ? "#f5d800" : "#555",
+            fontSize:11,
             fontWeight:700,
-            color:yellow?"#f5d800":"#fff",
             whiteSpace:"nowrap"
           }}>
-            {result}
-          </div>
+            {unit}
+          </span>
+        }
 
-        </div>
-      );
+      </div>
 
-    }
+      {
+        hint &&
+        <span style={{
+          fontSize:9,
+          color:"#444"
+        }}>
+          {hint}
+        </span>
+      }
 
-    function App(){
+    </div>
+  );
+}
 
-      const [comp,setComp]=useState(30);
-      const [larg,setLarg]=useState(20);
-      const [alt,setAlt]=useState(15);
+function Section({num,title,children}){
 
-      const [gram,setGram]=useState(380);
+  return(
+    <div style={{marginBottom:16}}>
 
-      const [precoVenda,setPrecoVenda]=useState(14);
-      const [precoCusto,setPrecoCusto]=useState(8);
-
-      const [qtd,setQtd]=useState(100);
-
-      const calc=useMemo(()=>{
-
-        const c=Number(comp)||0;
-        const l=Number(larg)||0;
-        const a=Number(alt)||0;
-
-        const g=Number(gram)||0;
-        const pv=Number(precoVenda)||0;
-        const pc=Number(precoCusto)||0;
-
-        const q=Number(qtd)||0;
-
-        if(!c||!l||!a||!g||!pv||!pc||!q)return null;
-
-        const cVar=c+0.4;
-        const lVar=l+0.4;
-
-        const devHoriz=(2*cVar)+(2*lVar)+3;
-
-        const abaTop=lVar/2;
-        const abaBot=cVar/2;
-
-        const devVert=a+abaTop+abaBot;
-
-        const areaCm2=devHoriz*devVert;
-        const areaM2=areaCm2/10000;
-
-        const pesoGramas=areaM2*g;
-        const pesoKg=pesoGramas/1000;
-
-        const custoUnit=pesoKg*pc;
-        const vendaUnit=pesoKg*pv;
-
-        const lucroUnit=vendaUnit-custoUnit;
-
-        const custoTotal=custoUnit*q;
-        const vendaTotal=vendaUnit*q;
-        const lucroTotal=lucroUnit*q;
-
-        const margemPct=(lucroUnit/vendaUnit)*100;
-
-        return{
-          cVar,
-          lVar,
-          devHoriz,
-          devVert,
-          abaTop,
-          abaBot,
-          areaCm2,
-          areaM2,
-          pesoGramas,
-          pesoKg,
-          custoUnit,
-          vendaUnit,
-          lucroUnit,
-          custoTotal,
-          vendaTotal,
-          lucroTotal,
-          margemPct
-        };
-
-      },[
-        comp,
-        larg,
-        alt,
-        gram,
-        precoVenda,
-        precoCusto,
-        qtd
-      ]);
-
-      return(
+      <div style={{
+        display:"flex",
+        alignItems:"center",
+        gap:10,
+        marginBottom:12
+      }}>
 
         <div style={{
-          minHeight:"100vh",
-          background:"#080808",
-          fontFamily:"'Barlow Condensed',sans-serif",
-          paddingBottom:60
+          width:24,
+          height:24,
+          background:"#f5d800",
+          borderRadius:4,
+          display:"flex",
+          alignItems:"center",
+          justifyContent:"center",
+          fontSize:11,
+          fontWeight:900,
+          color:"#000",
+          flexShrink:0
         }}>
+          {num}
+        </div>
+
+        <span style={{
+          fontSize:11,
+          fontWeight:800,
+          letterSpacing:"0.14em",
+          textTransform:"uppercase",
+          color:"#aaa"
+        }}>
+          {title}
+        </span>
+
+        <div style={{
+          flex:1,
+          height:1,
+          background:"#222"
+        }}/>
+
+      </div>
+
+      <div style={{
+        background:"#0d0d0d",
+        borderRadius:10,
+        padding:"18px 16px",
+        border:"1px solid #222"
+      }}>
+        {children}
+      </div>
+
+    </div>
+  );
+}
+
+function CalcRow({
+  label,
+  formula,
+  result,
+  yellow,
+  last
+}){
+
+  return(
+    <div style={{
+      display:"flex",
+      justifyContent:"space-between",
+      alignItems:"flex-start",
+      padding:"10px 0",
+      borderBottom:last ? "none" : "1px solid #1a1a1a",
+      gap:12
+    }}>
+
+      <div style={{
+        flex:1,
+        minWidth:0
+      }}>
+
+        <div style={{
+          fontSize:9,
+          color:"#555",
+          fontWeight:700,
+          letterSpacing:"0.1em",
+          textTransform:"uppercase",
+          marginBottom:3
+        }}>
+          {label}
+        </div>
+
+        <div style={{
+          fontSize:11,
+          color:"#444",
+          fontWeight:500,
+          wordBreak:"break-word"
+        }}>
+          {formula}
+        </div>
+
+      </div>
+
+      <div style={{
+        fontSize:16,
+        fontWeight:700,
+        color:yellow ? "#f5d800" : "#fff",
+        whiteSpace:"nowrap",
+        background:yellow ? "#1a1700" : "#161616",
+        padding:"5px 12px",
+        borderRadius:5,
+        border:yellow
+          ? "1px solid #3a3300"
+          : "1px solid #222"
+      }}>
+        {result}
+      </div>
+
+    </div>
+  );
+}
+
+function App(){
+
+  const [comp,setComp]=useState(30);
+  const [larg,setLarg]=useState(20);
+  const [alt,setAlt]=useState(15);
+
+  const [gram,setGram]=useState(380);
+  const [precoVenda,setPrecoVenda]=useState(14);
+  const [precoCusto,setPrecoCusto]=useState(8);
+  const [qtd,setQtd]=useState(100);
+
+  // VISUAL 3D DA CAIXA
+
+  const escalaComp = Math.max(120, comp * 4);
+  const escalaAlt = Math.max(80, alt * 4);
+  const profundidade = Math.max(60, larg * 2.5);
+
+  const calc=useMemo(()=>{
+
+    const c=Number(comp)||0;
+    const l=Number(larg)||0;
+    const a=Number(alt)||0;
+
+    const g=Number(gram)||0;
+    const pv=Number(precoVenda)||0;
+    const pc=Number(precoCusto)||0;
+    const q=Number(qtd)||0;
+
+    if(!c||!l||!a||!g||!pv||!pc||!q)return null;
+
+    const cVar=c+0.4;
+    const lVar=l+0.4;
+
+    const devHoriz=(2*cVar)+(2*lVar)+3;
+
+    const abaTop=lVar/2;
+    const abaBot=cVar/2;
+
+    const devVert=a+abaTop+abaBot;
+
+    const areaCm2=devHoriz*devVert;
+    const areaM2=areaCm2/10000;
+
+    const pesoGramas=areaM2*g;
+    const pesoKg=pesoGramas/1000;
+
+    const custoUnit=pesoKg*pc;
+    const vendaUnit=pesoKg*pv;
+
+    const lucroUnit=vendaUnit-custoUnit;
+
+    const custoTotal=custoUnit*q;
+    const vendaTotal=vendaUnit*q;
+    const lucroTotal=lucroUnit*q;
+
+    const margemPct=(lucroUnit/vendaUnit)*100;
+
+    return{
+      cVar,lVar,
+      devHoriz,devVert,
+      abaTop,abaBot,
+      areaCm2,areaM2,
+      pesoGramas,pesoKg,
+      custoUnit,vendaUnit,lucroUnit,
+      custoTotal,vendaTotal,lucroTotal,
+      margemPct
+    };
+
+  },[
+    comp,larg,alt,
+    gram,
+    precoVenda,
+    precoCusto,
+    qtd
+  ]);
+
+  return(
+
+    <div style={{
+      minHeight:"100vh",
+      background:"#080808",
+      paddingBottom:60
+    }}>
+
+      {/* HEADER */}
+
+      <div style={{
+        background:"#000",
+        borderBottom:"3px solid #f5d800",
+        padding:"18px 20px 16px",
+        display:"flex",
+        alignItems:"center",
+        gap:14,
+        position:"sticky",
+        top:0,
+        zIndex:10
+      }}>
+
+        <svg width="46" height="46" viewBox="0 0 100 100" fill="none">
+          <rect width="100" height="100" fill="black"/>
+          <rect x="2" y="2" width="96" height="96" stroke="white" strokeWidth="4"/>
+          <path d="M10 18 L26 42 L26 62 L34 62 L34 42 L50 18 L40 18 L30 34 L20 18 Z" fill="white"/>
+          <path d="M52 18 L52 62 L66 62 C78 62 86 54 86 40 C86 26 78 18 66 18 Z M62 26 L66 26 C72 26 76 32 76 40 C76 48 72 54 66 54 L62 54 Z" fill="white"/>
+          <rect x="68" y="28" width="12" height="12" fill="#f5d800"/>
+        </svg>
+
+        <div>
 
           <div style={{
-            background:"#000",
-            borderBottom:"3px solid #f5d800",
-            padding:"18px 20px 16px",
-            display:"flex",
-            alignItems:"center",
-            gap:14,
-            position:"sticky",
-            top:0,
-            zIndex:10
+            fontSize:28,
+            fontWeight:900,
+            color:"#fff",
+            letterSpacing:"0.08em",
+            lineHeight:1
           }}>
-
-            <div>
-
-              <div style={{
-                fontSize:28,
-                fontWeight:900,
-                color:"#fff",
-                letterSpacing:"0.08em"
-              }}>
-                YD <span style={{color:"#f5d800"}}>BOX</span>
-              </div>
-
-              <div style={{
-                fontSize:10,
-                color:"#555",
-                fontWeight:700,
-                letterSpacing:"0.2em",
-                marginTop:2
-              }}>
-                CALCULADORA DE PAPELÃO
-              </div>
-
-            </div>
-
+            YD <span style={{color:"#f5d800"}}>BOX</span>
           </div>
 
           <div style={{
-            maxWidth:600,
-            margin:"0 auto",
-            padding:"24px 16px 0"
+            fontSize:10,
+            color:"#555",
+            fontWeight:700,
+            letterSpacing:"0.2em",
+            marginTop:2
           }}>
-
-            <Section num="1" title="Medidas internas da caixa">
-
-              <div style={{
-                display:"grid",
-                gridTemplateColumns:"1fr 1fr 1fr",
-                gap:12
-              }}>
-
-                <Field
-                  label="Comprimento"
-                  value={comp}
-                  onChange={setComp}
-                  unit="cm"
-                  hint="+ 0,4mm auto"
-                />
-
-                <Field
-                  label="Largura"
-                  value={larg}
-                  onChange={setLarg}
-                  unit="cm"
-                  hint="+ 0,4mm auto"
-                />
-
-                <Field
-                  label="Altura"
-                  value={alt}
-                  onChange={setAlt}
-                  unit="cm"
-                />
-
-              </div>
-
-            </Section>
-
+            CALCULADORA DE PAPELÃO
           </div>
 
         </div>
 
-      );
+      </div>
 
-    }
+      {/* VISUALIZAÇÃO */}
 
-    ReactDOM
-      .createRoot(document.getElementById("root"))
-      .render(<App/>);
+      <div style={{
+        display:"flex",
+        justifyContent:"center",
+        alignItems:"center",
+        padding:"40px 20px 20px"
+      }}>
 
-  </script>
+        <div style={{
+          position:"relative",
+          width:escalaComp + profundidade,
+          height:escalaAlt + profundidade,
+          transition:"all .4s ease"
+        }}>
+
+          {/* frente */}
+
+          <div style={{
+            position:"absolute",
+            width:escalaComp,
+            height:escalaAlt,
+            background:"#d4a017",
+            border:"3px solid #f5d800",
+            bottom:0,
+            left:0,
+            borderRadius:8,
+            boxShadow:"0 20px 50px rgba(245,216,0,.15)"
+          }}/>
+
+          {/* lado */}
+
+          <div style={{
+            position:"absolute",
+            width:profundidade,
+            height:escalaAlt,
+            background:"#b8860b",
+            right:0,
+            bottom:profundidade * 0.25,
+            transform:"skewY(-45deg)",
+            border:"3px solid #e0b800"
+          }}/>
+
+          {/* topo */}
+
+          <div style={{
+            position:"absolute",
+            width:escalaComp,
+            height:profundidade,
+            background:"#f5d800",
+            left:profundidade * 0.5,
+            top:0,
+            transform:"skewX(-45deg)",
+            border:"3px solid #ffe44d"
+          }}/>
+
+          {/* medidas */}
+
+          <div style={{
+            position:"absolute",
+            bottom:-28,
+            left:0,
+            color:"#888",
+            fontSize:14,
+            fontWeight:700
+          }}>
+            C: {comp}cm
+          </div>
+
+          <div style={{
+            position:"absolute",
+            top:-28,
+            right:10,
+            color:"#888",
+            fontSize:14,
+            fontWeight:700
+          }}>
+            L: {larg}cm
+          </div>
+
+          <div style={{
+            position:"absolute",
+            right:-30,
+            top:"45%",
+            transform:"rotate(90deg)",
+            color:"#888",
+            fontSize:14,
+            fontWeight:700
+          }}>
+            A: {alt}cm
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* CONTEÚDO */}
+
+      <div style={{
+        maxWidth:600,
+        margin:"0 auto",
+        padding:"24px 16px 0"
+      }}>
+
+        <!-- COLE O RESTO DA SUA CALCULADORA AQUI -->
+
+      </div>
+
+    </div>
+  );
+}
+
+ReactDOM
+  .createRoot(document.getElementById("root"))
+  .render(<App/>);
+
+</script>
 
 </body>
 </html>
