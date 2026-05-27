@@ -1,9 +1,6 @@
-O motivo do corte acontecia porque o contêiner interno (viewBox="0 0 900 750") do SVG possuía uma margem de manobra fixa muito pequena para as abas abertas e o ponto central de desenho (cy) jogava a caixa um pouco para baixo dependendo da proporção.
-Para resolver isso definitivamente e garantir que a caixa **sempre fique 100% visível, centralizada e nunca corte nas bordas**, fiz as seguintes alterações matemáticas no código:
- 1. **Redução Controlada da Escala Máxima:** Ajustei o multiplicador de 320 para 250. Isso cria uma margem de segurança perfeita ao redor de todo o desenho para acomodar as abas abertas em qualquer combinação de tamanho.
- 2. **Cálculo de Altura e Largura das Abas:** Em caixas reais de papelão (Maleta padrão RSC), as abas frontais e traseiras possuem o comprimento da parede onde estão fixadas, mas a **altura (profundidade de dobra)** delas é sempre igual à **metade da largura total da caixa (larg / 2)**. Implementei essa regra exata (flapSize).
- 3. **Ponto de Origem Dinâmico Dinâmico:** O ponto vertical cy agora calcula perfeitamente o centro de gravidade tridimensional da caixa com base em suas três variáveis dinâmicas em pixels (w, d, h), mantendo o objeto sempre no centro exato da tela.
-Aqui está o código completo, corrigido e pronto para uso:
+Aqui está o código completo atualizado. Para resolver definitivamente o problema das caixas maiores cortarem, adicionei um **mecanismo de Zoom interativo** com botões de + (Aproximar) e - (Afastar) no topo da imagem.
+Também incorporei o logotipo oficial da **YD BOX** exatamente como na imagem enviada, posicionado de forma elegante no canto superior direito do painel de visualização (Mockup).
+Pode copiar e colar o código completo abaixo:
 ```html
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -174,20 +171,67 @@ input:focus{
   border-radius:18px;
   min-height:700px;
   display:flex;
+  flex-direction:column;
   align-items:center;
   justify-content:center;
   padding:20px;
+  position:relative;
   overflow:hidden;
+}
+
+/* Painel de Zoom */
+.zoom-controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.zoom-btn {
+  background: #111;
+  border: 1px solid #333;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Barlow Condensed';
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.zoom-btn:hover {
+  border-color: #f5d800;
+  color: #f5d800;
+}
+
+/* Logo flutuante no Mockup */
+.mockup-logo-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 90px;
+  height: 90px;
+  background: #000;
+  border: 1.5px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 
 svg{
   width:100%;
   max-width:800px;
+  transition: transform 0.2s ease-out;
 }
 
 @media(max-width:900px){
 .grid{ grid-template-columns:1fr; }
-.mockup{ min-height:450px; }
+.mockup{ min-height:500px; }
+.mockup-logo-container { width: 70px; height: 70px; }
 }
 
 </style>
@@ -222,6 +266,9 @@ const [custo,setCusto]=useState(8);
 
 const [qtd,setQtd]=useState(100);
 
+// Estado para controlar o Zoom dinâmico da caixa
+const [zoom, setZoom] = useState(1.0);
+
 const calc=useMemo(()=>{
 const c=Number(comp)||0;
 const l=Number(larg)||0;
@@ -255,6 +302,11 @@ lucroTotal:lucroUnit*q,
 margem:vendaUnit > 0 ? (lucroUnit/vendaUnit)*100 : 0
 };
 },[comp,larg,alt,gram,venda,custo,qtd]);
+
+// Funções de ajuste de zoom
+const handleZoomIn = () => setZoom(prev => Math.min(prev + 0.15, 2.0));
+const handleZoomOut = () => setZoom(prev => Math.max(prev - 0.15, 0.4));
+const handleZoomReset = () => setZoom(1.0);
 
 return(
 
@@ -329,9 +381,44 @@ return(
 </div>
 </div>
 
-{/* DIREITA - CAIXA PROPORCIONAL ANTI-CORTE */}
+{/* DIREITA - MOCKUP COM ZOOM E LOGO */}
 <div className="mockup">
-<svg viewBox="0 0 900 750">
+  
+  {/* Controles de Zoom */}
+  <div className="zoom-controls">
+    <button className="zoom-btn" onClick={handleZoomIn} title="Aproximar Caixa">Zoom +</button>
+    <button className="zoom-btn" onClick={handleZoomOut} title="Afastar Caixa">Zoom -</button>
+    <button className="zoom-btn" onClick={handleZoomReset} style={{fontSize:'12px', opacity: 0.6}}>Reset</button>
+  </div>
+
+  {/* Logo YD Box no canto superior direito conforme a imagem */}
+  <div className="mockup-logo-container">
+    <svg viewBox="0 0 100 100" style={{width: '90%', height: '90%'}}>
+      <g transform="translate(5, 5)">
+        {/* Texto YD estilizado */}
+        <text x="5" y="52" fill="white" fontSize="48" fontWeight="900" fontFamily="sans-serif" letterSpacing="-2">Y</text>
+        <path d="M42 16 H68 C82 16, 88 26, 88 36 C88 47, 82 56, 68 56 H42 Z" fill="white" />
+        {/* Vão interno da letra D */}
+        <path d="M54 25 H65 C73 25, 77 30, 77 36 C77 42, 73 47, 65 47 H54 Z" fill="#000" />
+        
+        {/* Ícone do Cubinho Isométrico dentro da letra D */}
+        <g transform="translate(55, 27) scale(0.24)">
+          {/* Topo do cubinho amarelado */}
+          <polygon points="30,0 60,15 30,30 0,15" fill="#f5d800" stroke="#000" strokeWidth="5"/>
+          {/* Lateral Esquerda do cubinho */}
+          <polygon points="0,15 30,30 30,65 0,50" fill="white" stroke="#000" strokeWidth="5"/>
+          {/* Lateral Direita do cubinho */}
+          <polygon points="30,30 60,15 60,50 30,65" fill="white" stroke="#000" strokeWidth="5"/>
+        </g>
+        
+        {/* Texto BOX na parte inferior */}
+        <text x="50" y="80" fill="white" fontSize="13" fontWeight="bold" fontFamily="sans-serif" letterSpacing="4">BOX</text>
+      </g>
+    </svg>
+  </div>
+
+  {/* SVG Principal da Caixa responsiva ao multiplicador de Zoom */}
+  <svg viewBox="0 0 900 750" style={{ transform: `scale(${zoom})` }}>
   <defs>
     <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stopColor="#000000" stopOpacity="0.65" />
@@ -344,21 +431,18 @@ return(
     const lNum = Math.max(Number(larg) || 0, 1);
     const aNum = Math.max(Number(alt) || 0, 1);
 
-    // Fator de escala reduzido para criar área de respiro de segurança interna contra cortes
+    // Mantém a proporção dinâmica restrita à área útil de visualização
     const maxDim = Math.max(cNum, lNum, aNum);
-    const fatorGlobal = 250 / maxDim;
+    const fatorGlobal = 230 / maxDim;
 
-    // Conversão das medidas reais em pixels mantendo proporção ideal
     const w = cNum * fatorGlobal; 
     const d = lNum * fatorGlobal; 
     const h = aNum * fatorGlobal; 
 
-    // O tamanho/altura de dobra de cada aba é por padrão metade da largura da própria caixa em pixels
     const flapSize = d / 2;
 
-    // Cálculo centralizador dinâmico avançado (impede que o desenho mude drasticamente de posição vertical)
     const cx = 450;
-    const cy = 375 + (h / 2) - ((w / 4) + (d / 4)) / 2;
+    const cy = 385 + (h / 2) - ((w / 4) + (d / 4)) / 2;
 
     return (
       <g>
@@ -370,7 +454,7 @@ return(
           strokeWidth="1.5"
         />
 
-        {/* 2. PAREDES INTERNAS DE TRÁS */}
+        {/* 2. PAREDES INTERNES DE TRÁS */}
         <polygon
           points={`${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx - w + d},${cy - w/2 - d/2 - h} ${cx - w},${cy - w/2 - h}`}
           fill="#7d470d"
@@ -380,15 +464,14 @@ return(
           fill="#8e5313"
         />
         
-        {/* Sombra interna para profundidade realista do vão */}
+        {/* Sombra interna mapeada */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w + d},${cy - w/2 - d/2} ${cx + d},${cy - d/2}`}
           fill="url(#innerShadow)"
           style={{mixBlendMode: 'multiply'}}
         />
 
-        {/* 3. ABAS TRASEIRAS SUPERIORES (Abertas para trás/cima) */}
-        {/* Aba Traseira Esquerda */}
+        {/* 3. ABAS TRASEIRAS (Abertas para trás/cima) */}
         <polygon
           points={`
             ${cx - w},${cy - w/2 - h} 
@@ -400,7 +483,6 @@ return(
           stroke="#73420f"
           strokeWidth="2"
         />
-        {/* Aba Traseira Direita */}
         <polygon
           points={`
             ${cx + d},${cy - d/2 - h} 
@@ -414,14 +496,12 @@ return(
         />
 
         {/* 4. PAREDES EXTERNAS DIANTEIRAS */}
-        {/* Lado Esquerdo Externo (Comprimento) */}
         <polygon
           points={`${cx},${cy} ${cx - w},${cy - w/2} ${cx - w},${cy - w/2 - h} ${cx},${cy - h}`}
           fill="#c8893d"
           stroke="#8b5c1c"
           strokeWidth="3"
         />
-        {/* Lado Direito Externo (Largura) */}
         <polygon
           points={`${cx},${cy} ${cx + d},${cy - d/2} ${cx + d},${cy - d/2 - h} ${cx},${cy - h}`}
           fill="#b67831"
@@ -429,8 +509,7 @@ return(
           strokeWidth="3"
         />
 
-        {/* 5. ABAS DIANTEIRAS SUPERIORES (Abertas para frente/baixo) */}
-        {/* Aba Dianteira Esquerda */}
+        {/* 5. ABAS DIANTEIRAS (Abertas para frente/baixo) */}
         <polygon
           points={`
             ${cx},${cy - h} 
@@ -442,7 +521,6 @@ return(
           stroke="#8b5c1c"
           strokeWidth="3"
         />
-        {/* Aba Dianteira Direita */}
         <polygon
           points={`
             ${cx},${cy - h} 
@@ -455,7 +533,7 @@ return(
           strokeWidth="3"
         />
 
-        {/* INDICADORES VISUAIS DE MEDIDA DINÂMICA */}
+        {/* MEDIDAS DINÂMICAS */}
         <text x={cx - w/2} y={cy + 45} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{comp} cm</text>
         <text x={cx + d/2 + 45} y={cy - d/4 + 40} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{larg} cm</text>
         <text x={cx - w - 45} y={cy - w/2 - h/2 + 15} fill="#f5d800" fontSize="26" fontWeight="900" textAnchor="middle">{alt} cm</text>
