@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#000000"/>
-<title>YD BOX — Calculadora</title>
+<title>YD BOX</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -15,220 +14,38 @@
 <style>
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
 body{
-  background:#080808;
-  color:white;
-  font-family:'Barlow Condensed',sans-serif;
+background:#080808;
+font-family:'Barlow Condensed',sans-serif;
 }
 
 input{
-  font-family:'Barlow Condensed',sans-serif;
+font-family:'Barlow Condensed',sans-serif;
 }
 
 input[type=number]::-webkit-inner-spin-button{
-  opacity:.4;
+opacity:0.3;
+filter:invert(1);
 }
 
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:20px;
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(12px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-.layout{
-  display:grid;
-  grid-template-columns:420px 1fr;
-  gap:24px;
-}
-
-@media(max-width:980px){
-  .layout{
-    grid-template-columns:1fr;
-  }
-}
-
-.card{
-  background:#0d0d0d;
-  border:1px solid #1f1f1f;
-  border-radius:18px;
-  padding:18px;
-  margin-bottom:16px;
-}
-
-.title{
-  font-size:12px;
-  font-weight:800;
-  letter-spacing:.18em;
-  color:#f5d800;
-  margin-bottom:14px;
-}
-
-.grid3{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-}
-
-.field label{
-  font-size:10px;
-  letter-spacing:.12em;
-  color:#777;
-  font-weight:700;
-}
-
-.field input{
-  background:#111;
-  border:1px solid #2a2a2a;
-  border-radius:10px;
-  padding:12px;
-  color:white;
-  font-size:20px;
-  font-weight:700;
-  outline:none;
-}
-
-.field input:focus{
-  border-color:#f5d800;
-}
-
-.result{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:12px 0;
-  border-bottom:1px solid #1a1a1a;
-}
-
-.result:last-child{
-  border:none;
-}
-
-.result span{
-  color:#888;
-  letter-spacing:.08em;
-  font-size:11px;
-}
-
-.result strong{
-  color:white;
-  font-size:18px;
-}
-
-.total{
-  margin-top:18px;
-  background:#f5d800;
-  border-radius:16px;
-  padding:20px;
-  color:black;
-}
-
-.total h2{
-  font-size:38px;
-  line-height:1;
-}
-
-.total p{
-  margin-top:8px;
-  font-weight:700;
-}
-
-.mockupCard{
-  background:
-  radial-gradient(circle at top,#202020,#0b0b0b 70%);
-  border:1px solid #1f1f1f;
-  border-radius:22px;
-  min-height:760px;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.mockupScene{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.measureText{
-  fill:#f5d800;
-  font-size:15px;
-  font-weight:800;
-  letter-spacing:.1em;
-}
-
-.measureLine{
-  stroke:#f5d800;
-  stroke-width:2;
-}
-
-@keyframes flapLeft{
-  0%{
-    transform:rotateX(0deg);
-  }
-  50%{
-    transform:rotateX(-58deg);
-  }
-  100%{
-    transform:rotateX(0deg);
-  }
-}
-
-@keyframes flapRight{
-  0%{
-    transform:rotateX(0deg);
-  }
-  50%{
-    transform:rotateX(-48deg);
-  }
-  100%{
-    transform:rotateX(0deg);
-  }
-}
-
-.flap1{
-  transform-origin:bottom;
-  animation:flapLeft 2.8s ease-in-out infinite;
-}
-
-.flap2{
-  transform-origin:bottom;
-  animation:flapRight 2.8s ease-in-out infinite;
-}
-
-.header{
-  margin-bottom:20px;
-}
-
-.header h1{
-  font-size:42px;
-  font-weight:900;
-  letter-spacing:.08em;
-}
-
-.header h1 span{
-  color:#f5d800;
-}
-
-.header p{
-  color:#666;
-  font-size:12px;
-  letter-spacing:.2em;
-  font-weight:700;
+.fadeUp{
+animation:fadeUp .3s ease both;
 }
 
 </style>
@@ -242,28 +59,112 @@ input[type=number]::-webkit-inner-spin-button{
 
 const {useState,useMemo}=React;
 
-const fmt=(n,d=2)=>
-n.toLocaleString("pt-BR",{
+const fmt=(n,d=2)=>n.toLocaleString('pt-BR',{
 minimumFractionDigits:d,
 maximumFractionDigits:d
 });
 
-const brl=n=>"R$ "+fmt(n);
+const fmtBRL=(n)=>'R$ '+fmt(n,2);
 
-function Field({label,value,onChange}){
+function Field({
+label,
+value,
+onChange,
+unit,
+step='any'
+}){
 
 return(
-<div className="field">
 
-<label>{label}</label>
+<div style={{
+display:'flex',
+flexDirection:'column',
+gap:6
+}}>
+
+<label style={{
+fontSize:10,
+fontWeight:800,
+letterSpacing:'0.14em',
+color:'#777',
+textTransform:'uppercase'
+}}>
+{label}
+</label>
+
+<div style={{
+display:'flex',
+alignItems:'center',
+background:'#111',
+border:'1px solid #2a2a2a',
+borderRadius:8,
+overflow:'hidden'
+}}>
 
 <input
 type="number"
+step={step}
 value={value}
-onChange={e=>onChange(Number(e.target.value))}
+onChange={(e)=>onChange(Number(e.target.value))}
+style={{
+flex:1,
+background:'transparent',
+border:'none',
+outline:'none',
+padding:'14px',
+fontSize:20,
+fontWeight:700,
+color:'#fff'
+}}
 />
 
+<div style={{
+padding:'0 14px',
+fontSize:11,
+fontWeight:700,
+color:'#666'
+}}>
+{unit}
 </div>
+
+</div>
+
+</div>
+
+);
+
+}
+
+function Card({title,value,color='#fff'}){
+
+return(
+
+<div style={{
+background:'#0d0d0d',
+border:'1px solid #1f1f1f',
+borderRadius:12,
+padding:16
+}}>
+
+<div style={{
+fontSize:10,
+letterSpacing:'0.12em',
+color:'#666',
+marginBottom:6
+}}>
+{title}
+</div>
+
+<div style={{
+fontSize:28,
+fontWeight:900,
+color
+}}>
+{value}
+</div>
+
+</div>
+
 );
 
 }
@@ -275,35 +176,35 @@ const [larg,setLarg]=useState(20);
 const [alt,setAlt]=useState(15);
 
 const [gram,setGram]=useState(380);
-const [pv,setPv]=useState(14);
-const [pc,setPc]=useState(8);
+const [venda,setVenda]=useState(14);
+const [custo,setCusto]=useState(8);
 
 const [qtd,setQtd]=useState(100);
 
 const calc=useMemo(()=>{
 
-const c=Number(comp)||0;
-const l=Number(larg)||0;
-const a=Number(alt)||0;
-const g=Number(gram)||0;
+const area=((comp*larg)*2+(alt*larg)*2+(alt*comp)*2)/10000;
 
-const area=((c*l)+(a*c)+(a*l))/10000;
+const peso=(area*gram)/1000;
 
-const peso=(area*g)/1000;
-
-const custo=peso*pc;
-const venda=peso*pv;
-const lucro=venda-custo;
+const custoUnit=peso*custo;
+const vendaUnit=peso*venda;
+const lucroUnit=vendaUnit-custoUnit;
 
 return{
+
+area,
 peso,
-custo,
-venda,
-lucro,
-custoTotal:custo*qtd,
-vendaTotal:venda*qtd,
-lucroTotal:lucro*qtd,
-margem:(lucro/venda)*100
+custoUnit,
+vendaUnit,
+lucroUnit,
+
+custoTotal:custoUnit*qtd,
+vendaTotal:vendaUnit*qtd,
+lucroTotal:lucroUnit*qtd,
+
+margem:(lucroUnit/vendaUnit)*100
+
 };
 
 },[
@@ -311,334 +212,330 @@ comp,
 larg,
 alt,
 gram,
-pv,
-pc,
+venda,
+custo,
 qtd
 ]);
 
-/* ESCALA */
-
-const width=220+(comp*2.5);
-const depth=120+(larg*2);
-const height=140+(alt*2);
-
 return(
 
-<div className="container">
-
-<div className="header">
-<h1>YD <span>BOX</span></h1>
-<p>CALCULADORA DE PAPELÃO</p>
-</div>
-
-<div className="layout">
-
-<div>
-
-<div className="card">
-
-<div className="title">
-MEDIDAS DA CAIXA
-</div>
-
-<div className="grid3">
-
-<Field
-label="COMPRIMENTO"
-value={comp}
-onChange={setComp}
-/>
-
-<Field
-label="LARGURA"
-value={larg}
-onChange={setLarg}
-/>
-
-<Field
-label="ALTURA"
-value={alt}
-onChange={setAlt}
-/>
-
-</div>
-
-</div>
-
-<div className="card">
-
-<div className="title">
-MATERIAL
-</div>
-
-<div className="grid3">
-
-<Field
-label="GRAMATURA"
-value={gram}
-onChange={setGram}
-/>
-
-<Field
-label="VENDA R$/KG"
-value={pv}
-onChange={setPv}
-/>
-
-<Field
-label="CUSTO R$/KG"
-value={pc}
-onChange={setPc}
-/>
-
-</div>
-
-</div>
-
-<div className="card">
-
-<div className="title">
-QUANTIDADE
-</div>
-
-<Field
-label="UNIDADES"
-value={qtd}
-onChange={setQtd}
-/>
-
-</div>
-
-<div className="card">
-
-<div className="title">
-RESULTADOS
-</div>
-
-<div className="result">
-<span>PESO POR CAIXA</span>
-<strong>{fmt(calc.peso,4)} kg</strong>
-</div>
-
-<div className="result">
-<span>CUSTO UNITÁRIO</span>
-<strong>{brl(calc.custo)}</strong>
-</div>
-
-<div className="result">
-<span>VENDA UNITÁRIA</span>
-<strong>{brl(calc.venda)}</strong>
-</div>
-
-<div className="result">
-<span>LUCRO UNITÁRIO</span>
-<strong>{brl(calc.lucro)}</strong>
-</div>
-
-<div className="result">
-<span>MARGEM</span>
-<strong>{fmt(calc.margem,1)}%</strong>
-</div>
-
-</div>
-
-<div className="total">
+<div style={{
+minHeight:'100vh',
+background:'#080808',
+paddingBottom:50
+}}>
 
 <div style={{
-fontWeight:800,
-letterSpacing:'.1em'
+background:'#000',
+borderBottom:'3px solid #f5d800',
+padding:'20px'
 }}>
-TOTAL DO PEDIDO
+
+<div style={{
+fontSize:34,
+fontWeight:900,
+color:'#fff'
+}}>
+YD <span style={{color:'#f5d800'}}>BOX</span>
 </div>
 
-<h2>{brl(calc.vendaTotal)}</h2>
-
-<p>
-Lucro total: {brl(calc.lucroTotal)}
-</p>
-
+<div style={{
+fontSize:10,
+letterSpacing:'0.18em',
+color:'#666'
+}}>
+CALCULADORA DE PAPELÃO
 </div>
 
 </div>
 
-<div className="mockupCard">
+<div style={{
+maxWidth:650,
+margin:'0 auto',
+padding:'24px 16px'
+}}>
 
-<div className="mockupScene">
+{/* CAMPOS */}
 
-<svg
-width="760"
-height="620"
-viewBox="0 0 760 620"
->
+<div style={{
+display:'grid',
+gridTemplateColumns:'1fr 1fr 1fr',
+gap:12,
+marginBottom:18
+}}>
 
-{/* SOMBRA */}
-
-<ellipse
-cx="390"
-cy="520"
-rx="190"
-ry="40"
-fill="rgba(0,0,0,.45)"
+<Field
+label="Comprimento"
+value={comp}
+onChange={setComp}
+unit="cm"
 />
 
-{/* TAMPA ESQUERDA */}
-
-<g className="flap1">
-
-<polygon
-points={`
-240,180
-390,120
-390,220
-240,280
-`}
-fill="#d7a043"
-stroke="#8a5a14"
-strokeWidth="3"
+<Field
+label="Largura"
+value={larg}
+onChange={setLarg}
+unit="cm"
 />
 
-</g>
-
-{/* TAMPA DIREITA */}
-
-<g className="flap2">
-
-<polygon
-points={`
-390,120
-540,180
-540,280
-390,220
-`}
-fill="#e2b154"
-stroke="#8a5a14"
-strokeWidth="3"
+<Field
+label="Altura"
+value={alt}
+onChange={setAlt}
+unit="cm"
 />
 
-</g>
+</div>
 
-{/* LATERAL ESQUERDA */}
+<div style={{
+display:'grid',
+gridTemplateColumns:'1fr 1fr 1fr',
+gap:12,
+marginBottom:18
+}}>
 
-<polygon
-points={`
-240,280
-390,220
-390,430
-240,490
-`}
-fill="#b77b2d"
-stroke="#8a5a14"
-strokeWidth="3"
+<Field
+label="Gramatura"
+value={gram}
+onChange={setGram}
+unit="g/m²"
 />
 
-{/* LATERAL DIREITA */}
-
-<polygon
-points={`
-390,220
-540,280
-540,490
-390,430
-`}
-fill="#9f6722"
-stroke="#8a5a14"
-strokeWidth="3"
+<Field
+label="Venda"
+value={venda}
+onChange={setVenda}
+unit="R$/kg"
 />
+
+<Field
+label="Custo"
+value={custo}
+onChange={setCusto}
+unit="R$/kg"
+/>
+
+</div>
+
+<Field
+label="Quantidade"
+value={qtd}
+onChange={setQtd}
+unit="un"
+/>
+
+{/* MOCKUP */}
+
+<div className="fadeUp" style={{
+marginTop:26,
+background:'#0d0d0d',
+border:'1px solid #1f1f1f',
+borderRadius:20,
+padding:'30px 20px',
+display:'flex',
+justifyContent:'center',
+overflow:'hidden'
+}}>
+
+<div style={{
+position:'relative',
+width:340,
+height:270
+}}>
+
+{/* TAMPA TRASEIRA */}
+
+<div style={{
+position:'absolute',
+top:18,
+left:70,
+width:190,
+height:55,
+background:'#d7a14d',
+clipPath:'polygon(0 100%,50% 0,100% 100%)'
+}}/>
+
+{/* ABA ESQ */}
+
+<div style={{
+position:'absolute',
+top:50,
+left:48,
+width:85,
+height:70,
+background:'#bc8035',
+clipPath:'polygon(100% 100%,0 20%,0 0,100% 55%)'
+}}/>
+
+{/* ABA DIR */}
+
+<div style={{
+position:'absolute',
+top:50,
+left:198,
+width:85,
+height:70,
+background:'#bc8035',
+clipPath:'polygon(0 100%,100% 20%,100% 0,0 55%)'
+}}/>
+
+{/* LATERAL ESQ */}
+
+<div style={{
+position:'absolute',
+top:90,
+left:20,
+width:75,
+height:130,
+background:'#8e5c24',
+clipPath:'polygon(100% 0,0 18%,0 100%,100% 82%)'
+}}>
+
+<div style={{
+position:'absolute',
+left:-20,
+top:'50%',
+transform:'rotate(-90deg)',
+fontSize:14,
+fontWeight:900,
+color:'#f5d800',
+letterSpacing:'0.12em'
+}}>
+ALT {alt}cm
+</div>
+
+</div>
 
 {/* FRENTE */}
 
-<polygon
-points={`
-240,280
-390,340
-540,280
-390,220
-`}
-fill="#cf9538"
-stroke="#8a5a14"
-strokeWidth="3"
+<div style={{
+position:'absolute',
+top:90,
+left:92,
+width:170,
+height:130,
+background:'linear-gradient(135deg,#ca8b39,#a76b2a)',
+border:'2px solid rgba(255,255,255,0.06)',
+boxShadow:'0 18px 35px rgba(0,0,0,0.45)'
+}}>
+
+<div style={{
+position:'absolute',
+bottom:-30,
+width:'100%',
+textAlign:'center',
+fontSize:15,
+fontWeight:900,
+letterSpacing:'0.12em',
+color:'#f5d800'
+}}>
+COMP {comp}cm
+</div>
+
+</div>
+
+{/* LATERAL DIR */}
+
+<div style={{
+position:'absolute',
+top:90,
+left:260,
+width:58,
+height:130,
+background:'#7d501d',
+clipPath:'polygon(0 0,100% 18%,100% 100%,0 82%)'
+}}>
+
+<div style={{
+position:'absolute',
+right:-28,
+top:'50%',
+transform:'rotate(90deg)',
+fontSize:14,
+fontWeight:900,
+color:'#f5d800',
+letterSpacing:'0.12em',
+whiteSpace:'nowrap'
+}}>
+LARG {larg}cm
+</div>
+
+</div>
+
+{/* SOMBRA */}
+
+<div style={{
+position:'absolute',
+bottom:10,
+left:70,
+width:190,
+height:28,
+background:'rgba(0,0,0,0.45)',
+filter:'blur(12px)',
+borderRadius:'50%'
+}}/>
+
+</div>
+
+</div>
+
+{/* RESULTADOS */}
+
+<div style={{
+display:'grid',
+gridTemplateColumns:'1fr 1fr',
+gap:14,
+marginTop:20
+}}>
+
+<Card
+title="PESO POR CAIXA"
+value={`${fmt(calc.peso,3)} kg`}
 />
 
-{/* FUNDO */}
-
-<polygon
-points={`
-240,280
-390,340
-390,550
-240,490
-`}
-fill="#c28734"
-stroke="#8a5a14"
-strokeWidth="3"
+<Card
+title="ÁREA TOTAL"
+value={`${fmt(calc.area,3)} m²`}
 />
 
-<polygon
-points={`
-390,340
-540,280
-540,490
-390,550
-`}
-fill="#b37529"
-stroke="#8a5a14"
-strokeWidth="3"
+<Card
+title="VENDA TOTAL"
+value={fmtBRL(calc.vendaTotal)}
+color="#f5d800"
 />
 
-{/* MEDIDAS */}
-
-<line
-x1="220"
-y1="525"
-x2="560"
-y2="525"
-className="measureLine"
+<Card
+title="LUCRO TOTAL"
+value={fmtBRL(calc.lucroTotal)}
+color="#49d17d"
 />
 
-<text
-x="390"
-y="550"
-textAnchor="middle"
-className="measureText"
->
-COMPRIMENTO {comp}cm
-</text>
+</div>
 
-<line
-x1="575"
-y1="250"
-x2="575"
-y2="500"
-className="measureLine"
-/>
+<div style={{
+marginTop:20,
+background:'#000',
+border:'2px solid #f5d800',
+borderRadius:16,
+padding:'20px',
+textAlign:'center'
+}}>
 
-<text
-x="610"
-y="380"
-transform="rotate(90 610 380)"
-className="measureText"
->
-ALTURA {alt}cm
-</text>
+<div style={{
+fontSize:11,
+letterSpacing:'0.16em',
+color:'#666',
+marginBottom:8
+}}>
+MARGEM SOBRE VENDA
+</div>
 
-<line
-x1="300"
-y1="130"
-x2="520"
-y2="210"
-className="measureLine"
-/>
-
-<text
-x="470"
-y="120"
-className="measureText"
->
-LARGURA {larg}cm
-</text>
-
-</svg>
-
+<div style={{
+fontSize:48,
+fontWeight:900,
+color:'#f5d800'
+}}>
+{fmt(calc.margem,1)}%
 </div>
 
 </div>
@@ -651,9 +548,9 @@ LARGURA {larg}cm
 
 }
 
-ReactDOM
-.createRoot(document.getElementById("root"))
-.render(<App/>);
+ReactDOM.createRoot(
+document.getElementById('root')
+).render(<App/>);
 
 </script>
 
