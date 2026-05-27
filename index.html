@@ -1,3 +1,6 @@
+Aqui está o código HTML completo e pronto para uso. Substituí toda a lógica de renderização do SVG para criar uma caixa aberta e vazia em perspectiva isométrica realística, adicionando também sombras internas para dar profundidade ao fundo da caixa e reposicionando as abas para fora.
+Pode copiar e colar este código diretamente no seu arquivo .html:
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -264,13 +267,10 @@ margem:(lucroUnit/vendaUnit)*100
 
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
-/* ESCALA */
-
-const largura = Math.max(comp * 6,180);
-const profundidade = Math.max(larg * 4,100);
-const altura = Math.max(alt * 5,120);
-
-const aba = largura / 2;
+/* ESCALA VISUAL DO MODELO 3D */
+const largura = Math.max(comp * 6, 180);
+const profundidade = Math.max(larg * 6, 130);
+const altura = Math.max(alt * 5, 120);
 
 return(
 
@@ -452,154 +452,213 @@ TOTAL DO PEDIDO
 
 </div>
 
-{/* DIREITA */}
+{/* DIREITA - CAIXA ISOMÉTRICA VAZIA */}
 
 <div className="mockup">
 
 <svg viewBox="0 0 900 700">
+  <defs>
+    {/* Gradiente para simular a sombra projetada nas paredes internas */}
+    <linearGradient id="inner-shadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stopColor="#000000" stopOpacity="0.45" />
+      <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+    </linearGradient>
+  </defs>
 
-{/* TOPO */}
+  {(() => {
+    const w = largura;       
+    const d = profundidade;  
+    const h = altura;        
 
-<polygon
-points={`
-220,180
-${220+largura},180
-${220+largura+profundidade},${180+profundidade}
-${220+profundidade},${180+profundidade}
-`}
-fill="#d89a47"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+    // Centro do SVG adaptativo baseado na altura para não quebrar o layout
+    const cx = 450;
+    const cy = 290 + (h / 4);
 
-{/* FRENTE */}
+    return (
+      <g>
+        {/* ========================================================= */}
+        {/* 1. ESTRUTURA INTERNA DA CAIXA VAZIA                       */}
+        {/* ========================================================= */}
+        
+        {/* Fundo interno */}
+        <polygon
+          points={`
+            ${cx},${cy}
+            ${cx - w},${cy - w/2}
+            ${cx - w + d},${cy - w/2 - d/2}
+            ${cx + d},${cy - d/2}
+          `}
+          fill="#78470f"
+          stroke="#543008"
+          strokeWidth="2"
+        />
 
-<polygon
-points={`
-220,180
-${220+profundidade},${180+profundidade}
-${220+profundidade},${180+profundidade+altura}
-220,${180+altura}
-`}
-fill="#c8893d"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* Parede de trás interna (Esquerda) */}
+        <polygon
+          points={`
+            ${cx - w},${cy - w/2}
+            ${cx - w + d},${cy - w/2 - d/2}
+            ${cx - w + d},${cy - w/2 - d/2 - h}
+            ${cx - w},${cy - w/2 - h}
+          `}
+          fill="#8e5517"
+        />
 
-{/* LATERAL */}
+        {/* Parede de trás interna (Direita) */}
+        <polygon
+          points={`
+            ${cx - w + d},${cy - w/2 - d/2}
+            ${cx + d},${cy - d/2}
+            ${cx + d},${cy - d/2 - h}
+            ${cx - w + d},${cy - w/2 - d/2 - h}
+          `}
+          fill="#9c5f1d"
+        />
+        
+        {/* Camada de Sombra Interna Aplicada sobre o fundo */}
+        <polygon
+          points={`
+            ${cx},${cy}
+            ${cx - w},${cy - w/2}
+            ${cx - w + d},${cy - w/2 - d/2}
+            ${cx + d},${cy - d/2}
+          `}
+          fill="url(#inner-shadow)"
+          style={{ mixBlendMode: 'multiply' }}
+        />
 
-<polygon
-points={`
-${220+profundidade},${180+profundidade}
-${220+largura+profundidade},${180+profundidade}
-${220+largura+profundidade},${180+profundidade+altura}
-${220+profundidade},${180+profundidade+altura}
-`}
-fill="#b67831"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* ========================================================= */}
+        {/* 2. ABAS TRASEIRAS (Abertas para trás/cima)                 */}
+        {/* ========================================================= */}
 
-{/* ABA FRENTE ESQUERDA */}
+        {/* Aba Traseira Esquerda */}
+        <polygon
+          points={`
+            ${cx - w},${cy - w/2 - h}
+            ${cx - w + d},${cy - w/2 - d/2 - h}
+            ${cx - w + d - d},${cy - w/2 - d/2 - h + d/2}
+            ${cx - w - d},${cy - w/2 - h + d/2}
+          `}
+          fill="#a86922"
+          stroke="#764511"
+          strokeWidth="3"
+        />
 
-<polygon
-points={`
-220,180
-${220+(aba/2)},120
-${220+aba},180
-${220+(aba/2)},${180+(profundidade/2)}
-`}
-fill="#e4aa57"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* Aba Traseira Direita */}
+        <polygon
+          points={`
+            ${cx - w + d},${cy - w/2 - d/2 - h}
+            ${cx + d},${cy - d/2 - h}
+            ${cx + d + w},${cy - d/2 - h + w/2}
+            ${cx - w + d + w},${cy - w/2 - d/2 - h + w/2}
+          `}
+          fill="#b37227"
+          stroke="#764511"
+          strokeWidth="3"
+        />
 
-{/* ABA FRENTE DIREITA */}
+        {/* ========================================================= */}
+        {/* 3. PAREDES EXTERNAS DA FRENTE                             */}
+        {/* ========================================================= */}
 
-<polygon
-points={`
-${220+aba},180
-${220+aba+(aba/2)},120
-${220+largura},180
-${220+aba+(aba/2)},${180+(profundidade/2)}
-`}
-fill="#e4aa57"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* Face Lateral Esquerda Externa */}
+        <polygon
+          points={`
+            ${cx},${cy}
+            ${cx - w},${cy - w/2}
+            ${cx - w},${cy - w/2 - h}
+            ${cx},${cy - h}
+          `}
+          fill="#c8893d"
+          stroke="#8b5c1c"
+          strokeWidth="4"
+        />
 
-{/* ABA TRASEIRA ESQUERDA */}
+        {/* Face Lateral Direita Externa */}
+        <polygon
+          points={`
+            ${cx},${cy}
+            ${cx + d},${cy - d/2}
+            ${cx + d},${cy - d/2 - h}
+            ${cx},${cy - h}
+          `}
+          fill="#b67831"
+          stroke="#8b5c1c"
+          strokeWidth="4"
+        />
 
-<polygon
-points={`
-${220+profundidade},${180+profundidade}
-${220+(aba/2)+profundidade},${120+profundidade}
-${220+aba+profundidade},${180+profundidade}
-${220+(aba/2)+profundidade},${180+(profundidade/2)}
-`}
-fill="#dca04d"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* ========================================================= */}
+        {/* 4. ABAS DIANTEIRAS (Abertas para frente/baixo)             */}
+        {/* ========================================================= */}
 
-{/* ABA TRASEIRA DIREITA */}
+        {/* Aba Dianteira Esquerda */}
+        <polygon
+          points={`
+            ${cx},${cy - h}
+            ${cx - w},${cy - w/2 - h}
+            ${cx - w - d},${cy - w/2 - h + d/2}
+            ${cx - d},${cy - h + d/2}
+          `}
+          fill="#dca04d"
+          stroke="#8b5c1c"
+          strokeWidth="4"
+        />
 
-<polygon
-points={`
-${220+aba+profundidade},${180+profundidade}
-${220+aba+(aba/2)+profundidade},${120+profundidade}
-${220+largura+profundidade},${180+profundidade}
-${220+aba+(aba/2)+profundidade},${180+(profundidade/2)}
-`}
-fill="#dca04d"
-stroke="#8b5c1c"
-strokeWidth="4"
-/>
+        {/* Aba Dianteira Direita */}
+        <polygon
+          points={`
+            ${cx},${cy - h}
+            ${cx + d},${cy - d/2 - h}
+            ${cx + d + w},${cy - d/2 - h + w/2}
+            ${cx + w},${cy - h + w/2}
+          `}
+          fill="#e4aa57"
+          stroke="#8b5c1c"
+          strokeWidth="4"
+        />
 
-{/* LINHA CENTRAL */}
+        {/* ========================================================= */}
+        {/* 5. TEXTOS E INDICAÇÕES DE MEDIDAS                         */}
+        {/* ========================================================= */}
 
-<line
-x1={220+aba}
-y1="180"
-x2={220+aba+(profundidade/2)}
-y2={180+profundidade}
-stroke="#8b5c1c"
-strokeWidth="3"
-/>
+        {/* Medida do Comprimento */}
+        <text
+          x={cx - w/2}
+          y={cy + 45}
+          fill="#f5d800"
+          fontSize="32"
+          fontWeight="900"
+          textAnchor="middle"
+        >
+          {comp} cm
+        </text>
 
-{/* MEDIDAS */}
+        {/* Medida da Largura */}
+        <text
+          x={cx + d/2 + 55}
+          y={cy - d/4 + 45}
+          fill="#f5d800"
+          fontSize="32"
+          fontWeight="900"
+          textAnchor="middle"
+        >
+          {larg} cm
+        </text>
 
-<text
-x={220+(largura/2)}
-y={620}
-fill="#f5d800"
-fontSize="34"
-fontWeight="900"
-textAnchor="middle"
->
-{comp} cm
-</text>
-
-<text
-x={220+largura+profundidade+40}
-y={280+(altura/2)}
-fill="#f5d800"
-fontSize="34"
-fontWeight="900"
->
-{larg} cm
-</text>
-
-<text
-x="120"
-y={280+(altura/2)}
-fill="#f5d800"
-fontSize="34"
-fontWeight="900"
->
-{alt} cm
-</text>
-
+        {/* Medida da Altura */}
+        <text
+          x={cx - w - 45}
+          y={cy - w/4 - h/2}
+          fill="#f5d800"
+          fontSize="32"
+          fontWeight="900"
+          textAnchor="end"
+        >
+          {alt} cm
+        </text>
+      </g>
+    );
+  })()}
 </svg>
 
 </div>
@@ -620,3 +679,5 @@ ReactDOM
 
 </body>
 </html>
+
+```
