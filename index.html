@@ -5,6 +5,8 @@
 
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#000000"/>
+
 <title>YD BOX — Calculadora</title>
 
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -168,11 +170,12 @@ input:focus{
   align-items:center;
   justify-content:center;
   padding:20px;
+  overflow:hidden;
 }
 
 svg{
   width:100%;
-  max-width:700px;
+  max-width:800px;
 }
 
 @media(max-width:900px){
@@ -251,10 +254,7 @@ const vendaUnit=pesoKg*pv;
 const lucroUnit=vendaUnit-custoUnit;
 
 return{
-devHoriz,
-devVert,
 areaCm2,
-pesoKg,
 pesoGramas,
 custoTotal:custoUnit*q,
 vendaTotal:vendaUnit*q,
@@ -264,13 +264,11 @@ margem:(lucroUnit/vendaUnit)*100
 
 },[comp,larg,alt,gram,venda,custo,qtd]);
 
-/* ESCALA PROPORCIONAL */
+/* ESCALA */
 
 const largura = Math.max(comp * 6,180);
 const profundidade = Math.max(larg * 4,100);
 const altura = Math.max(alt * 5,120);
-
-/* ABAS METADE DA LARGURA */
 
 const aba = largura / 2;
 
@@ -458,9 +456,7 @@ TOTAL DO PEDIDO
 
 <div className="mockup">
 
-<svg
-viewBox="0 0 900 700"
->
+<svg viewBox="0 0 900 700">
 
 {/* TOPO */}
 
@@ -504,30 +500,58 @@ stroke="#8b5c1c"
 strokeWidth="4"
 />
 
-{/* ABA ESQUERDA */}
+{/* ABA FRENTE ESQUERDA */}
 
 <polygon
 points={`
 220,180
 ${220+(aba/2)},120
 ${220+aba},180
-${220+profundidade},${180+profundidade}
+${220+(aba/2)},${180+(profundidade/2)}
 `}
 fill="#e4aa57"
 stroke="#8b5c1c"
 strokeWidth="4"
 />
 
-{/* ABA DIREITA */}
+{/* ABA FRENTE DIREITA */}
 
 <polygon
 points={`
 ${220+aba},180
 ${220+aba+(aba/2)},120
 ${220+largura},180
-${220+largura+profundidade},${180+profundidade}
+${220+aba+(aba/2)},${180+(profundidade/2)}
 `}
 fill="#e4aa57"
+stroke="#8b5c1c"
+strokeWidth="4"
+/>
+
+{/* ABA TRASEIRA ESQUERDA */}
+
+<polygon
+points={`
+${220+profundidade},${180+profundidade}
+${220+(aba/2)+profundidade},${120+profundidade}
+${220+aba+profundidade},${180+profundidade}
+${220+(aba/2)+profundidade},${180+(profundidade/2)}
+`}
+fill="#dca04d"
+stroke="#8b5c1c"
+strokeWidth="4"
+/>
+
+{/* ABA TRASEIRA DIREITA */}
+
+<polygon
+points={`
+${220+aba+profundidade},${180+profundidade}
+${220+aba+(aba/2)+profundidade},${120+profundidade}
+${220+largura+profundidade},${180+profundidade}
+${220+aba+(aba/2)+profundidade},${180+(profundidade/2)}
+`}
+fill="#dca04d"
 stroke="#8b5c1c"
 strokeWidth="4"
 />
@@ -547,7 +571,7 @@ strokeWidth="3"
 
 <text
 x={220+(largura/2)}
-y={600}
+y={620}
 fill="#f5d800"
 fontSize="34"
 fontWeight="900"
