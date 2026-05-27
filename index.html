@@ -31,88 +31,204 @@ input{
 }
 
 input[type=number]::-webkit-inner-spin-button{
-  opacity:0.3;
-  filter:invert(1);
+  opacity:.4;
 }
 
-@keyframes fadeUp{
-  from{
-    opacity:0;
-    transform:translateY(20px);
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:420px 1fr;
+  gap:24px;
+}
+
+@media(max-width:980px){
+  .layout{
+    grid-template-columns:1fr;
   }
-  to{
-    opacity:1;
-    transform:translateY(0);
-  }
 }
 
-.fadeUp{
-  animation:fadeUp .4s ease;
+.card{
+  background:#0d0d0d;
+  border:1px solid #1f1f1f;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
 }
 
-/* MOCKUP */
-
-.mockup-wrap{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  margin-bottom:26px;
-  perspective:1200px;
-}
-
-.mockup-box{
-  position:relative;
-  transform-style:preserve-3d;
-  transition:0.4s ease;
-}
-
-.box-top{
-  position:absolute;
-  left:0;
-  top:0;
-  background:#facc15;
-  transform-origin:bottom;
-  animation:openTop 3s ease-in-out infinite;
-  border:2px solid #f5d800;
-}
-
-.box-front{
-  position:absolute;
-  left:0;
-  background:#d4a017;
-  border:2px solid #f5d800;
-}
-
-.box-side{
-  position:absolute;
-  top:0;
-  background:#b8860b;
-  border:2px solid #f5d800;
-}
-
-.measure{
-  position:absolute;
-  font-size:11px;
+.title{
+  font-size:12px;
   font-weight:800;
+  letter-spacing:.18em;
   color:#f5d800;
-  letter-spacing:0.12em;
+  margin-bottom:14px;
 }
 
-.line{
-  position:absolute;
+.grid3{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field label{
+  font-size:10px;
+  letter-spacing:.12em;
+  color:#777;
+  font-weight:700;
+}
+
+.field input{
+  background:#111;
+  border:1px solid #2a2a2a;
+  border-radius:10px;
+  padding:12px;
+  color:white;
+  font-size:20px;
+  font-weight:700;
+  outline:none;
+}
+
+.field input:focus{
+  border-color:#f5d800;
+}
+
+.result{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid #1a1a1a;
+}
+
+.result:last-child{
+  border:none;
+}
+
+.result span{
+  color:#888;
+  letter-spacing:.08em;
+  font-size:11px;
+}
+
+.result strong{
+  color:white;
+  font-size:18px;
+}
+
+.total{
+  margin-top:18px;
   background:#f5d800;
+  border-radius:16px;
+  padding:20px;
+  color:black;
 }
 
-@keyframes openTop{
+.total h2{
+  font-size:38px;
+  line-height:1;
+}
+
+.total p{
+  margin-top:8px;
+  font-weight:700;
+}
+
+.mockupCard{
+  background:
+  radial-gradient(circle at top,#202020,#0b0b0b 70%);
+  border:1px solid #1f1f1f;
+  border-radius:22px;
+  min-height:760px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.mockupScene{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.measureText{
+  fill:#f5d800;
+  font-size:15px;
+  font-weight:800;
+  letter-spacing:.1em;
+}
+
+.measureLine{
+  stroke:#f5d800;
+  stroke-width:2;
+}
+
+@keyframes flapLeft{
   0%{
     transform:rotateX(0deg);
   }
   50%{
-    transform:rotateX(-65deg);
+    transform:rotateX(-58deg);
   }
   100%{
     transform:rotateX(0deg);
   }
+}
+
+@keyframes flapRight{
+  0%{
+    transform:rotateX(0deg);
+  }
+  50%{
+    transform:rotateX(-48deg);
+  }
+  100%{
+    transform:rotateX(0deg);
+  }
+}
+
+.flap1{
+  transform-origin:bottom;
+  animation:flapLeft 2.8s ease-in-out infinite;
+}
+
+.flap2{
+  transform-origin:bottom;
+  animation:flapRight 2.8s ease-in-out infinite;
+}
+
+.header{
+  margin-bottom:20px;
+}
+
+.header h1{
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.header h1 span{
+  color:#f5d800;
+}
+
+.header p{
+  color:#666;
+  font-size:12px;
+  letter-spacing:.2em;
+  font-weight:700;
 }
 
 </style>
@@ -124,459 +240,414 @@ input[type=number]::-webkit-inner-spin-button{
 
 <script type="text/babel">
 
-const { useState, useMemo } = React;
+const {useState,useMemo}=React;
 
-const fmt = (n,d=2)=>
-  n.toLocaleString("pt-BR",{
-    minimumFractionDigits:d,
-    maximumFractionDigits:d
-  });
+const fmt=(n,d=2)=>
+n.toLocaleString("pt-BR",{
+minimumFractionDigits:d,
+maximumFractionDigits:d
+});
 
-const fmtBRL = (n)=>"R$ "+fmt(n,2);
+const brl=n=>"R$ "+fmt(n);
 
-function Field({
-  label,
-  value,
-  onChange,
-  unit,
-  step="any",
-  min=0
-}){
+function Field({label,value,onChange}){
 
-  return(
-    <div style={{
-      display:"flex",
-      flexDirection:"column",
-      gap:6
-    }}>
+return(
+<div className="field">
 
-      <label style={{
-        fontSize:10,
-        letterSpacing:"0.15em",
-        color:"#777",
-        fontWeight:800,
-        textTransform:"uppercase"
-      }}>
-        {label}
-      </label>
+<label>{label}</label>
 
-      <div style={{
-        display:"flex",
-        alignItems:"center",
-        background:"#111",
-        border:"1px solid #333",
-        borderRadius:8,
-        overflow:"hidden"
-      }}>
+<input
+type="number"
+value={value}
+onChange={e=>onChange(Number(e.target.value))}
+/>
 
-        <input
-          type="number"
-          min={min}
-          step={step}
-          value={value}
-          onChange={(e)=>onChange(Number(e.target.value))}
-          style={{
-            flex:1,
-            background:"transparent",
-            border:"none",
-            outline:"none",
-            color:"white",
-            padding:"12px",
-            fontSize:20,
-            fontWeight:700
-          }}
-        />
-
-        <span style={{
-          padding:"0 12px",
-          color:"#666",
-          fontSize:11,
-          fontWeight:700
-        }}>
-          {unit}
-        </span>
-
-      </div>
-
-    </div>
-  );
-
-}
-
-function CalcRow({label,result,last}){
-
-  return(
-    <div style={{
-      display:"flex",
-      justifyContent:"space-between",
-      padding:"12px 0",
-      borderBottom:last?"none":"1px solid #1a1a1a"
-    }}>
-
-      <span style={{
-        color:"#777",
-        fontSize:12,
-        letterSpacing:"0.1em",
-        textTransform:"uppercase",
-        fontWeight:700
-      }}>
-        {label}
-      </span>
-
-      <span style={{
-        fontSize:18,
-        fontWeight:800,
-        color:"#fff"
-      }}>
-        {result}
-      </span>
-
-    </div>
-  );
+</div>
+);
 
 }
 
 function App(){
 
-  const [comp,setComp]=useState(30);
-  const [larg,setLarg]=useState(20);
-  const [alt,setAlt]=useState(15);
-
-  const [gram,setGram]=useState(380);
-
-  const [precoVenda,setPrecoVenda]=useState(14);
-  const [precoCusto,setPrecoCusto]=useState(8);
+const [comp,setComp]=useState(30);
+const [larg,setLarg]=useState(20);
+const [alt,setAlt]=useState(15);
 
-  const [qtd,setQtd]=useState(100);
-
-  const calc = useMemo(()=>{
-
-    const c=Number(comp)||0;
-    const l=Number(larg)||0;
-    const a=Number(alt)||0;
-
-    const g=Number(gram)||0;
-
-    const pv=Number(precoVenda)||0;
-    const pc=Number(precoCusto)||0;
-
-    const q=Number(qtd)||0;
-
-    if(!c||!l||!a)return null;
-
-    const area=((c*l*a)/10000);
-
-    const peso=(area*g)/1000;
-
-    const custo=peso*pc;
-    const venda=peso*pv;
-    const lucro=venda-custo;
-
-    return{
-      custo,
-      venda,
-      lucro,
-      custoTotal:custo*q,
-      vendaTotal:venda*q,
-      lucroTotal:lucro*q,
-      margem:(lucro/venda)*100
-    };
-
-  },[
-    comp,
-    larg,
-    alt,
-    gram,
-    precoVenda,
-    precoCusto,
-    qtd
-  ]);
-
-  /* TAMANHO VISUAL */
-
-  const visualWidth = 120 + (comp*2);
-  const visualHeight = 80 + (alt*2);
-  const visualDepth = 60 + (larg*1.5);
-
-  return(
-
-    <div style={{
-      minHeight:"100vh",
-      paddingBottom:60
-    }}>
-
-      {/* HEADER */}
-
-      <div style={{
-        background:"#000",
-        borderBottom:"3px solid #f5d800",
-        padding:"18px 20px",
-        position:"sticky",
-        top:0,
-        zIndex:20
-      }}>
-
-        <div style={{
-          fontSize:34,
-          fontWeight:900,
-          letterSpacing:"0.08em"
-        }}>
-          YD <span style={{color:"#f5d800"}}>BOX</span>
-        </div>
-
-        <div style={{
-          color:"#555",
-          letterSpacing:"0.2em",
-          fontSize:11,
-          fontWeight:700
-        }}>
-          CALCULADORA DE PAPELÃO
-        </div>
-
-      </div>
-
-      <div style={{
-        maxWidth:700,
-        margin:"0 auto",
-        padding:"22px 16px"
-      }}>
-
-        {/* MOCKUP */}
-
-        <div className="mockup-wrap fadeUp">
-
-          <div
-            className="mockup-box"
-            style={{
-              width:visualWidth,
-              height:visualHeight
-            }}
-          >
-
-            {/* TAMPA */}
-
-            <div
-              className="box-top"
-              style={{
-                width:visualWidth,
-                height:visualDepth/2,
-                transform:`translateY(-${visualDepth/2}px) skewX(-45deg)`
-              }}
-            />
-
-            {/* FRENTE */}
-
-            <div
-              className="box-front"
-              style={{
-                width:visualWidth,
-                height:visualHeight,
-                top:0
-              }}
-            />
-
-            {/* LATERAL */}
-
-            <div
-              className="box-side"
-              style={{
-                width:visualDepth,
-                height:visualHeight,
-                right:-visualDepth,
-                transform:"skewY(-45deg)",
-                transformOrigin:"left"
-              }}
-            />
-
-            {/* MEDIDAS */}
-
-            <div
-              className="measure"
-              style={{
-                bottom:-28,
-                left:"50%",
-                transform:"translateX(-50%)"
-              }}
-            >
-              COMPRIMENTO {comp}cm
-            </div>
-
-            <div
-              className="line"
-              style={{
-                width:visualWidth,
-                height:2,
-                bottom:-10,
-                left:0
-              }}
-            />
-
-            <div
-              className="measure"
-              style={{
-                right:-80,
-                top:"50%",
-                transform:"translateY(-50%) rotate(90deg)"
-              }}
-            >
-              ALTURA {alt}cm
-            </div>
-
-            <div
-              className="line"
-              style={{
-                width:2,
-                height:visualHeight,
-                right:-15,
-                top:0
-              }}
-            />
-
-            <div
-              className="measure"
-              style={{
-                top:-50,
-                right:-40
-              }}
-            >
-              LARGURA {larg}cm
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* CAMPOS */}
-
-        <div style={{
-          display:"grid",
-          gridTemplateColumns:"1fr 1fr 1fr",
-          gap:12,
-          marginBottom:16
-        }}>
-
-          <Field
-            label="Comprimento"
-            value={comp}
-            onChange={setComp}
-            unit="cm"
-          />
-
-          <Field
-            label="Largura"
-            value={larg}
-            onChange={setLarg}
-            unit="cm"
-          />
-
-          <Field
-            label="Altura"
-            value={alt}
-            onChange={setAlt}
-            unit="cm"
-          />
-
-        </div>
-
-        <div style={{
-          display:"grid",
-          gridTemplateColumns:"1fr 1fr 1fr",
-          gap:12,
-          marginBottom:16
-        }}>
-
-          <Field
-            label="Gramatura"
-            value={gram}
-            onChange={setGram}
-            unit="g/m²"
-          />
-
-          <Field
-            label="Venda"
-            value={precoVenda}
-            onChange={setPrecoVenda}
-            unit="R$/kg"
-          />
-
-          <Field
-            label="Custo"
-            value={precoCusto}
-            onChange={setPrecoCusto}
-            unit="R$/kg"
-          />
-
-        </div>
-
-        <Field
-          label="Quantidade"
-          value={qtd}
-          onChange={setQtd}
-          unit="un"
-          step="1"
-        />
-
-        {/* RESULTADOS */}
-
-        {calc && (
-
-          <div className="fadeUp">
-
-            <div style={{
-              marginTop:24,
-              background:"#0d0d0d",
-              border:"1px solid #222",
-              borderRadius:12,
-              padding:"0 18px"
-            }}>
-
-              <CalcRow
-                label="Custo por caixa"
-                result={fmtBRL(calc.custo)}
-              />
-
-              <CalcRow
-                label="Venda por caixa"
-                result={fmtBRL(calc.venda)}
-              />
-
-              <CalcRow
-                label="Lucro por caixa"
-                result={fmtBRL(calc.lucro)}
-              />
-
-              <CalcRow
-                label="Custo Total"
-                result={fmtBRL(calc.custoTotal)}
-              />
-
-              <CalcRow
-                label="Venda Total"
-                result={fmtBRL(calc.vendaTotal)}
-              />
-
-              <CalcRow
-                label="Lucro Total"
-                result={fmtBRL(calc.lucroTotal)}
-              />
-
-              <CalcRow
-                label="Margem"
-                result={fmt(calc.margem,1)+"%"}
-                last
-              />
-
-            </div>
-
-          </div>
-
-        )}
-
-      </div>
-
-    </div>
-
-  );
+const [gram,setGram]=useState(380);
+const [pv,setPv]=useState(14);
+const [pc,setPc]=useState(8);
+
+const [qtd,setQtd]=useState(100);
+
+const calc=useMemo(()=>{
+
+const c=Number(comp)||0;
+const l=Number(larg)||0;
+const a=Number(alt)||0;
+const g=Number(gram)||0;
+
+const area=((c*l)+(a*c)+(a*l))/10000;
+
+const peso=(area*g)/1000;
+
+const custo=peso*pc;
+const venda=peso*pv;
+const lucro=venda-custo;
+
+return{
+peso,
+custo,
+venda,
+lucro,
+custoTotal:custo*qtd,
+vendaTotal:venda*qtd,
+lucroTotal:lucro*qtd,
+margem:(lucro/venda)*100
+};
+
+},[
+comp,
+larg,
+alt,
+gram,
+pv,
+pc,
+qtd
+]);
+
+/* ESCALA */
+
+const width=220+(comp*2.5);
+const depth=120+(larg*2);
+const height=140+(alt*2);
+
+return(
+
+<div className="container">
+
+<div className="header">
+<h1>YD <span>BOX</span></h1>
+<p>CALCULADORA DE PAPELÃO</p>
+</div>
+
+<div className="layout">
+
+<div>
+
+<div className="card">
+
+<div className="title">
+MEDIDAS DA CAIXA
+</div>
+
+<div className="grid3">
+
+<Field
+label="COMPRIMENTO"
+value={comp}
+onChange={setComp}
+/>
+
+<Field
+label="LARGURA"
+value={larg}
+onChange={setLarg}
+/>
+
+<Field
+label="ALTURA"
+value={alt}
+onChange={setAlt}
+/>
+
+</div>
+
+</div>
+
+<div className="card">
+
+<div className="title">
+MATERIAL
+</div>
+
+<div className="grid3">
+
+<Field
+label="GRAMATURA"
+value={gram}
+onChange={setGram}
+/>
+
+<Field
+label="VENDA R$/KG"
+value={pv}
+onChange={setPv}
+/>
+
+<Field
+label="CUSTO R$/KG"
+value={pc}
+onChange={setPc}
+/>
+
+</div>
+
+</div>
+
+<div className="card">
+
+<div className="title">
+QUANTIDADE
+</div>
+
+<Field
+label="UNIDADES"
+value={qtd}
+onChange={setQtd}
+/>
+
+</div>
+
+<div className="card">
+
+<div className="title">
+RESULTADOS
+</div>
+
+<div className="result">
+<span>PESO POR CAIXA</span>
+<strong>{fmt(calc.peso,4)} kg</strong>
+</div>
+
+<div className="result">
+<span>CUSTO UNITÁRIO</span>
+<strong>{brl(calc.custo)}</strong>
+</div>
+
+<div className="result">
+<span>VENDA UNITÁRIA</span>
+<strong>{brl(calc.venda)}</strong>
+</div>
+
+<div className="result">
+<span>LUCRO UNITÁRIO</span>
+<strong>{brl(calc.lucro)}</strong>
+</div>
+
+<div className="result">
+<span>MARGEM</span>
+<strong>{fmt(calc.margem,1)}%</strong>
+</div>
+
+</div>
+
+<div className="total">
+
+<div style={{
+fontWeight:800,
+letterSpacing:'.1em'
+}}>
+TOTAL DO PEDIDO
+</div>
+
+<h2>{brl(calc.vendaTotal)}</h2>
+
+<p>
+Lucro total: {brl(calc.lucroTotal)}
+</p>
+
+</div>
+
+</div>
+
+<div className="mockupCard">
+
+<div className="mockupScene">
+
+<svg
+width="760"
+height="620"
+viewBox="0 0 760 620"
+>
+
+{/* SOMBRA */}
+
+<ellipse
+cx="390"
+cy="520"
+rx="190"
+ry="40"
+fill="rgba(0,0,0,.45)"
+/>
+
+{/* TAMPA ESQUERDA */}
+
+<g className="flap1">
+
+<polygon
+points={`
+240,180
+390,120
+390,220
+240,280
+`}
+fill="#d7a043"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+</g>
+
+{/* TAMPA DIREITA */}
+
+<g className="flap2">
+
+<polygon
+points={`
+390,120
+540,180
+540,280
+390,220
+`}
+fill="#e2b154"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+</g>
+
+{/* LATERAL ESQUERDA */}
+
+<polygon
+points={`
+240,280
+390,220
+390,430
+240,490
+`}
+fill="#b77b2d"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+{/* LATERAL DIREITA */}
+
+<polygon
+points={`
+390,220
+540,280
+540,490
+390,430
+`}
+fill="#9f6722"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+{/* FRENTE */}
+
+<polygon
+points={`
+240,280
+390,340
+540,280
+390,220
+`}
+fill="#cf9538"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+{/* FUNDO */}
+
+<polygon
+points={`
+240,280
+390,340
+390,550
+240,490
+`}
+fill="#c28734"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+<polygon
+points={`
+390,340
+540,280
+540,490
+390,550
+`}
+fill="#b37529"
+stroke="#8a5a14"
+strokeWidth="3"
+/>
+
+{/* MEDIDAS */}
+
+<line
+x1="220"
+y1="525"
+x2="560"
+y2="525"
+className="measureLine"
+/>
+
+<text
+x="390"
+y="550"
+textAnchor="middle"
+className="measureText"
+>
+COMPRIMENTO {comp}cm
+</text>
+
+<line
+x1="575"
+y1="250"
+x2="575"
+y2="500"
+className="measureLine"
+/>
+
+<text
+x="610"
+y="380"
+transform="rotate(90 610 380)"
+className="measureText"
+>
+ALTURA {alt}cm
+</text>
+
+<line
+x1="300"
+y1="130"
+x2="520"
+y2="210"
+className="measureLine"
+/>
+
+<text
+x="470"
+y="120"
+className="measureText"
+>
+LARGURA {larg}cm
+</text>
+
+</svg>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+);
 
 }
 
