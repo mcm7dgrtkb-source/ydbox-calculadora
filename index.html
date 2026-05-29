@@ -1,487 +1,623 @@
-import { useState, useMemo, useRef, useCallback } from "react";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#000000"/>
+<title>YD BOX — Calculadora Avançada</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ background:#080808; font-family:'Barlow Condensed',sans-serif; color:white; }
+input,textarea,select{
+  width:100%; background:#111; border:1px solid #2b2b2b;
+  border-radius:10px; padding:14px; color:white; font-size:17px;
+  font-family:'Barlow Condensed'; outline:none; transition:border-color 0.2s;
+}
+input:focus,textarea:focus,select:focus{ border-color:#f5d800; }
+input.error,select.error{ border-color:#ff5a5a !important; }
+select{
+  appearance:none;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23f5d800' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center; background-size:16px; cursor:pointer;
+}
+textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-height:1.5; }
+.container{ max-width:1280px; margin:auto; padding:20px; }
+.header{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  margin-bottom:28px; border-bottom:2px solid #f5d800; padding-bottom:18px;
+}
+.logo{ font-size:44px; font-weight:900; line-height:1; }
+.logo span{ color:#f5d800; }
+.subtitle{ color:#444; font-size:11px; letter-spacing:4px; margin-top:4px; }
+.header-actions{ display:flex; gap:10px; align-items:center; }
+.header-date{ color:#333; font-size:12px; }
+.grid{ display:grid; grid-template-columns:420px 1fr; gap:28px; }
+.card{ background:#0d0d0d; border:1px solid #222; border-radius:18px; padding:22px; margin-bottom:18px; }
+.card-highlight{ background:#11110b; border:1px dashed #f5d800; border-radius:18px; padding:22px; margin-bottom:18px; }
+.section-title{ font-size:11px; letter-spacing:3px; color:#f5d800; margin-bottom:14px; font-weight:900; }
+.fields-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+.fields-2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.label{ margin-bottom:5px; color:#666; font-size:11px; letter-spacing:1px; font-weight:700; }
+.label.error-label{ color:#ff5a5a; }
+.error-msg{ color:#ff5a5a; font-size:11px; font-weight:700; margin-top:4px; }
+.result{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px solid #1a1a1a; }
+.result:last-child{ border:none; }
+.result-name{ color:#666; font-size:15px; }
+.result-value{ font-weight:900; color:#f5d800; font-size:15px; }
+.total-box{ background:#000; border:2px solid #f5d800; border-radius:18px; padding:20px; }
+.total-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px; }
+.total-item{ background:#111; border-radius:12px; padding:16px 10px; text-align:center; }
+.total-item h3{ color:#555; font-size:11px; margin-bottom:6px; letter-spacing:2px; }
+.total-item p{ font-size:18px; font-weight:900; }
+.mat-info{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:12px; }
+.mat-info-item{ background:#1a1a10; border-radius:8px; padding:8px 12px; text-align:center; }
+.mat-info-item span{ display:block; font-size:10px; color:#555; margin-bottom:3px; }
+.mat-info-item strong{ font-size:15px; font-weight:900; color:#f5d800; }
+.mockup{
+  background:#0d0d0d; border:1px solid #222; border-radius:18px;
+  min-height:700px; display:flex; flex-direction:column;
+  padding:16px 20px; position:relative; overflow:hidden;
+}
+.mockup-bg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; }
+.mockup-controls{ display:flex; gap:8px; z-index:10; margin-bottom:10px; }
+.mockup-canvas{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  z-index:2; cursor:grab; overflow:hidden;
+}
+.mockup-canvas:active{ cursor:grabbing; }
+.mockup-desc{ background:#111; border:1px solid #1f1f1f; border-radius:12px; padding:16px; margin-top:12px; z-index:5; }
+.mockup-desc h4{ color:#f5d800; font-size:11px; letter-spacing:2px; margin-bottom:8px; font-weight:900; }
+.btn{
+  background:#111; border:1px solid #333; color:white;
+  padding:8px 14px; border-radius:8px; cursor:pointer;
+  font-family:'Barlow Condensed'; font-size:14px; font-weight:900;
+  letter-spacing:1px; transition:all 0.15s; user-select:none;
+}
+.btn:hover{ border-color:#f5d800; color:#f5d800; }
+.btn-yellow{ background:#f5d800; border-color:#f5d800; color:#000; }
+.btn-yellow:hover{ background:#000; color:#f5d800; }
+.summary-section{
+  background:#0a0a0a; border:1px solid #222; border-radius:18px;
+  padding:28px; margin-top:28px;
+}
+.summary-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.summary-item{ background:#111; border-radius:10px; padding:12px 16px; }
+.summary-item span{ display:block; font-size:10px; color:#555; margin-bottom:4px; letter-spacing:1px; }
+.summary-item strong{ font-size:16px; font-weight:900; color:#fff; }
+.summary-desc{ margin-top:16px; color:#555; font-size:14px; line-height:1.5; border-top:1px solid #1a1a1a; padding-top:14px; }
+/* Modal */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,0.88);
+  z-index:999; display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.modal{
+  background:#0d0d0d; border:1px solid #f5d800; border-radius:18px;
+  padding:28px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto;
+}
+.modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.modal-header h2{ color:#f5d800; font-size:18px; letter-spacing:3px; font-weight:900; }
+.modal-close{ background:none; border:none; color:#666; font-size:22px; cursor:pointer; line-height:1; }
+.modal-close:hover{ color:#fff; }
+.modal-tipo{ font-size:11px; color:#f5d800; letter-spacing:3px; margin-bottom:12px; font-weight:900; }
+.modal-mat{ background:#111; border-radius:10px; padding:14px; margin-bottom:10px; }
+.modal-mat-label{ color:#aaa; font-size:13px; margin-bottom:10px; font-weight:700; }
+.modal-fields{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+.modal-field-label{ color:#555; font-size:11px; margin-bottom:4px; }
+.modal-input{
+  width:100%; background:#0a0a0a; border:1px solid #333; border-radius:8px;
+  padding:8px 10px; color:white; font-size:15px; font-family:'Barlow Condensed'; outline:none;
+}
+.modal-input:focus{ border-color:#f5d800; }
+.modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+.empty-state{ color:#444; font-size:14px; text-align:center; padding:20px 0; }
+.footer{ text-align:center; color:#222; font-size:12px; margin-top:28px; letter-spacing:2px; padding-bottom:20px; }
+/* PDF */
+#pdf-template{ display:none; }
+@media(max-width:900px){
+  .grid{ grid-template-columns:1fr; }
+  .mockup{ min-height:520px; }
+  .summary-grid{ grid-template-columns:1fr 1fr; }
+}
+@media(max-width:500px){
+  .fields-3{ grid-template-columns:1fr 1fr; }
+  .total-grid{ grid-template-columns:1fr; }
+  .summary-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
 
-// ─── Formatação ────────────────────────────────────────────────
-const fmt = (n, d = 2) => Number(n).toLocaleString("pt-BR", { minimumFractionDigits: d, maximumFractionDigits: d });
-const money = (n) => "R$ " + fmt(n);
+<script type="text/babel">
+const {useState, useMemo, useEffect, useRef, useCallback} = React;
 
-// ─── Dados padrão ─────────────────────────────────────────────
-const defaultMateriais = {
-  duplex: [
-    { label: "290g (3.8 Coluna)", gramatura: 290, custo: 8.79, venda: 17.58 },
-    { label: "355g (4.2 Coluna)", gramatura: 355, custo: 7.10, venda: 14.20 },
+const fmt = (n, d=2) => Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = (n) => 'R$ ' + fmt(n);
+const today = new Date().toLocaleDateString('pt-BR');
+
+const DEFAULT_MATERIAIS = {
+  duplex:[
+    {label:'290g (3.8 Coluna)', gramatura:290, custo:8.79, venda:17.58},
+    {label:'355g (4.2 Coluna)', gramatura:355, custo:7.10, venda:14.20},
   ],
-  triplex: [
-    { label: "470g (6.5 Coluna)", gramatura: 470, custo: 8.79, venda: 17.58 },
-    { label: "610g (7.0 Coluna)", gramatura: 610, custo: 7.10, venda: 14.20 },
+  triplex:[
+    {label:'470g (6.5 Coluna)', gramatura:470, custo:8.79, venda:17.58},
+    {label:'610g (7.0 Coluna)', gramatura:610, custo:7.10, venda:14.20},
   ],
 };
 
-// ─── Validação ────────────────────────────────────────────────
-function validar(comp, larg, alt, qtd) {
-  const erros = {};
-  if (!comp || comp <= 0) erros.comp = "Mínimo 1mm";
-  if (comp > 5000) erros.comp = "Máx. 5000mm";
-  if (!larg || larg <= 0) erros.larg = "Mínimo 1mm";
-  if (larg > 5000) erros.larg = "Máx. 5000mm";
-  if (!alt || alt <= 0) erros.alt = "Mínimo 1mm";
-  if (alt > 5000) erros.alt = "Máx. 5000mm";
-  if (!qtd || qtd <= 0) erros.qtd = "Mínimo 1 unidade";
-  if (qtd > 1000000) erros.qtd = "Máx. 1.000.000 un";
-  return erros;
+function validar(comp, larg, alt, qtd){
+  const e = {};
+  const c=Number(comp), l=Number(larg), a=Number(alt), q=Number(qtd);
+  if(!comp || c<=0) e.comp='Mínimo 1mm'; else if(c>5000) e.comp='Máx. 5000mm';
+  if(!larg || l<=0) e.larg='Mínimo 1mm'; else if(l>5000) e.larg='Máx. 5000mm';
+  if(!alt  || a<=0) e.alt ='Mínimo 1mm'; else if(a>5000) e.alt ='Máx. 5000mm';
+  if(!qtd  || q<=0) e.qtd ='Mínimo 1 un'; else if(q>1000000) e.qtd='Máx. 1.000.000';
+  return e;
 }
 
-// ─── 3D Box SVG ───────────────────────────────────────────────
-function BoxSVG({ w: cNum, h: lNum, d: aNum }) {
-  const maxDim = Math.max(cNum, lNum, aNum, 1);
-  const scale = 200 / maxDim;
-  const w = cNum * scale, d = lNum * scale, h = aNum * scale;
-  const flapSize = d / 2;
-  const cx = 450, cy = 370;
-
+/* ── 3D Box SVG ─────────────────────────────── */
+function BoxSVG({w:cNum, h:lNum, d:aNum}){
+  const maxDim = Math.max(cNum,lNum,aNum,1);
+  const sc = 200/maxDim;
+  const w=cNum*sc, d=lNum*sc, h=aNum*sc;
+  const fl=d/2, cx=450, cy=370;
   return (
     <g>
       <defs>
-        <linearGradient id="topGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#f5c842" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#c8893d" stopOpacity="0.9" />
-        </linearGradient>
-        <linearGradient id="shadowOverlay" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#000" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="#000" stopOpacity="0" />
+        <linearGradient id="shad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#000" stopOpacity="0.55"/>
+          <stop offset="100%" stopColor="#000" stopOpacity="0"/>
         </linearGradient>
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-          <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
       </defs>
-
-      {/* Base (top face) */}
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="#6a3b08" stroke="#42240380" strokeWidth="1.5" />
-      {/* Left face */}
-      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`} fill="#7d470d" />
-      {/* Right face */}
-      <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`} fill="#8e5313" />
-      {/* Shadow overlay */}
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="url(#shadowOverlay)" />
-      {/* Back flaps */}
-      <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d-flapSize},${cy-w/2-d/2-h-flapSize/2} ${cx-w-flapSize},${cy-w/2-h-flapSize/2}`} fill="#a06320" stroke="#73420f80" strokeWidth="1.5" />
-      <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d+flapSize},${cy-w/2-d/2-h-flapSize/2} ${cx+d+flapSize},${cy-d/2-h-flapSize/2}`} fill="#ad6d25" stroke="#73420f80" strokeWidth="1.5" />
-      {/* Front faces */}
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="#c8893d" stroke="#8b5c1c" strokeWidth="2.5" />
-      <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="#b67831" stroke="#8b5c1c" strokeWidth="2.5" />
-      {/* Front flaps */}
-      <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w-flapSize},${cy-w/2-h+flapSize/2} ${cx-flapSize},${cy-h+flapSize/2}`} fill="#dca04d" stroke="#8b5c1c" strokeWidth="2" />
-      <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d+flapSize},${cy-d/2-h+flapSize/2} ${cx+flapSize},${cy-h+flapSize/2}`} fill="#e4aa57" stroke="#8b5c1c" strokeWidth="2" />
-
-      {/* Dimension labels */}
-      <text x={cx - w/2} y={cy + 50} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{cNum} mm</text>
-      <text x={cx + d/2 + 50} y={cy - d/4 + 40} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{lNum} mm</text>
-      <g transform={`translate(${cx - w - 45}, ${cy - w/2 - h/2})`}>
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="#6a3b08" stroke="#42240360" strokeWidth="1.5"/>
+      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`} fill="#7d470d"/>
+      <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`} fill="#8e5313"/>
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="url(#shad)"/>
+      <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d-fl},${cy-w/2-d/2-h-fl/2} ${cx-w-fl},${cy-w/2-h-fl/2}`} fill="#a06320" stroke="#73420f60" strokeWidth="1.5"/>
+      <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d+fl},${cy-w/2-d/2-h-fl/2} ${cx+d+fl},${cy-d/2-h-fl/2}`} fill="#ad6d25" stroke="#73420f60" strokeWidth="1.5"/>
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="#c8893d" stroke="#8b5c1c" strokeWidth="2.5"/>
+      <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="#b67831" stroke="#8b5c1c" strokeWidth="2.5"/>
+      <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w-fl},${cy-w/2-h+fl/2} ${cx-fl},${cy-h+fl/2}`} fill="#dca04d" stroke="#8b5c1c" strokeWidth="2"/>
+      <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d+fl},${cy-d/2-h+fl/2} ${cx+fl},${cy-h+fl/2}`} fill="#e4aa57" stroke="#8b5c1c" strokeWidth="2"/>
+      <text x={cx-w/2} y={cy+50} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{cNum} mm</text>
+      <text x={cx+d/2+50} y={cy-d/4+40} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{lNum} mm</text>
+      <g transform={`translate(${cx-w-45},${cy-w/2-h/2})`}>
         <text fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" transform="rotate(-90)" filter="url(#glow)">{aNum} mm</text>
       </g>
     </g>
   );
 }
 
-// ─── Campo de input com erro ────────────────────────────────────
-function Field({ label, value, onChange, error, suffix = "mm", min = 1, max = 5000 }) {
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <label style={{ fontSize: 11, letterSpacing: "2px", color: error ? "#ff5a5a" : "#666", fontWeight: 800 }}>{label}</label>
-      <div style={{ position: "relative" }}>
-        <input
-          type="number"
-          value={value}
-          min={min}
-          max={max}
-          onChange={e => onChange(e.target.value === "" ? "" : Number(e.target.value))}
-          style={{
-            width: "100%", background: "#111", border: `1px solid ${error ? "#ff5a5a" : "#2b2b2b"}`,
-            borderRadius: 10, padding: "12px 14px", color: "white", fontSize: 17,
-            fontFamily: "'Barlow Condensed', sans-serif", outline: "none",
-            transition: "border-color 0.2s",
-          }}
-          onFocus={e => { if (!error) e.target.style.borderColor = "#f5d800"; }}
-          onBlur={e => { if (!error) e.target.style.borderColor = "#2b2b2b"; }}
-        />
-        {suffix && (
-          <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", color: "#444", fontSize: 13, pointerEvents: "none" }}>
-            {suffix}
-          </span>
-        )}
-      </div>
-      {error && <span style={{ color: "#ff5a5a", fontSize: 11, fontWeight: 700 }}>⚠ {error}</span>}
-    </div>
-  );
-}
-
-// ─── Modal de preços ────────────────────────────────────────────
-function PrecosModal({ materiais, onSave, onClose }) {
+/* ── Modal de Preços ────────────────────────── */
+function PrecosModal({materiais, onSave, onClose}){
   const [local, setLocal] = useState(JSON.parse(JSON.stringify(materiais)));
-
-  const update = (tipo, idx, campo, val) => {
+  const upd = (tipo,idx,campo,val) => {
     const cp = JSON.parse(JSON.stringify(local));
-    cp[tipo][idx][campo] = parseFloat(val) || 0;
+    cp[tipo][idx][campo] = parseFloat(val)||0;
     setLocal(cp);
   };
-
   return (
-    <div style={{
-      position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 999,
-      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
-    }}>
-      <div style={{
-        background: "#0d0d0d", border: "1px solid #f5d800", borderRadius: 18,
-        padding: 28, maxWidth: 560, width: "100%", maxHeight: "90vh", overflowY: "auto",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ color: "#f5d800", fontSize: 18, letterSpacing: 3, fontWeight: 900 }}>EDITAR PREÇOS</h2>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "#666", fontSize: 22, cursor: "pointer" }}>✕</button>
+    <div className="modal-overlay" onClick={(e)=>{ if(e.target===e.currentTarget) onClose(); }}>
+      <div className="modal">
+        <div className="modal-header">
+          <h2>EDITAR PREÇOS</h2>
+          <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-
-        {["duplex", "triplex"].map(tipo => (
-          <div key={tipo} style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, marginBottom: 12, fontWeight: 800 }}>
-              {tipo.toUpperCase()}
-            </div>
-            {local[tipo].map((item, idx) => (
-              <div key={idx} style={{ background: "#111", borderRadius: 10, padding: 14, marginBottom: 10 }}>
-                <div style={{ color: "#aaa", fontSize: 13, marginBottom: 10, fontWeight: 700 }}>{item.label}</div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
-                  <div>
-                    <div style={{ color: "#555", fontSize: 11, marginBottom: 4 }}>GRAMATURA (g)</div>
-                    <input type="number" value={item.gramatura} onChange={e => update(tipo, idx, "gramatura", e.target.value)}
-                      style={{ width: "100%", background: "#0a0a0a", border: "1px solid #333", borderRadius: 8, padding: "8px 10px", color: "white", fontSize: 15, fontFamily: "'Barlow Condensed',sans-serif", outline: "none" }} />
-                  </div>
-                  <div>
-                    <div style={{ color: "#555", fontSize: 11, marginBottom: 4 }}>CUSTO (R$/kg)</div>
-                    <input type="number" step="0.01" value={item.custo} onChange={e => update(tipo, idx, "custo", e.target.value)}
-                      style={{ width: "100%", background: "#0a0a0a", border: "1px solid #333", borderRadius: 8, padding: "8px 10px", color: "white", fontSize: 15, fontFamily: "'Barlow Condensed',sans-serif", outline: "none" }} />
-                  </div>
-                  <div>
-                    <div style={{ color: "#555", fontSize: 11, marginBottom: 4 }}>VENDA (R$/kg)</div>
-                    <input type="number" step="0.01" value={item.venda} onChange={e => update(tipo, idx, "venda", e.target.value)}
-                      style={{ width: "100%", background: "#0a0a0a", border: "1px solid #333", borderRadius: 8, padding: "8px 10px", color: "white", fontSize: 15, fontFamily: "'Barlow Condensed',sans-serif", outline: "none" }} />
-                  </div>
+        {['duplex','triplex'].map(tipo=>(
+          <div key={tipo} style={{marginBottom:24}}>
+            <div className="modal-tipo">{tipo.toUpperCase()}</div>
+            {local[tipo].map((item,idx)=>(
+              <div className="modal-mat" key={idx}>
+                <div className="modal-mat-label">{item.label}</div>
+                <div className="modal-fields">
+                  {[['Gramatura (g)','gramatura'],['Custo R$/kg','custo'],['Venda R$/kg','venda']].map(([lbl,campo])=>(
+                    <div key={campo}>
+                      <div className="modal-field-label">{lbl}</div>
+                      <input className="modal-input" type="number" step="0.01" value={item[campo]}
+                        onChange={e=>upd(tipo,idx,campo,e.target.value)}/>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
           </div>
         ))}
-
-        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", marginTop: 10 }}>
-          <button onClick={onClose} style={{ background: "#1a1a1a", border: "1px solid #333", color: "#aaa", padding: "10px 20px", borderRadius: 10, cursor: "pointer", fontFamily: "'Barlow Condensed',sans-serif", fontSize: 15, fontWeight: 700 }}>Cancelar</button>
-          <button onClick={() => { onSave(local); onClose(); }}
-            style={{ background: "#f5d800", border: "none", color: "#000", padding: "10px 24px", borderRadius: 10, cursor: "pointer", fontFamily: "'Barlow Condensed',sans-serif", fontSize: 15, fontWeight: 900 }}>
-            Salvar Preços
-          </button>
+        <div className="modal-actions">
+          <button className="btn" onClick={onClose}>Cancelar</button>
+          <button className="btn btn-yellow" onClick={()=>{onSave(local);onClose();}}>Salvar Preços</button>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── App principal ─────────────────────────────────────────────
-export default function App() {
-  const [comp, setComp] = useState(300);
-  const [larg, setLarg] = useState(200);
-  const [alt, setAlt] = useState(150);
-  const [qtd, setQtd] = useState(100);
-  const [cliente, setCliente] = useState("");
-  const [pedido, setPedido] = useState("");
-  const [onda, setOnda] = useState("duplex");
-  const [materiais, setMateriais] = useState(defaultMateriais);
-  const [matIdx, setMatIdx] = useState(0);
-  const [manualDesc, setManualDesc] = useState("Caixa de Papelão Ondulado Estruturada no Formato Maleta Normal RSC. Ideal para empacotamento, envios logísticos estáveis e armazenamento seguro.");
-  const [showPrecos, setShowPrecos] = useState(false);
-  const [touched, setTouched] = useState({});
-
-  // Drag
-  const [zoom, setZoom] = useState(1.0);
-  const [pos, setPos] = useState({ x: 0, y: 0 });
-  const dragging = useRef(false);
-  const dragOrigin = useRef({ x: 0, y: 0 });
-
-  const materialSel = materiais[onda][matIdx] ?? materiais[onda][0];
-
-  const erros = validar(comp, larg, alt, qtd);
-  const hasErrors = Object.keys(erros).length > 0;
-
-  const calc = useMemo(() => {
-    const c = Math.max(Number(comp) || 0, 0);
-    const l = Math.max(Number(larg) || 0, 0);
-    const a = Math.max(Number(alt) || 0, 0);
-    const q = Math.max(Number(qtd) || 0, 0);
-    if (!c || !l || !a || !q) return null;
-    const { gramatura, custo: pc, venda: pv } = materialSel;
-    const cVar = c + 4, lVar = l + 4;
-    const devH = (2 * cVar) + (2 * lVar) + 30;
-    const devV = a + lVar / 2 + cVar / 2;
-    const areaMm2 = devH * devV;
-    const areaM2 = areaMm2 / 1_000_000;
-    const pesoKg = (areaM2 * gramatura) / 1000;
-    const custoU = pesoKg * pc;
-    const vendaU = pesoKg * pv;
-    const lucroU = vendaU - custoU;
-    return {
-      areaMm2,
-      pesoGramas: pesoKg * 1000,
-      pesoTotalKg: pesoKg * q,
-      custoTotal: custoU * q,
-      vendaTotal: vendaU * q,
-      lucroTotal: lucroU * q,
-      margem: vendaU > 0 ? (lucroU / vendaU) * 100 : 0,
-    };
-  }, [comp, larg, alt, qtd, materialSel]);
-
-  // Drag handlers (fixed — usando ref para estado de dragging)
-  const startDrag = useCallback((e) => {
-    dragging.current = true;
-    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-    const cy = e.touches ? e.touches[0].clientY : e.clientY;
-    dragOrigin.current = { x: cx - pos.x, y: cy - pos.y };
-  }, [pos]);
-
-  const onDrag = useCallback((e) => {
-    if (!dragging.current) return;
-    e.preventDefault?.();
-    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-    const cy = e.touches ? e.touches[0].clientY : e.clientY;
-    setPos({ x: cx - dragOrigin.current.x, y: cy - dragOrigin.current.y });
-  }, []);
-
-  const stopDrag = useCallback(() => { dragging.current = false; }, []);
-
-  const mark = (field) => setTouched(t => ({ ...t, [field]: true }));
-
-  const inputStyle = (err) => ({
-    width: "100%", background: "#111", border: `1px solid ${err ? "#ff5a5a" : "#2b2b2b"}`,
-    borderRadius: 10, padding: "12px 14px", color: "white", fontSize: 17,
-    fontFamily: "'Barlow Condensed', sans-serif", outline: "none",
-  });
-
-  const ResultRow = ({ label, value, accent }) => (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid #1a1a1a" }}>
-      <span style={{ color: "#666", fontSize: 15 }}>{label}</span>
-      <span style={{ fontWeight: 900, color: accent || "#f5d800", fontSize: 15 }}>{value}</span>
+/* ── Campo com validação ─────────────────────── */
+function Field({label, value, onChange, onBlur, error, suffix='mm'}){
+  return (
+    <div>
+      <div className={'label'+(error?' error-label':'')}>{label}</div>
+      <div style={{position:'relative'}}>
+        <input type="number" value={value} className={error?'error':''}
+          onChange={e=>onChange(e.target.value===''?'':Number(e.target.value))}
+          onBlur={onBlur}
+          style={{paddingRight: suffix?'40px':'14px'}}/>
+        {suffix&&<span style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',color:'#444',fontSize:13,pointerEvents:'none'}}>{suffix}</span>}
+      </div>
+      {error&&<div className="error-msg">⚠ {error}</div>}
     </div>
   );
+}
 
-  const Btn = ({ children, onClick, yellow, small }) => (
-    <button onClick={onClick} style={{
-      background: yellow ? "#f5d800" : "#111", border: `1px solid ${yellow ? "#f5d800" : "#333"}`,
-      color: yellow ? "#000" : "#fff", padding: small ? "7px 12px" : "9px 16px",
-      borderRadius: 8, cursor: "pointer", fontFamily: "'Barlow Condensed',sans-serif",
-      fontSize: small ? 13 : 15, fontWeight: 900, letterSpacing: 1,
-      transition: "all 0.15s",
-    }}>
-      {children}
-    </button>
-  );
+/* ── App ────────────────────────────────────── */
+function App(){
+  const [comp,setComp]=useState(300);
+  const [larg,setLarg]=useState(200);
+  const [alt,setAlt]=useState(150);
+  const [qtd,setQtd]=useState(100);
+  const [cliente,setCliente]=useState('');
+  const [pedido,setPedido]=useState('');
+  const [onda,setOnda]=useState('duplex');
+  const [matIdx,setMatIdx]=useState(0);
+  const [materiais,setMateriais]=useState(DEFAULT_MATERIAIS);
+  const [desc,setDesc]=useState('Caixa de Papelão Ondulado Estruturada no Formato Maleta Normal RSC. Ideal para empacotamento, envios logísticos estáveis e armazenamento seguro.');
+  const [showPrecos,setShowPrecos]=useState(false);
+  const [touched,setTouched]=useState({});
 
-  const today = new Date().toLocaleDateString("pt-BR");
+  // Drag & Zoom
+  const [zoom,setZoom]=useState(1.0);
+  const [pos,setPos]=useState({x:0,y:0});
+  const dragging=useRef(false);
+  const dragOrigin=useRef({x:0,y:0});
+  const posRef=useRef({x:0,y:0});
+
+  useEffect(()=>{ posRef.current=pos; },[pos]);
+  useEffect(()=>{ setMatIdx(0); },[onda]);
+
+  const mat = materiais[onda][matIdx] ?? materiais[onda][0];
+  const erros = validar(comp,larg,alt,qtd);
+  const hasErrors = Object.keys(erros).length>0;
+  const mark = (f) => setTouched(t=>({...t,[f]:true}));
+  const markAll = () => setTouched({comp:true,larg:true,alt:true,qtd:true});
+
+  const calc = useMemo(()=>{
+    const c=Math.max(Number(comp)||0,0), l=Math.max(Number(larg)||0,0);
+    const a=Math.max(Number(alt)||0,0), q=Math.max(Number(qtd)||0,0);
+    if(!c||!l||!a||!q) return null;
+    const {gramatura,custo:pc,venda:pv}=mat;
+    const cV=c+4, lV=l+4;
+    const devH=(2*cV)+(2*lV)+30;
+    const devV=a+(lV/2)+(cV/2);
+    const areaMm2=devH*devV;
+    const pesoKg=(areaMm2/1_000_000)*gramatura/1000;
+    const cu=pesoKg*pc, vu=pesoKg*pv, lu=vu-cu;
+    return {
+      areaMm2, pesoGramas:pesoKg*1000, pesoTotalKg:pesoKg*q,
+      custoTotal:cu*q, vendaTotal:vu*q, lucroTotal:lu*q,
+      margem: vu>0?(lu/vu)*100:0
+    };
+  },[comp,larg,alt,qtd,mat]);
+
+  // Drag handlers
+  const startDrag = useCallback((e)=>{
+    dragging.current=true;
+    const cx=e.touches?e.touches[0].clientX:e.clientX;
+    const cy=e.touches?e.touches[0].clientY:e.clientY;
+    dragOrigin.current={x:cx-posRef.current.x, y:cy-posRef.current.y};
+  },[]);
+
+  const onDrag = useCallback((e)=>{
+    if(!dragging.current) return;
+    if(e.preventDefault) e.preventDefault();
+    const cx=e.touches?e.touches[0].clientX:e.clientX;
+    const cy=e.touches?e.touches[0].clientY:e.clientY;
+    setPos({x:cx-dragOrigin.current.x, y:cy-dragOrigin.current.y});
+  },[]);
+
+  const stopDrag = useCallback(()=>{ dragging.current=false; },[]);
+
+  const margemColor = calc ? (calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a') : '#f5d800';
+
+  const exportPDF = () => {
+    if(hasErrors){ markAll(); return; }
+    const el = document.getElementById('pdf-template');
+    el.style.display='block';
+    const opt={
+      margin:8, filename:`Orcamento_YD_BOX_${comp}x${larg}x${alt}.pdf`,
+      image:{type:'jpeg',quality:0.98},
+      html2canvas:{scale:2,backgroundColor:'#080808',useCORS:true},
+      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+    };
+    html2pdf().set(opt).from(el).save().then(()=>{ el.style.display='none'; });
+  };
 
   return (
-    <div style={{ background: "#080808", minHeight: "100vh", fontFamily: "'Barlow Condensed', sans-serif", color: "white", padding: 20 }}>
+    <div className="container">
 
-      {showPrecos && (
-        <PrecosModal materiais={materiais} onSave={(m) => { setMateriais(m); setMatIdx(0); }} onClose={() => setShowPrecos(false)} />
-      )}
+      {showPrecos && <PrecosModal materiais={materiais} onSave={setMateriais} onClose={()=>setShowPrecos(false)}/>}
 
       {/* HEADER */}
-      <div style={{ maxWidth: 1280, margin: "0 auto 28px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", borderBottom: "2px solid #f5d800", paddingBottom: 18 }}>
+      <div className="header">
         <div>
-          <div style={{ fontSize: 44, fontWeight: 900, lineHeight: 1 }}>YD <span style={{ color: "#f5d800" }}>BOX</span></div>
-          <div style={{ color: "#444", fontSize: 11, letterSpacing: 4, marginTop: 4 }}>CALCULADORA DE PAPELÃO ONDULADO</div>
+          <div className="logo">YD <span>BOX</span></div>
+          <div className="subtitle">CALCULADORA DE PAPELÃO ONDULADO</div>
         </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <span style={{ color: "#333", fontSize: 12 }}>{today}</span>
-          <Btn onClick={() => setShowPrecos(true)}>⚙ Editar Preços</Btn>
+        <div className="header-actions">
+          <span className="header-date">{today}</span>
+          <button className="btn" onClick={()=>setShowPrecos(true)}>⚙ Editar Preços</button>
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", display: "grid", gridTemplateColumns: "420px 1fr", gap: 28 }}>
+      <div className="grid">
 
         {/* ── COLUNA ESQUERDA ── */}
         <div>
 
-          {/* Cliente / Pedido */}
-          <div style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 18, padding: 22, marginBottom: 18 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 14 }}>IDENTIFICAÇÃO DO PEDIDO</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {/* Identificação */}
+          <div className="card">
+            <div className="section-title">IDENTIFICAÇÃO DO PEDIDO</div>
+            <div className="fields-2">
               <div>
-                <div style={{ fontSize: 11, color: "#555", marginBottom: 5, letterSpacing: 1 }}>CLIENTE</div>
-                <input value={cliente} onChange={e => setCliente(e.target.value)} placeholder="Nome do cliente" style={{ ...inputStyle(false), fontSize: 15 }} />
+                <div className="label">CLIENTE</div>
+                <input type="text" value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nome do cliente"/>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "#555", marginBottom: 5, letterSpacing: 1 }}>Nº DO PEDIDO</div>
-                <input value={pedido} onChange={e => setPedido(e.target.value)} placeholder="Ex: PED-2026-001" style={{ ...inputStyle(false), fontSize: 15 }} />
+                <div className="label">Nº DO PEDIDO</div>
+                <input type="text" value={pedido} onChange={e=>setPedido(e.target.value)} placeholder="Ex: PED-2026-001"/>
               </div>
             </div>
           </div>
 
           {/* Medidas */}
-          <div style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 18, padding: 22, marginBottom: 18 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 14 }}>MEDIDAS (EM MILÍMETROS)</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-              <Field label="COMPRIMENTO" value={comp} error={touched.comp && erros.comp}
-                onChange={v => { setComp(v); mark("comp"); }} />
-              <Field label="LARGURA" value={larg} error={touched.larg && erros.larg}
-                onChange={v => { setLarg(v); mark("larg"); }} />
-              <Field label="ALTURA" value={alt} error={touched.alt && erros.alt}
-                onChange={v => { setAlt(v); mark("alt"); }} />
+          <div className="card">
+            <div className="section-title">MEDIDAS (EM MILÍMETROS)</div>
+            <div className="fields-3">
+              <Field label="COMPRIMENTO" value={comp} error={touched.comp&&erros.comp}
+                onChange={v=>{setComp(v);mark('comp');}} onBlur={()=>mark('comp')}/>
+              <Field label="LARGURA" value={larg} error={touched.larg&&erros.larg}
+                onChange={v=>{setLarg(v);mark('larg');}} onBlur={()=>mark('larg')}/>
+              <Field label="ALTURA" value={alt} error={touched.alt&&erros.alt}
+                onChange={v=>{setAlt(v);mark('alt');}} onBlur={()=>mark('alt')}/>
             </div>
           </div>
 
           {/* Material */}
-          <div style={{ background: "#11110b", border: "1px dashed #f5d800", borderRadius: 18, padding: 22, marginBottom: 18 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="card-highlight">
+            <div className="section-title" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
               <span>ESTRUTURA DO MATERIAL</span>
-              <span style={{ fontSize: 10, background: "#ccaa00", color: "#000", padding: "2px 8px", borderRadius: 4, fontWeight: 900 }}>SELECIONE:</span>
+              <span style={{fontSize:10,background:'#ccaa00',color:'#000',padding:'2px 8px',borderRadius:4,fontWeight:900}}>SELECIONE:</span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="fields-2">
               <div>
-                <div style={{ fontSize: 11, color: "#777", marginBottom: 5 }}>TIPO DE ONDA</div>
-                <select value={onda} onChange={e => { setOnda(e.target.value); setMatIdx(0); }}
-                  style={{ ...inputStyle(false), appearance: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5d800' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center", cursor: "pointer", background: "#1a1a12", borderColor: "#f5d800" }}>
+                <div className="label">TIPO DE ONDA</div>
+                <select value={onda} onChange={e=>setOnda(e.target.value)}
+                  style={{background:'#1a1a12',borderColor:'#f5d800'}}>
                   <option value="duplex">Duplex (Uma onda)</option>
                   <option value="triplex">Triplex (Duas ondas)</option>
                 </select>
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "#777", marginBottom: 5 }}>ESPECIFICAÇÃO</div>
-                <select value={matIdx} onChange={e => setMatIdx(Number(e.target.value))}
-                  style={{ ...inputStyle(false), appearance: "none", backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f5d800' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center", cursor: "pointer", background: "#1a1a12", borderColor: "#f5d800" }}>
-                  {materiais[onda].map((item, idx) => (
+                <div className="label">ESPECIFICAÇÃO</div>
+                <select value={matIdx} onChange={e=>setMatIdx(Number(e.target.value))}
+                  style={{background:'#1a1a12',borderColor:'#f5d800'}}>
+                  {materiais[onda].map((item,idx)=>(
                     <option key={idx} value={idx}>{item.label}</option>
                   ))}
                 </select>
               </div>
             </div>
-            <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-              {[["Gramatura", materialSel.gramatura + "g"], ["Custo/kg", money(materialSel.custo)], ["Venda/kg", money(materialSel.venda)]].map(([k, v]) => (
-                <div key={k} style={{ background: "#1a1a10", borderRadius: 8, padding: "8px 12px", textAlign: "center" }}>
-                  <div style={{ fontSize: 10, color: "#555", marginBottom: 3 }}>{k}</div>
-                  <div style={{ fontSize: 15, fontWeight: 900, color: "#f5d800" }}>{v}</div>
-                </div>
+            <div className="mat-info">
+              {[['Gramatura',mat.gramatura+'g'],[`Custo/kg`,money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
+                <div className="mat-info-item" key={k}><span>{k}</span><strong>{v}</strong></div>
               ))}
             </div>
           </div>
 
           {/* Quantidade */}
-          <div style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 18, padding: 22, marginBottom: 18 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 14 }}>QUANTIDADE</div>
-            <Field label="UNIDADES" value={qtd} suffix="un" min={1} max={1000000}
-              error={touched.qtd && erros.qtd} onChange={v => { setQtd(v); mark("qtd"); }} />
+          <div className="card">
+            <div className="section-title">QUANTIDADE</div>
+            <Field label="UNIDADES" value={qtd} suffix="un" error={touched.qtd&&erros.qtd}
+              onChange={v=>{setQtd(v);mark('qtd');}} onBlur={()=>mark('qtd')}/>
           </div>
 
           {/* Cálculo */}
-          <div style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 18, padding: 22, marginBottom: 18 }}>
-            <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 14 }}>CÁLCULO</div>
-            {hasErrors && Object.keys(touched).length > 0 ? (
-              <div style={{ color: "#ff5a5a", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
+          <div className="card">
+            <div className="section-title">CÁLCULO</div>
+            {hasErrors && Object.keys(touched).length>0 ? (
+              <div style={{color:'#ff5a5a',fontSize:14,textAlign:'center',padding:'18px 0'}}>
                 ⚠ Corrija os campos destacados para ver os resultados.
               </div>
             ) : calc ? (
               <>
-                <ResultRow label="Estrutura Aplicada" value={`${onda.toUpperCase()} (${materialSel.gramatura}g)`} />
-                <ResultRow label="Área Total" value={`${fmt(calc.areaMm2, 0)} mm²`} />
-                <ResultRow label="Peso por Caixa" value={`${fmt(calc.pesoGramas)} g`} />
-                <ResultRow label="Peso Total do Pedido" value={`${fmt(calc.pesoTotalKg)} kg`} />
-                <ResultRow label="Margem de Lucro" value={`${fmt(calc.margem)}%`} accent={calc.margem > 30 ? "#4dcc7a" : calc.margem > 15 ? "#f5d800" : "#ff7a5a"} />
+                <div className="result">
+                  <span className="result-name">Estrutura Aplicada</span>
+                  <span className="result-value" style={{textTransform:'uppercase'}}>{onda} ({mat.gramatura}g)</span>
+                </div>
+                <div className="result">
+                  <span className="result-name">Área Total</span>
+                  <span className="result-value">{fmt(calc.areaMm2,0)} mm²</span>
+                </div>
+                <div className="result">
+                  <span className="result-name">Peso por Caixa</span>
+                  <span className="result-value">{fmt(calc.pesoGramas)} g</span>
+                </div>
+                <div className="result">
+                  <span className="result-name">Peso Total do Pedido</span>
+                  <span className="result-value">{fmt(calc.pesoTotalKg)} kg</span>
+                </div>
+                <div className="result">
+                  <span className="result-name">Margem de Lucro</span>
+                  <span className="result-value" style={{color:margemColor}}>{fmt(calc.margem)}%</span>
+                </div>
               </>
             ) : (
-              <div style={{ color: "#444", fontSize: 14, textAlign: "center", padding: "20px 0" }}>Preencha as medidas para calcular.</div>
+              <div className="empty-state">Preencha as medidas para calcular.</div>
             )}
           </div>
 
           {/* Totais */}
-          <div style={{ background: "#000", border: "2px solid #f5d800", borderRadius: 18, padding: 20 }}>
-            <h2 style={{ fontSize: 24, fontWeight: 900, marginBottom: 16 }}>TOTAL DO PEDIDO</h2>
+          <div className="total-box">
+            <h2 style={{fontSize:26,fontWeight:900}}>TOTAL DO PEDIDO</h2>
             {calc ? (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-                {[["CUSTO", money(calc.custoTotal), "#999"], ["VENDA", money(calc.vendaTotal), "#f5d800"], ["LUCRO", money(calc.lucroTotal), "#4dcc7a"]].map(([l, v, c]) => (
-                  <div key={l} style={{ background: "#111", borderRadius: 12, padding: "16px 10px", textAlign: "center" }}>
-                    <div style={{ color: "#555", fontSize: 11, marginBottom: 6, letterSpacing: 2 }}>{l}</div>
-                    <div style={{ fontSize: 18, fontWeight: 900, color: c }}>{v}</div>
-                  </div>
-                ))}
+              <div className="total-grid">
+                <div className="total-item"><h3>CUSTO</h3><p style={{color:'#999'}}>{money(calc.custoTotal)}</p></div>
+                <div className="total-item"><h3>VENDA</h3><p style={{color:'#f5d800'}}>{money(calc.vendaTotal)}</p></div>
+                <div className="total-item"><h3>LUCRO</h3><p style={{color:'#4dcc7a'}}>{money(calc.lucroTotal)}</p></div>
               </div>
             ) : (
-              <div style={{ color: "#333", textAlign: "center", padding: 20, fontSize: 14 }}>—</div>
+              <div style={{color:'#333',textAlign:'center',padding:'20px 0',fontSize:14}}>—</div>
             )}
           </div>
+
         </div>
 
-        {/* ── COLUNA DIREITA — VISUALIZADOR ── */}
-        <div style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 18, minHeight: 700, display: "flex", flexDirection: "column", padding: "20px 20px 16px", position: "relative", overflow: "hidden" }}>
-
-          {/* Fundo decorativo */}
-          <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 1 }} viewBox="0 0 800 600" preserveAspectRatio="none">
-            <line x1="-50" y1="100" x2="850" y2="400" stroke="#000" strokeWidth="5" opacity="0.4" />
-            <line x1="200" y1="-50" x2="600" y2="650" stroke="#000" strokeWidth="3" opacity="0.3" />
-            <line x1="0" y1="500" x2="800" y2="100" stroke="#fff" strokeWidth="1" strokeDasharray="5,5" opacity="0.08" />
-            <circle cx="400" cy="300" r="200" fill="none" stroke="#f5d800" strokeWidth="1" strokeDasharray="4,10" opacity="0.08" />
-            <line x1="50" y1="650" x2="850" y2="-50" stroke="#f5d800" strokeWidth="1.5" opacity="0.12" />
+        {/* ── COLUNA DIREITA ── */}
+        <div className="mockup">
+          <svg className="mockup-bg" viewBox="0 0 800 600" preserveAspectRatio="none">
+            <line x1="-50" y1="100" x2="850" y2="400" stroke="#000" strokeWidth="5" opacity="0.4"/>
+            <line x1="200" y1="-50" x2="600" y2="650" stroke="#000" strokeWidth="3" opacity="0.3"/>
+            <line x1="0" y1="500" x2="800" y2="100" stroke="#fff" strokeWidth="1" strokeDasharray="5,5" opacity="0.07"/>
+            <circle cx="400" cy="300" r="200" fill="none" stroke="#f5d800" strokeWidth="1" strokeDasharray="4,10" opacity="0.07"/>
+            <line x1="50" y1="650" x2="850" y2="-50" stroke="#f5d800" strokeWidth="1.5" opacity="0.12"/>
           </svg>
 
-          {/* Controles */}
-          <div style={{ display: "flex", gap: 8, zIndex: 10, marginBottom: 10 }}>
-            <Btn small onClick={() => setZoom(z => Math.min(z + 0.15, 2.2))}>Zoom +</Btn>
-            <Btn small onClick={() => setZoom(z => Math.max(z - 0.15, 0.4))}>Zoom −</Btn>
-            <Btn small onClick={() => { setZoom(1); setPos({ x: 0, y: 0 }); }}>Reset</Btn>
+          <div className="mockup-controls">
+            <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.2))}>Zoom +</button>
+            <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.4))}>Zoom −</button>
+            <button className="btn" onClick={()=>{setZoom(1);setPos({x:0,y:0});}}>Reset</button>
+            <button className="btn btn-yellow" onClick={exportPDF}>Exportar PDF</button>
           </div>
 
-          {/* Canvas 3D */}
-          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, cursor: "grab", overflow: "hidden" }}
+          <div className="mockup-canvas"
             onMouseDown={startDrag} onMouseMove={onDrag} onMouseUp={stopDrag} onMouseLeave={stopDrag}
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
-            <svg viewBox="0 0 900 700" style={{ width: "100%", maxWidth: 700, userSelect: "none", transform: `translate(${pos.x}px, ${pos.y}px) scale(${zoom})`, transition: "transform 0.08s ease-out" }}>
-              <BoxSVG w={Math.max(Number(comp) || 1, 1)} h={Math.max(Number(larg) || 1, 1)} d={Math.max(Number(alt) || 1, 1)} />
+            <svg viewBox="0 0 900 700" style={{
+              width:'100%', maxWidth:700, userSelect:'none',
+              transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,
+              transition:'transform 0.08s ease-out'
+            }}>
+              <BoxSVG
+                w={Math.max(Number(comp)||1,1)}
+                h={Math.max(Number(larg)||1,1)}
+                d={Math.max(Number(alt)||1,1)}
+              />
             </svg>
           </div>
 
-          {/* Descrição editável */}
-          <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 12, padding: 16, marginTop: 12, zIndex: 5 }}>
-            <div style={{ color: "#f5d800", fontSize: 11, letterSpacing: 2, fontWeight: 900, marginBottom: 8 }}>ESPECIFICAÇÕES DO MODELO (EDITÁVEL)</div>
-            <textarea value={manualDesc} onChange={e => setManualDesc(e.target.value)}
-              style={{ width: "100%", background: "transparent", border: "none", color: "#888", fontSize: 14, fontFamily: "'Barlow Condensed',sans-serif", resize: "vertical", minHeight: 72, outline: "none", lineHeight: 1.5 }} />
+          <div className="mockup-desc">
+            <h4>ESPECIFICAÇÕES DO MODELO (EDITÁVEL)</h4>
+            <textarea value={desc} onChange={e=>setDesc(e.target.value)}
+              placeholder="Escreva aqui a descrição técnica ou observações comerciais da caixa..."/>
           </div>
         </div>
+
       </div>
 
-      {/* RESUMO PDF (visível na tela como seção de impressão) */}
+      {/* RESUMO */}
       {calc && (
-        <div style={{ maxWidth: 1280, margin: "28px auto 0", background: "#0a0a0a", border: "1px solid #222", borderRadius: 18, padding: 28 }}>
-          <div style={{ fontSize: 11, color: "#f5d800", letterSpacing: 3, fontWeight: 900, marginBottom: 18 }}>RESUMO DO ORÇAMENTO</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16 }}>
+        <div className="summary-section">
+          <div className="section-title">RESUMO DO ORÇAMENTO</div>
+          <div className="summary-grid">
             {[
-              ["Cliente", cliente || "—"],
-              ["Pedido", pedido || "—"],
-              ["Dimensões", `${comp} × ${larg} × ${alt} mm`],
-              ["Quantidade", `${fmt(qtd, 0)} un`],
-              ["Material", `${onda} — ${materialSel.label}`],
-              ["Peso total", `${fmt(calc.pesoTotalKg)} kg`],
-              ["Custo total", money(calc.custoTotal)],
-              ["Venda total", money(calc.vendaTotal)],
-            ].map(([l, v]) => (
-              <div key={l} style={{ background: "#111", borderRadius: 10, padding: "12px 16px" }}>
-                <div style={{ fontSize: 10, color: "#555", marginBottom: 4, letterSpacing: 1 }}>{l.toUpperCase()}</div>
-                <div style={{ fontWeight: 900, fontSize: 16, color: "#fff" }}>{v}</div>
+              ['Cliente', cliente||'—'],
+              ['Pedido', pedido||'—'],
+              ['Dimensões', `${comp} × ${larg} × ${alt} mm`],
+              ['Quantidade', `${fmt(qtd,0)} un`],
+              ['Material', `${onda} — ${mat.label}`],
+              ['Peso total', `${fmt(calc.pesoTotalKg)} kg`],
+              ['Custo total', money(calc.custoTotal)],
+              ['Venda total', money(calc.vendaTotal)],
+            ].map(([l,v])=>(
+              <div className="summary-item" key={l}>
+                <span>{l.toUpperCase()}</span>
+                <strong>{v}</strong>
               </div>
             ))}
           </div>
-          {manualDesc && (
-            <div style={{ marginTop: 16, color: "#555", fontSize: 14, lineHeight: 1.5, borderTop: "1px solid #1a1a1a", paddingTop: 14 }}>
-              {manualDesc}
-            </div>
-          )}
+          {desc && <div className="summary-desc">{desc}</div>}
         </div>
       )}
 
-      <div style={{ textAlign: "center", color: "#222", fontSize: 12, marginTop: 28, letterSpacing: 2 }}>
-        YD BOX © 2026 — Desenvolvido por Douglas Lima
+      <div className="footer">YD BOX © 2026 — Desenvolvido por Douglas Lima</div>
+
+      {/* PDF TEMPLATE */}
+      <div id="pdf-template" style={{background:'#080808',color:'#fff',fontFamily:'sans-serif',padding:'15px',width:'190mm',margin:'0 auto'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'2px solid #f5d800',paddingBottom:'10px',marginBottom:'15px'}}>
+          <div>
+            <h1 style={{fontSize:'28px',fontWeight:'900',color:'#fff',margin:0}}>YD <span style={{color:'#f5d800'}}>BOX</span></h1>
+            <p style={{fontSize:'10px',color:'#666',letterSpacing:'2px',marginTop:'2px'}}>RELATÓRIO TÉCNICO DE ORÇAMENTO</p>
+          </div>
+          {(cliente||pedido) && (
+            <div style={{textAlign:'right'}}>
+              {cliente && <p style={{fontSize:'14px',fontWeight:'900',color:'#fff',margin:'0 0 2px'}}>{cliente}</p>}
+              {pedido  && <p style={{fontSize:'12px',color:'#f5d800',margin:0}}>{pedido}</p>}
+              <p style={{fontSize:'11px',color:'#444',margin:'4px 0 0'}}>{today}</p>
+            </div>
+          )}
+        </div>
+
+        {calc && (
+          <>
+            <div style={{background:'#0d0d0d',border:'1px solid #222',padding:'12px',borderRadius:'10px',marginBottom:'12px'}}>
+              <h3 style={{color:'#f5d800',fontSize:'12px',marginBottom:'8px',letterSpacing:'1px'}}>DADOS E DIMENSÕES</h3>
+              <table style={{width:'100%',borderCollapse:'collapse',color:'#ccc',fontSize:'13px'}}>
+                <tbody>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Dimensões:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#fff'}}>{comp}mm × {larg}mm × {alt}mm</td></tr>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Estrutura / Onda:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#f5d800',textTransform:'uppercase'}}>{onda} — {mat.label}</td></tr>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Área de Desenvolvimento:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.areaMm2,0)} mm²</td></tr>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Peso Unitário:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.pesoGramas)} g</td></tr>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Quantidade:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#fff'}}>{fmt(qtd,0)} un</td></tr>
+                  <tr><td style={{padding:'4px 0',color:'#777'}}>Peso Bruto Total:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.pesoTotalKg)} kg</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{background:'#000',border:'2px solid #f5d800',padding:'12px',borderRadius:'10px',marginBottom:'12px'}}>
+              <div style={{display:'flex',justifyContent:'space-around',textAlign:'center'}}>
+                <div><span style={{fontSize:'10px',color:'#666',display:'block'}}>CUSTO INDÚSTRIA</span><span style={{fontSize:'18px',color:'#aaa',fontWeight:'bold'}}>{money(calc.custoTotal)}</span></div>
+                <div><span style={{fontSize:'10px',color:'#f5d800',display:'block'}}>VALOR DE VENDA</span><span style={{fontSize:'18px',color:'#f5d800',fontWeight:'bold'}}>{money(calc.vendaTotal)}</span></div>
+                <div><span style={{fontSize:'10px',color:'#4dcc7a',display:'block'}}>LUCRO ESTIMADO</span><span style={{fontSize:'18px',color:'#4dcc7a',fontWeight:'bold'}}>{money(calc.lucroTotal)}</span></div>
+              </div>
+            </div>
+
+            {desc && (
+              <div style={{background:'#0d0d0d',border:'1px solid #222',padding:'10px',borderRadius:'10px',marginBottom:'12px'}}>
+                <h3 style={{color:'#f5d800',fontSize:'11px',marginBottom:'4px'}}>DESCRIÇÃO COMERCIAL</h3>
+                <p style={{fontSize:'13px',color:'#ccc',lineHeight:'1.4',margin:0}}>{desc}</p>
+              </div>
+            )}
+
+            <h3 style={{color:'#f5d800',fontSize:'11px',marginBottom:'6px',letterSpacing:'1px'}}>PERSPECTIVA 3D</h3>
+            <div style={{background:'#0d0d0d',border:'1px solid #222',borderRadius:'10px',padding:'10px',display:'flex',justifyContent:'center',alignItems:'center'}}>
+              <div style={{width:'64%'}}>
+                <svg viewBox="0 0 900 700" style={{width:'100%',height:'auto',display:'block',margin:'0 auto'}}>
+                  <BoxSVG w={Math.max(Number(comp)||1,1)} h={Math.max(Number(larg)||1,1)} d={Math.max(Number(alt)||1,1)}/>
+                </svg>
+              </div>
+            </div>
+          </>
+        )}
+
+        <p style={{marginTop:'15px',fontSize:'11px',color:'#444',textAlign:'center',lineHeight:'1.3'}}>
+          Documento técnico digital emitido pela plataforma YD BOX — {today}<br/>
+          Dimensões baseadas em testes estruturais com tolerância técnica padrão.
+        </p>
       </div>
+
     </div>
   );
 }
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
