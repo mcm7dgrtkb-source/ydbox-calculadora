@@ -8,7 +8,7 @@
 <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -327,18 +327,22 @@ function App(){
 
   const margemColor = calc ? (calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a') : '#f5d800';
 
-  const exportPDF = () => {
+  const exportIMG = () => {
     if(hasErrors){ markAll(); return; }
     const el = document.getElementById('pdf-template');
-    el.style.display='block';
-    const opt={
-      margin:[10,10,10,10],
-      filename:`Orcamento_YD_BOX_${comp}x${larg}x${alt}.pdf`,
-      image:{type:'png',quality:1},
-      html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false},
-      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
-    };
-    html2pdf().set(opt).from(el).save().then(()=>{ el.style.display='none'; });
+    el.style.display = 'block';
+    html2canvas(el, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      logging: false,
+    }).then(canvas => {
+      el.style.display = 'none';
+      const link = document.createElement('a');
+      link.download = `Orcamento_YD_BOX_${comp}x${larg}x${alt}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
   };
 
   return (
@@ -495,7 +499,7 @@ function App(){
             <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.2))}>Zoom +</button>
             <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.4))}>Zoom −</button>
             <button className="btn" onClick={()=>{setZoom(1);setPos({x:0,y:0});}}>Reset</button>
-            <button className="btn btn-yellow" onClick={exportPDF}>Exportar PDF</button>
+            <button className="btn btn-yellow" onClick={exportIMG}>⬇ Exportar Imagem</button>
           </div>
 
           <div className="mockup-canvas"
