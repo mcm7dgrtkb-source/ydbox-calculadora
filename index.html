@@ -332,9 +332,10 @@ function App(){
     const el = document.getElementById('pdf-template');
     el.style.display='block';
     const opt={
-      margin:8, filename:`Orcamento_YD_BOX_${comp}x${larg}x${alt}.pdf`,
-      image:{type:'jpeg',quality:0.98},
-      html2canvas:{scale:2,backgroundColor:'#080808',useCORS:true},
+      margin:[10,10,10,10],
+      filename:`Orcamento_YD_BOX_${comp}x${larg}x${alt}.pdf`,
+      image:{type:'png',quality:1},
+      html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false},
       jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
     };
     html2pdf().set(opt).from(el).save().then(()=>{ el.style.display='none'; });
@@ -549,68 +550,134 @@ function App(){
 
       <div className="footer">YD BOX © 2026 — Desenvolvido por Douglas Lima</div>
 
-      {/* PDF TEMPLATE */}
-      <div id="pdf-template" style={{background:'#080808',color:'#fff',fontFamily:'sans-serif',padding:'15px',width:'190mm',margin:'0 auto'}}>
-        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',borderBottom:'2px solid #f5d800',paddingBottom:'10px',marginBottom:'15px'}}>
+      {/* PDF TEMPLATE — fundo branco para renderização correta */}
+      <div id="pdf-template" style={{
+        background:'#ffffff', color:'#111', fontFamily:"'Barlow Condensed',sans-serif",
+        padding:'20px', width:'190mm', margin:'0 auto', fontSize:'13px'
+      }}>
+
+        {/* Cabeçalho */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',
+          borderBottom:'3px solid #f5d800',paddingBottom:'12px',marginBottom:'16px'}}>
           <div>
-            <h1 style={{fontSize:'28px',fontWeight:'900',color:'#fff',margin:0}}>YD <span style={{color:'#f5d800'}}>BOX</span></h1>
-            <p style={{fontSize:'10px',color:'#666',letterSpacing:'2px',marginTop:'2px'}}>RELATÓRIO TÉCNICO DE ORÇAMENTO</p>
-          </div>
-          {(cliente||pedido) && (
-            <div style={{textAlign:'right'}}>
-              {cliente && <p style={{fontSize:'14px',fontWeight:'900',color:'#fff',margin:'0 0 2px'}}>{cliente}</p>}
-              {pedido  && <p style={{fontSize:'12px',color:'#f5d800',margin:0}}>{pedido}</p>}
-              <p style={{fontSize:'11px',color:'#444',margin:'4px 0 0'}}>{today}</p>
+            <div style={{fontSize:'34px',fontWeight:'900',lineHeight:1,color:'#111'}}>
+              YD <span style={{color:'#f5d800'}}>BOX</span>
             </div>
-          )}
+            <div style={{fontSize:'10px',color:'#999',letterSpacing:'3px',marginTop:'3px'}}>
+              RELATÓRIO TÉCNICO DE ORÇAMENTO
+            </div>
+          </div>
+          <div style={{textAlign:'right'}}>
+            {cliente && <div style={{fontSize:'15px',fontWeight:'900',color:'#111'}}>{cliente}</div>}
+            {pedido  && <div style={{fontSize:'12px',color:'#b89000',fontWeight:'700'}}>{pedido}</div>}
+            <div style={{fontSize:'11px',color:'#aaa',marginTop:'4px'}}>{today}</div>
+          </div>
         </div>
 
         {calc && (
           <>
-            <div style={{background:'#0d0d0d',border:'1px solid #222',padding:'12px',borderRadius:'10px',marginBottom:'12px'}}>
-              <h3 style={{color:'#f5d800',fontSize:'12px',marginBottom:'8px',letterSpacing:'1px'}}>DADOS E DIMENSÕES</h3>
-              <table style={{width:'100%',borderCollapse:'collapse',color:'#ccc',fontSize:'13px'}}>
-                <tbody>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Dimensões:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#fff'}}>{comp}mm × {larg}mm × {alt}mm</td></tr>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Estrutura / Onda:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#f5d800',textTransform:'uppercase'}}>{onda} — {mat.label}</td></tr>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Área de Desenvolvimento:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.areaMm2,0)} mm²</td></tr>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Peso Unitário:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.pesoGramas)} g</td></tr>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Quantidade:</td><td style={{textAlign:'right',fontWeight:'bold',color:'#fff'}}>{fmt(qtd,0)} un</td></tr>
-                  <tr><td style={{padding:'4px 0',color:'#777'}}>Peso Bruto Total:</td><td style={{textAlign:'right',fontWeight:'bold'}}>{fmt(calc.pesoTotalKg)} kg</td></tr>
-                </tbody>
-              </table>
-            </div>
+            {/* Layout duas colunas: dados + desenho */}
+            <div style={{display:'flex',gap:'16px',marginBottom:'14px',alignItems:'flex-start'}}>
 
-            <div style={{background:'#000',border:'2px solid #f5d800',padding:'12px',borderRadius:'10px',marginBottom:'12px'}}>
-              <div style={{display:'flex',justifyContent:'space-around',textAlign:'center'}}>
-                <div><span style={{fontSize:'10px',color:'#666',display:'block'}}>CUSTO INDÚSTRIA</span><span style={{fontSize:'18px',color:'#aaa',fontWeight:'bold'}}>{money(calc.custoTotal)}</span></div>
-                <div><span style={{fontSize:'10px',color:'#f5d800',display:'block'}}>VALOR DE VENDA</span><span style={{fontSize:'18px',color:'#f5d800',fontWeight:'bold'}}>{money(calc.vendaTotal)}</span></div>
-                <div><span style={{fontSize:'10px',color:'#4dcc7a',display:'block'}}>LUCRO ESTIMADO</span><span style={{fontSize:'18px',color:'#4dcc7a',fontWeight:'bold'}}>{money(calc.lucroTotal)}</span></div>
+              {/* Coluna dados */}
+              <div style={{flex:'1'}}>
+                <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'10px',padding:'14px',marginBottom:'12px'}}>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'10px',borderBottom:'1px solid #e8e8e8',paddingBottom:'6px'}}>
+                    DIMENSÕES E MATERIAL
+                  </div>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:'13px'}}>
+                    <tbody>
+                      {[
+                        ['Comprimento', comp+' mm'],
+                        ['Largura',     larg+' mm'],
+                        ['Altura',      alt+' mm'],
+                        ['Estrutura',   onda.toUpperCase()+' — '+mat.label],
+                        ['Gramatura',   mat.gramatura+' g/m²'],
+                        ['Quantidade',  fmt(qtd,0)+' unidades'],
+                      ].map(([l,v])=>(
+                        <tr key={l} style={{borderBottom:'1px solid #f0f0f0'}}>
+                          <td style={{padding:'5px 0',color:'#888',width:'48%'}}>{l}</td>
+                          <td style={{padding:'5px 0',fontWeight:'700',color:'#111',textAlign:'right'}}>{v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'10px',padding:'14px'}}>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'10px',borderBottom:'1px solid #e8e8e8',paddingBottom:'6px'}}>
+                    DADOS TÉCNICOS
+                  </div>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:'13px'}}>
+                    <tbody>
+                      {[
+                        ['Área de Desenvolvimento', fmt(calc.areaMm2,0)+' mm²'],
+                        ['Peso por Caixa',          fmt(calc.pesoGramas)+' g'],
+                        ['Peso Total do Lote',      fmt(calc.pesoTotalKg)+' kg'],
+                        ['Margem de Lucro',         fmt(calc.margem)+'%'],
+                      ].map(([l,v])=>(
+                        <tr key={l} style={{borderBottom:'1px solid #f0f0f0'}}>
+                          <td style={{padding:'5px 0',color:'#888',width:'60%'}}>{l}</td>
+                          <td style={{padding:'5px 0',fontWeight:'700',color:'#111',textAlign:'right'}}>{v}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Coluna desenho 3D */}
+              <div style={{width:'240px',flexShrink:0}}>
+                <div style={{background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'10px',padding:'10px'}}>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'8px',textAlign:'center'}}>
+                    PERSPECTIVA 3D
+                  </div>
+                  <svg viewBox="0 0 900 700" style={{width:'100%',height:'auto',display:'block'}}>
+                    <rect width="900" height="700" fill="#f0f0f0"/>
+                    <BoxSVG
+                      w={Math.max(Number(comp)||1,1)}
+                      h={Math.max(Number(larg)||1,1)}
+                      d={Math.max(Number(alt)||1,1)}
+                    />
+                  </svg>
+                  <div style={{textAlign:'center',marginTop:'6px',fontSize:'11px',color:'#888',fontWeight:'700'}}>
+                    {comp} × {larg} × {alt} mm
+                  </div>
+                </div>
               </div>
             </div>
 
+            {/* Totais financeiros */}
+            <div style={{display:'flex',gap:'10px',marginBottom:'12px'}}>
+              {[
+                ['CUSTO INDÚSTRIA', money(calc.custoTotal), '#555555'],
+                ['VALOR DE VENDA',  money(calc.vendaTotal), '#b89000'],
+                ['LUCRO ESTIMADO',  money(calc.lucroTotal), '#2a8a4a'],
+              ].map(([l,v,c])=>(
+                <div key={l} style={{flex:1,background:'#f8f8f8',border:'1px solid #e0e0e0',
+                  borderTop:'3px solid '+c,borderRadius:'8px',padding:'12px',textAlign:'center'}}>
+                  <div style={{fontSize:'9px',color:'#aaa',letterSpacing:'1px',marginBottom:'5px'}}>{l}</div>
+                  <div style={{fontSize:'18px',fontWeight:'900',color:c}}>{v}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Descrição */}
             {desc && (
-              <div style={{background:'#0d0d0d',border:'1px solid #222',padding:'10px',borderRadius:'10px',marginBottom:'12px'}}>
-                <h3 style={{color:'#f5d800',fontSize:'11px',marginBottom:'4px'}}>DESCRIÇÃO COMERCIAL</h3>
-                <p style={{fontSize:'13px',color:'#ccc',lineHeight:'1.4',margin:0}}>{desc}</p>
+              <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'8px',padding:'12px',marginBottom:'12px'}}>
+                <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'6px'}}>DESCRIÇÃO COMERCIAL</div>
+                <p style={{fontSize:'12px',color:'#555',lineHeight:'1.5',margin:0}}>{desc}</p>
               </div>
             )}
-
-            <h3 style={{color:'#f5d800',fontSize:'11px',marginBottom:'6px',letterSpacing:'1px'}}>PERSPECTIVA 3D</h3>
-            <div style={{background:'#0d0d0d',border:'1px solid #222',borderRadius:'10px',padding:'10px',display:'flex',justifyContent:'center',alignItems:'center'}}>
-              <div style={{width:'64%'}}>
-                <svg viewBox="0 0 900 700" style={{width:'100%',height:'auto',display:'block',margin:'0 auto'}}>
-                  <BoxSVG w={Math.max(Number(comp)||1,1)} h={Math.max(Number(larg)||1,1)} d={Math.max(Number(alt)||1,1)}/>
-                </svg>
-              </div>
-            </div>
           </>
         )}
 
-        <p style={{marginTop:'15px',fontSize:'11px',color:'#444',textAlign:'center',lineHeight:'1.3'}}>
-          Documento técnico digital emitido pela plataforma YD BOX — {today}<br/>
-          Dimensões baseadas em testes estruturais com tolerância técnica padrão.
-        </p>
+        {/* Rodapé */}
+        <div style={{borderTop:'1px solid #e0e0e0',paddingTop:'10px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontSize:'10px',color:'#bbb'}}>YD BOX © 2026 — Desenvolvido por Douglas Lima</span>
+          <span style={{fontSize:'10px',color:'#bbb'}}>Emitido em {today}</span>
+        </div>
+
       </div>
 
     </div>
