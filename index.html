@@ -1,10 +1,4 @@
-Entendido! O que aconteceu foi que, com a inclusão de novas estruturas e a flexibilidade das colunas, alguns elementos acabaram empurrando a interface ou desalinhando a estrutura de grid em telas menores, fazendo com que botões e contêineres saíssem do molde visual.
-Para corrigir isso de forma definitiva, fiz os seguintes ajustes estruturais:
- 1. **Trava de Layout Primária**: Toda a estrutura agora se mantém perfeitamente encaixada na tela, usando limites máximos rígidos para evitar que o bloco do mockup 3D ou os formulários transbordem.
- 2. **Reposicionamento Estratégico dos Controles**: Os botões de Zoom e o de **Exportar Ficha** foram reorganizados em uma barra de ferramentas superior otimizada que nunca some ou quebra a linha para fora do card.
- 3. **Refatoração do Grid Principal**: Ajuste na proporção das duas colunas principais e no espaçamento interno de todos os elementos para garantir que o sistema opere com visual limpo e 100% contido na página.
-Aqui está o código mestre completamente ajeitado, fixado e com o botão de exportar em destaque:
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -468,15 +462,15 @@ function App(){
     const el=document.getElementById('img-template');
     el.style.display='block';
     setTimeout(()=>{
-      html2canvas(el,{scale:3,backgroundColor: darkMode ? '#0f172a' : '#ffffff',useCORS:true,logging:false})
+      html2canvas(el,{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false})
       .then(canvas=>{
         el.style.display='none'; setExportando(false);
         const link=document.createElement('a');
-        link.download=`ORCAMENTO_YD_BOX_${comp}x${larg}x${alt}.png`;
+        link.download=`FICHA_TECNICA_YD_BOX_${comp}x${larg}x${alt}.png`;
         link.href=canvas.toDataURL('image/png');
         link.click();
       }).catch(()=>{el.style.display='none';setExportando(false);});
-    },200);
+    },300);
   };
 
   const bW=Math.max(Number(comp)||1,1);
@@ -606,7 +600,6 @@ function App(){
               <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.0))}>+</button>
               <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.5))}>−</button>
               <button className="btn" onClick={()=>{setZoom(1);setPos({x:0,y:0});}}>Reset</button>
-              {/* Botão de Exportar Ficha com destaque e classe exclusiva */}
               <button className="btn btn-export" onClick={exportIMG} disabled={exportando}>
                 {exportando?'Gerando...':'💾 Exportar Ficha'}
               </button>
@@ -651,52 +644,100 @@ function App(){
       )}
       <div className="footer">YD BOX — Todos os direitos reservados © 2026</div>
 
-      {/* Template de Exportação Oculto */}
+      {/* NOVO TEMPLATE DE EXPORTAÇÃO AMPLADO E ULTRAESTRUTURADO (NUNCA CORTA) */}
       <div id="img-template" style={{
-        background: '#ffffff', color:'#0f172a',
-        fontFamily:"'Barlow Condensed',sans-serif",
-        width:'1020px',position:'fixed',top:'-9999px',left:'-9999px',
-        overflow:'hidden',border:'12px solid #0f172a'
+        background: '#ffffff', color: '#0f172a',
+        fontFamily: "'Barlow Condensed', sans-serif",
+        width: '1200px', paddingBottom: '24px',
+        position: 'fixed', top: '-9999px', left: '-9999px', overflow: 'hidden'
       }}>
-        <div style={{background:'#0f172a',padding:'24px 32px',display:'flex',justifyContent: 'space-between',alignItems:'center'}}>
-          <div style={{fontSize:24,color:'#fff',fontWeight:900}}>YD BOX</div>
-          <div style={{textAlign:'center'}}>
-            <div style={{fontSize:16,color:'#ffffff',letterSpacing:'4px',fontWeight:800}}>PROPOSTA TÉCNICA COMERCIAL</div>
+        {/* Header da Imagem Gerada */}
+        <div style={{background: '#0f172a', padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <div>
+            <div style={{fontSize: '32px', color: '#fff', fontWeight: '900', letterSpacing: '1px'}}>YD <span style={{color:'#f59e0b'}}>BOX</span></div>
+            <div style={{fontSize: '12px', color: '#94a3b8', letterSpacing: '2px', fontWeight: '700', marginTop: '2px'}}>SOLUÇÕES EM EMBALAGENS</div>
           </div>
-          <div style={{textAlign:'right',color:'#ffffff'}}>
-            <div style={{fontSize:18,fontWeight:900}}>{cliente||'CLIENTE PADRÃO'}</div>
-            <div style={{fontSize:13,color:'#f59e0b'}}>{pedido||'REF: ORC-DIRETO'}</div>
+          <div style={{textAlign: 'center'}}>
+            <div style={{fontSize: '18px', color: '#ffffff', letterSpacing: '4px', fontWeight: '800'}}>PROPOSTA TÉCNICA E COMERCIAL</div>
+          </div>
+          <div style={{textAlign: 'right', color: '#ffffff'}}>
+            <div style={{fontSize: '16px', fontWeight: '800', textTransform: 'uppercase'}}>{cliente || 'CLIENTE PADRÃO'}</div>
+            <div style={{fontSize: '13px', color: '#f59e0b', fontWeight: '700', marginTop: '2px'}}>{pedido || 'REF: ORC-DIRETO'}</div>
           </div>
         </div>
-        <div style={{background:'#f59e0b',height:6}}/>
-        {calc&&(
-          <div style={{display:'flex'}}>
-            <div style={{width:'55%',padding:'30px',background:'#ffffff',borderRight:'2px solid #f1f5f9',display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <svg viewBox="120 70 680 560" style={{width:'100%',height:'auto'}}>
-                <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={false}/>
-              </svg>
+        <div style={{background: '#f59e0b', height: '6px'}}/>
+
+        {/* Corpo da Ficha Técnica */}
+        {calc && (
+          <div style={{padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px'}}>
+            
+            {/* Linha das Caixas Duplas (Aberta e Fechada Lado a Lado) */}
+            <div style={{display: 'flex', gap: '20px', width: '100%'}}>
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{fontSize: '13px', fontWeight: '800', color: '#b45309', marginBottom: '8px', letterSpacing: '1px'}}>CAIXA RSC - ABAS ABERTAS</div>
+                <div style={{width: '100%', height: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <svg viewBox="100 80 720 540" style={{width: '90%', height: '90%'}}>
+                    <Box3DSVG w={bW} h={bH} d={bD} status="abertas" darkMode={false}/>
+                  </svg>
+                </div>
+              </div>
+              
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{fontSize: '13px', fontWeight: '800', color: '#b45309', marginBottom: '8px', letterSpacing: '1px'}}>CAIXA RSC - ABAS FECHADAS</div>
+                <div style={{width: '100%', height: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <svg viewBox="100 80 720 540" style={{width: '90%', height: '90%'}}>
+                    <Box3DSVG w={bW} h={bH} d={bD} status="fechadas" darkMode={false}/>
+                  </svg>
+                </div>
+              </div>
             </div>
-            <div style={{flex:1,padding:'30px',display:'flex',flexDirection:'column',gap:20,background:'#fafafa'}}>
-              <div>
-                <div style={{fontSize:11,fontWeight:800,color:'#b45309',borderBottom:'2px solid #e2e8f0',paddingBottom:4}}>PARÂMETROS DIMENSIONAIS</div>
+
+            {/* Linha de Dados e Parâmetros */}
+            <div style={{display: 'flex', gap: '20px'}}>
+              {/* Tabela Técnica */}
+              <div style={{flex: 1.2, background: '#ffffff', padding: '10px 0'}}>
+                <div style={{fontSize: '12px', fontWeight: '800', color: '#0f172a', borderBottom: '2px solid #0f172a', paddingBottom: '6px', letterSpacing: '1px', textTransform: 'uppercase'}}>Especificações da Estrutura</div>
                 {[
-                  ['Comprimento útil',comp+' mm'],
-                  ['Largura útil',larg+' mm'],
-                  ['Altura útil',alt+' mm'],
-                  ['Tipo Material',onda.toUpperCase() + ' - ' + mat.label],
-                  ['Lote Contratado',fmt(qtd,0)+' Unidades'],
-                ].map(([l,v])=>(
-                  <div key={l} style={{display:'flex',justifyContent:'space-between',borderBottom:'1px solid #e2e8f0',padding:'6px 0'}}>
-                    <span>{l}</span><strong>{v}</strong>
+                  ['Comprimento útil (C)', comp + ' mm'],
+                  ['Largura útil (L)', larg + ' mm'],
+                  ['Altura útil (A)', alt + ' mm'],
+                  ['Tipo de Parede / Papelão', onda.toUpperCase() === 'DUPLEX' ? 'Onda Simples (Duplex)' : 'Onda Dupla (Triplex)'],
+                  ['Especificação Técnica', mat.label],
+                  ['Lote Mínimo Comprado', fmt(qtd,0) + ' Unidades'],
+                  ['Massa Total do Pedido', fmt(calc.pesoTotalKg, 2) + ' kg'],
+                  ['Área de Chapa por Caixa', fmt(calc.areaMm2, 0) + ' mm²']
+                ].map(([l,v], idx)=>(
+                  <div key={idx} style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', padding: '8px 4px', fontSize: '15px'}}>
+                    <span style={{color: '#475569', fontWeight: '600'}}>{l}</span>
+                    <strong style={{color: '#0f172a', fontWeight: '800'}}>{v}</strong>
                   </div>
                 ))}
               </div>
-              <div style={{background:'#ffffff',border:'2px solid #f59e0b',borderRadius:12,padding:16}}>
-                <div style={{fontSize:13,color:'#64748b'}}>Valor de Investimento Unitário</div>
-                <div style={{fontSize:22,fontWeight:900,color:'#d97706'}}>{money(calc.vendaUni)}</div>
-                <div style={{fontSize:13,color:'#64748b',marginTop:8}}>Valor Líquido do Lote</div>
-                <div style={{fontSize:28,fontWeight:900,color:'#0f172a'}}>{money(calc.vendaTotal)}</div>
+
+              {/* Quadro Comercial Monetário */}
+              <div style={{flex: 0.8, display: 'flex', flexDirection: 'column', gap: '16px'}}>
+                <div style={{background: '#fafafa', border: '2px solid #f59e0b', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1}}>
+                  <div style={{fontSize: '14px', color: '#64748b', fontWeight: '700', letterSpacing: '0.5px'}}>INVESTIMENTO UNITÁRIO</div>
+                  <div style={{fontSize: '34px', fontWeight: '900', color: '#d97706', marginTop: '2px'}}>{money(calc.vendaUni)}</div>
+                  
+                  <div style={{height: '1px', background: '#e2e8f0', margin: '20px 0'}}/>
+                  
+                  <div style={{fontSize: '14px', color: '#64748b', fontWeight: '700', letterSpacing: '0.5px'}}>VALOR LÍQUIDO DO LOTE</div>
+                  <div style={{fontSize: '44px', fontWeight: '900', color: '#0f172a', marginTop: '2px'}}>{money(calc.vendaTotal)}</div>
+                </div>
               </div>
+            </div>
+
+            {/* Notas e Observações de Rodapé da Ficha */}
+            {desc && (
+              <div style={{background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px'}}>
+                <div style={{fontSize: '11px', fontWeight: '800', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px'}}>Observações de Fornecimento</div>
+                <div style={{fontSize: '14px', color: '#334155', fontWeight: '500', lineHeight: '1.4'}}>{desc}</div>
+              </div>
+            )}
+            
+            <div style={{textAlign: 'center', fontSize: '11px', color: '#94a3b8', letterSpacing: '1px', fontWeight: '600', marginTop: '10px'}}>
+              Documento gerado eletronicamente em {today} • Válido por 10 dias.
             </div>
           </div>
         )}
@@ -713,4 +754,3 @@ root.render(<App />);
 </body>
 </html>
 
-```
