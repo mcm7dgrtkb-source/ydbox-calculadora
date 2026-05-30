@@ -68,7 +68,7 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .header-actions{ display:flex; gap:16px; align-items:center; }
 .header-date{ color: var(--text-muted); font-size:13px; font-weight:600; }
 
-/* Grid travado sem transbordo */
+/* Grid */
 .grid{ display:grid; grid-template-columns:460px 1fr; gap:20px; align-items: start; }
 .card{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:16px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,0.01); }
 .card-highlight{ background: var(--bg-highlight); border: 2px dashed #f59e0b; border-radius:16px; padding:16px; margin-bottom:16px; }
@@ -102,7 +102,7 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .mat-info-item strong{ font-size:14px; font-weight:800; color:#b45309; }
 .dark-mode .mat-info-item strong { color: #f59e0b; }
 
-/* Estrutura Externa do Mockup (Fila de Botões Protegida) */
+/* Estrutura Externa do Mockup */
 .mockup{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:16px; height: 680px; display:flex; flex-direction:column; padding:16px; position:relative; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05); }
 .mockup-bg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; opacity:0.5; }
 .mockup-top-bar{ display:flex; justify-content:space-between; align-items:center; z-index:10; margin-bottom:12px; background: var(--bg-main); padding:8px 12px; border-radius:12px; border:1px solid var(--border-color); flex-wrap: wrap; gap: 8px; }
@@ -118,11 +118,9 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .mockup-desc h4{ color:#b45309; font-size:11px; letter-spacing:1px; margin-bottom:6px; font-weight:800; text-transform: uppercase; }
 .dark-mode .mockup-desc h4 { color: #fbbf24; }
 
-/* Botões Padronizados */
+/* Botões */
 .btn{ background: var(--bg-card); border:1px solid var(--border-color); color: var(--text-label); padding:6px 12px; border-radius:8px; cursor:pointer; font-family:'Barlow Condensed'; font-size:13px; font-weight:800; letter-spacing:1px; transition:all 0.1s; user-select:none; display:inline-flex; align-items:center; gap:4px; text-transform: uppercase; }
 .btn:hover{ border-color:#b45309; color:#b45309; background: var(--bg-highlight); }
-
-/* Destaque Máximo para o Botão de Exportação */
 .btn-export{ background:#f59e0b; border-color:#d97706; color:#ffffff !important; font-size: 14px; padding: 7px 16px; box-shadow: 0 2px 4px rgba(217,119,6,0.2); }
 .btn-export:hover{ background:#d97706; border-color:#b45309; color:#ffffff !important; }
 
@@ -154,9 +152,10 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 
 .empty-state{ color: var(--text-muted); font-size:14px; text-align:center; padding:16px 0; font-weight:600; }
 .footer{ text-align:center; color: var(--text-muted); font-size:13px; margin-top:24px; letter-spacing:2px; padding-bottom:24px; font-weight:600; }
+
+/* Elemento Oculto da Imagem de Exportação */
 #img-template{ display:none; }
 
-/* Breakpoints Responsivos Seguros */
 @media(max-width:1024px){
   .grid{ grid-template-columns: 1fr; }
   .mockup{ height:600px; }
@@ -219,15 +218,18 @@ function LogoYDBox({size=50, darkMode=false}){
   );
 }
 
+/* COMPONENTE GRÁFICO RECALIBRADO PARA NÃO CORTAR ABAS */
 function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
   const maxDim = Math.max(cNum, lNum, aNum, 1);
-  const sc = 220 / maxDim;
+  const sc = 200 / maxDim; // Escalonamento levemente reduzido para criar margem de segurança interna
   const w = cNum * sc;
   const d = lNum * sc;
   const h = aNum * sc;
   
+  // Centro movido para baixo (cy alterado de 370 para 430) para dar teto livre total para as abas abertas
   const cx = 460;
-  const cy = 370;
+  const cy = 430; 
+  
   const lc = darkMode ? '#fbbf24' : '#d97706'; 
   const txtColor = darkMode ? '#f8fafc' : '#0f172a';
   const isOpen = status === 'abertas';
@@ -254,8 +256,10 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         </linearGradient>
       </defs>
 
+      {/* Sombra de projeção da base */}
       <ellipse cx={cx - w/2 + d/2} cy={cy + 15} rx={w * 0.75} ry={d * 0.35} fill="#0f172a" opacity={darkMode ? "0.4" : "0.08"}/>
 
+      {/* Geometria Interna (visto apenas com abas abertas) */}
       {isOpen && (
         <g>
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`} fill="url(#boxInside)" stroke="#523313" strokeWidth="1"/>
@@ -264,26 +268,33 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         </g>
       )}
 
+      {/* Corpo da Caixa (Paredes Laterais principais) */}
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="url(#boxFaceLeft)" stroke="#b07733" strokeWidth="1.5"/>
       <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="url(#boxFaceRight)" stroke="#946025" strokeWidth="1.5"/>
 
+      {/* Renderização Dinâmica das Abas Superiores (RSC) */}
       {isOpen ? (
         <g>
+          {/* Abas Traseiras e Laterais Abertas */}
           <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d - flapH*0.7},${cy-w/2-d/2-h - flapH*1.1} ${cx-w - flapH*0.7},${cy-w/2-h - flapH*1.1}`} fill="url(#boxFaceRight)" stroke="#8f5c22" strokeWidth="1.2"/>
           <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d + flapH*1.1},${cy-w/2-d/2-h - flapH*0.7} ${cx+d + flapH*1.1},${cy-d/2-h - flapH*0.7}`} fill="url(#boxFaceLeft)" stroke="#8f5c22" strokeWidth="1.2"/>
+          {/* Abas Frontais Abertas */}
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w - flapH*0.7},${cy-w/2-h + flapH*0.9} ${cx - flapH*0.7},${cy-h + flapH*0.9}`} fill="url(#boxFlapFront)" stroke="#bd803a" strokeWidth="1.5"/>
           <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d + flapH*0.9},${cy-d/2-h + flapH*0.6} ${cx + flapH*0.9},${cy-h + flapH*0.6}`} fill="url(#boxFlapFront)" stroke="#a36b2c" strokeWidth="1.5"/>
         </g>
       ) : (
         <g>
+          {/* Abas Totalmente Fechadas e Encontradas no Centro */}
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w + d/2},${cy-w/2-d/4-h} ${cx + d/2},${cy-d/4-h}`} fill="url(#boxFlapFront)" stroke="#b57a38" strokeWidth="1.5"/>
           <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d - d/2},${cy-w/2-d/4-h} ${cx+d - d/2},${cy-d/4-h}`} fill="url(#boxFaceRight)" stroke="#9c6426" strokeWidth="1.5"/>
           <line x1={cx - w + d/2} y1={cy - w/2 - d/4 - h} x2={cx + d/2} y2={cy - d/4 - h} stroke="#6e4213" strokeWidth="2" strokeDasharray="4,2"/>
         </g>
       )}
 
+      {/* Vinco frontal de divisão */}
       <line x1={cx} y1={cy} x2={cx} y2={cy-h} stroke="#ffd699" strokeWidth="2" opacity="0.4"/>
       
+      {/* Cota do Comprimento (C) */}
       <g>
         <line x1={cx} y1={cy+25} x2={cx-w} y2={cy-w/2+25} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx} y1={cy+18} x2={cx} y2={cy+32} stroke={lc} strokeWidth="2.5"/>
@@ -291,6 +302,7 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         <text x={(2*cx-w)/2} y={cy+55} fill={txtColor} fontSize="23" fontWeight="900" textAnchor="middle" fontFamily="'Barlow Condensed'">C: {cNum} mm</text>
       </g>
 
+      {/* Cota da Largura (L) */}
       <g>
         <line x1={cx+15} y1={cy+8} x2={cx+d+15} y2={cy-d/2+8} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx+15} y1={cy+1} x2={cx+15} y2={cy+15} stroke={lc} strokeWidth="2.5"/>
@@ -298,6 +310,7 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         <text x={cx+d/2+45} y={cy-d/4+38} fill={txtColor} fontSize="23" fontWeight="900" textAnchor="middle" fontFamily="'Barlow Condensed'">L: {lNum} mm</text>
       </g>
 
+      {/* Cota da Altura (A) */}
       <g>
         <line x1={cx-w-25} y1={cy-w/2} x2={cx-w-25} y2={cy-w/2-h} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx-w-32} y1={cy-w/2} x2={cx-w-18} y2={cy-w/2} stroke={lc} strokeWidth="2.5"/>
@@ -609,10 +622,14 @@ function App(){
           <div className="mockup-canvas"
             onMouseDown={startDrag} onMouseMove={onDrag} onMouseUp={stopDrag} onMouseLeave={stopDrag}
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
-            <svg viewBox="0 0 920 700" style={{width:'100%',maxWidth:720,userSelect:'none',
+            <svg viewBox="0 0 920 750" style={{width:'100%',maxWidth:720,userSelect:'none',
               transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,transition:'transform 0.08s ease-out'}}>
               <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode}/>
             </svg>
+          </div>
+
+          <div className="mockup-canvas-desc" style={{padding: '4px', textAlign: 'center', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 'bold'}}>
+            💡 Arraste e use os botões de (+ / -) se quiser ajustar a visualização em tempo real.
           </div>
 
           <div className="mockup-desc">
@@ -644,7 +661,7 @@ function App(){
       )}
       <div className="footer">YD BOX — Todos os direitos reservados © 2026</div>
 
-      {/* NOVO TEMPLATE DE EXPORTAÇÃO AMPLADO E ULTRAESTRUTURADO (NUNCA CORTA) */}
+      {/* TEMPLATE DE EXPORTAÇÃO CORRIGIDO (VIEWBOX AMPLILADO PARA PREVENIR CORTES) */}
       <div id="img-template" style={{
         background: '#ffffff', color: '#0f172a',
         fontFamily: "'Barlow Condensed', sans-serif",
@@ -671,21 +688,21 @@ function App(){
         {calc && (
           <div style={{padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px'}}>
             
-            {/* Linha das Caixas Duplas (Aberta e Fechada Lado a Lado) */}
+            {/* Linha das Caixas Duplas (Lado a Lado) - ViewBox ajustado de 100 para 0 para capturar todo o teto */}
             <div style={{display: 'flex', gap: '20px', width: '100%'}}>
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{fontSize: '13px', fontWeight: '800', color: '#b45309', marginBottom: '8px', letterSpacing: '1px'}}>CAIXA RSC - ABAS ABERTAS</div>
-                <div style={{width: '100%', height: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <svg viewBox="100 80 720 540" style={{width: '90%', height: '90%'}}>
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS ABERTAS</div>
+                <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
                     <Box3DSVG w={bW} h={bH} d={bD} status="abertas" darkMode={false}/>
                   </svg>
                 </div>
               </div>
               
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{fontSize: '13px', fontWeight: '800', color: '#b45309', marginBottom: '8px', letterSpacing: '1px'}}>CAIXA RSC - ABAS FECHADAS</div>
-                <div style={{width: '100%', height: '360px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <svg viewBox="100 80 720 540" style={{width: '90%', height: '90%'}}>
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS FECHADAS</div>
+                <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
                     <Box3DSVG w={bW} h={bH} d={bD} status="fechadas" darkMode={false}/>
                   </svg>
                 </div>
@@ -728,7 +745,7 @@ function App(){
               </div>
             </div>
 
-            {/* Notas e Observações de Rodapé da Ficha */}
+            {/* Notas e Observações */}
             {desc && (
               <div style={{background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px'}}>
                 <div style={{fontSize: '11px', fontWeight: '800', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px'}}>Observações de Fornecimento</div>
