@@ -112,6 +112,16 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .tab-btn{ background:none; border:none; padding:6px 12px; font-family:'Barlow Condensed'; font-size:12px; font-weight:800; letter-spacing:1px; border-radius:6px; cursor:pointer; color: var(--text-muted); text-transform:uppercase; }
 .tab-btn.active{ background: var(--bg-card); color:#d97706; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
 
+/* Estilo para a Tag de Evidência da Caixa */
+.box-reference-badge {
+  background: #fef3c7; color: #b45309; font-size: 13px; font-weight: 800;
+  letter-spacing: 1.5px; padding: 5px 12px; border-radius: 6px; text-transform: uppercase;
+  border: 1px dashed #f59e0b; display: inline-block; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.dark-mode .box-reference-badge {
+  background: #b45309; color: #ffffff; border-color: #fbbf24;
+}
+
 .mockup-canvas{ flex:1; display:flex; align-items:center; justify-content:center; z-index:2; cursor:grab; overflow:hidden; background: transparent; border-radius:8px; }
 .mockup-canvas:active{ cursor:grabbing; }
 .mockup-desc{ background: var(--bg-main); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-top:12px; z-index:5; }
@@ -218,8 +228,8 @@ function LogoYDBox({size=50, darkMode=false}){
   );
 }
 
-/* COMPONENTE GRÁFICO ATUALIZADO COM IMPRESSÃO DO IDENTIFICADOR DA CAIXA */
-function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode, nomeCaixa}){
+/* COMPONENTE GRÁFICO - CÁLCULOS TÉCNICOS DE VETORES E DIRETRIZES */
+function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
   const maxDim = Math.max(cNum, lNum, aNum, 1);
   const sc = 200 / maxDim; 
   const w = cNum * sc;
@@ -233,9 +243,6 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode, nomeCaixa}){
   const txtColor = darkMode ? '#f8fafc' : '#0f172a';
   const isOpen = status === 'abertas';
   const flapH = d * 0.45;
-
-  // Cálculo de rotação isométrica para simular a estampa do nome na chapa lateral esquerda
-  const skewY = 26.5; 
 
   return (
     <g>
@@ -273,15 +280,6 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode, nomeCaixa}){
       {/* Corpo da Caixa (Paredes Laterais principais) */}
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="url(#boxFaceLeft)" stroke="#b07733" strokeWidth="1.5"/>
       <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="url(#boxFaceRight)" stroke="#946025" strokeWidth="1.5"/>
-
-      {/* IMPRESSÃO DO NOME DA CAIXA NA FACE FRONTAL ESQUERDA (Perspectiva Isométrica aplicada) */}
-      {nomeCaixa && nomeCaixa.trim() !== "" && (
-        <g transform={`translate(${cx - w/2}, ${cy - w/4 - h/2}) skewY(${skewY})`}>
-          <text x="0" y="0" fill="#4a2e12" opacity="0.85" fontSize="16" fontWeight="900" fontFamily="'Barlow Condensed', sans-serif" textAnchor="middle" letterSpacing="0.5">
-            {nomeCaixa.toUpperCase()}
-          </text>
-        </g>
-      )}
 
       {/* Renderização Dinâmica das Abas Superiores (RSC) */}
       {isOpen ? (
@@ -401,7 +399,7 @@ function App(){
   
   const [cliente,setCliente]=useState('');
   const [pedido,setPedido]=useState('');
-  const [nomeCaixa, setNomeCaixa] = useState(''); // Novo Estado do Identificador do Produto
+  const [nomeCaixa, setNomeCaixa] = useState(''); 
   const [onda,setOnda]=useState('duplex');
   const [matIdx,setMatIdx]=useState(0);
   const [materiais,setMateriais]=useState(DEFAULT_MATERIAIS);
@@ -540,10 +538,9 @@ function App(){
                 <input type="text" value={pedido} onChange={e=>setPedido(e.target.value)} placeholder="Ex: COD-5420"/>
               </div>
             </div>
-            {/* NOVO CAMPO: Identificação e Referência do Produto */}
             <div>
               <div className="label">Nome / Referência da Caixa (Sai no desenho)</div>
-              <input type="text" value={nomeCaixa} onChange={e=>setNomeCaixa(e.target.value)} placeholder="Ex: Caixa de Sapato / Ref: Maleta Duplo Gold"/>
+              <input type="text" value={nomeCaixa} onChange={e=>setNomeCaixa(e.target.value)} placeholder="Ex: CAIXA SAPATO - REF: GOLD MULTI"/>
             </div>
           </div>
 
@@ -618,13 +615,19 @@ function App(){
           </svg>
 
           <div className="mockup-top-bar">
-            <div className="tabs-view">
-              <button className={`tab-btn ${statusAba==='abertas'?'active':''}`} onClick={()=>setStatusAba('abertas')}>
-                ⬆ Abertas
-              </button>
-              <button className={`tab-btn ${statusAba==='fechadas'?'active':''}`} onClick={()=>setStatusAba('fechadas')}>
-                ⬇ Fechadas
-              </button>
+            <div style={{display:'flex', gap:'12px', alignItems:'center'}}>
+              <div className="tabs-view">
+                <button className={`tab-btn ${statusAba==='abertas'?'active':''}`} onClick={()=>setStatusAba('abertas')}>
+                  ⬆ Abertas
+                </button>
+                <button className={`tab-btn ${statusAba==='fechadas'?'active':''}`} onClick={()=>setStatusAba('fechadas')}>
+                  ⬇ Fechadas
+                </button>
+              </div>
+              {/* TAG DA REFERÊNCIA EM DESTAQUE IGUAL AO ELEMENTO DO MODAL/TIPO */}
+              {nomeCaixa && nomeCaixa.trim() !== "" && (
+                <div className="box-reference-badge">📦 {nomeCaixa}</div>
+              )}
             </div>
 
             <div className="mockup-controls">
@@ -642,7 +645,7 @@ function App(){
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
             <svg viewBox="0 0 920 750" style={{width:'100%',maxWidth:720,userSelect:'none',
               transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,transition:'transform 0.08s ease-out'}}>
-              <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode} nomeCaixa={nomeCaixa}/>
+              <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode}/>
             </svg>
           </div>
 
@@ -680,7 +683,7 @@ function App(){
       )}
       <div className="footer">YD BOX — Todos os direitos reservados © 2026</div>
 
-      {/* TEMPLATE DE EXPORTAÇÃO (IMPRESSÃO DA ASSINATURA DA CAIXA FIXADA) */}
+      {/* TEMPLATE DE EXPORTAÇÃO */}
       <div id="img-template" style={{
         background: '#ffffff', color: '#0f172a',
         fontFamily: "'Barlow Condensed', sans-serif",
@@ -709,20 +712,32 @@ function App(){
             
             {/* Linha das Caixas Duplas */}
             <div style={{display: 'flex', gap: '20px', width: '100%'}}>
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', position:'relative'}}>
                 <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS ABERTAS</div>
+                
+                {/* Tag em evidência na exportação */}
+                {nomeCaixa && nomeCaixa.trim() !== "" && (
+                  <div style={{background: '#fef3c7', color: '#b45309', fontSize: '13px', fontWeight: '800', letterSpacing: '1px', padding: '4px 10px', borderRadius: '6px', border: '1px dashed #f59e0b', textTransform: 'uppercase', marginTop: '4px'}}>📦 REFERÊNCIA: {nomeCaixa}</div>
+                )}
+
                 <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
-                    <Box3DSVG w={bW} h={bH} d={bD} status="abertas" darkMode={false} nomeCaixa={nomeCaixa}/>
+                    <Box3DSVG w={bW} h={bH} d={bD} status="abertas" darkMode={false}/>
                   </svg>
                 </div>
               </div>
               
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', position:'relative'}}>
                 <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS FECHADAS</div>
+                
+                {/* Tag em evidência na exportação */}
+                {nomeCaixa && nomeCaixa.trim() !== "" && (
+                  <div style={{background: '#fef3c7', color: '#b45309', fontSize: '13px', fontWeight: '800', letterSpacing: '1px', padding: '4px 10px', borderRadius: '6px', border: '1px dashed #f59e0b', textTransform: 'uppercase', marginTop: '4px'}}>📦 REFERÊNCIA: {nomeCaixa}</div>
+                )}
+
                 <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
-                    <Box3DSVG w={bW} h={bH} d={bD} status="fechadas" darkMode={false} nomeCaixa={nomeCaixa}/>
+                    <Box3DSVG w={bW} h={bH} d={bD} status="fechadas" darkMode={false}/>
                   </svg>
                 </div>
               </div>
@@ -791,4 +806,4 @@ root.render(<App />);
 </body>
 </html>
 
-
+```
