@@ -27,10 +27,7 @@ select{
 }
 textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-height:1.5; }
 .container{ max-width:1280px; margin:auto; padding:20px; }
-.header{
-  display:flex; align-items:flex-end; justify-content:space-between;
-  margin-bottom:28px; border-bottom:2px solid #f5d800; padding-bottom:18px;
-}
+.header{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; border-bottom:2px solid #f5d800; padding-bottom:18px; }
 .logo{ font-size:44px; font-weight:900; line-height:1; }
 .logo span{ color:#f5d800; }
 .subtitle{ color:#444; font-size:11px; letter-spacing:4px; margin-top:4px; }
@@ -58,47 +55,25 @@ textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-hei
 .mat-info-item{ background:#1a1a10; border-radius:8px; padding:8px 12px; text-align:center; }
 .mat-info-item span{ display:block; font-size:10px; color:#555; margin-bottom:3px; }
 .mat-info-item strong{ font-size:15px; font-weight:900; color:#f5d800; }
-.mockup{
-  background:#0d0d0d; border:1px solid #222; border-radius:18px;
-  min-height:700px; display:flex; flex-direction:column;
-  padding:16px 20px; position:relative; overflow:hidden;
-}
+.mockup{ background:#0d0d0d; border:1px solid #222; border-radius:18px; min-height:700px; display:flex; flex-direction:column; padding:16px 20px; position:relative; overflow:hidden; }
 .mockup-bg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; }
-.mockup-controls{ display:flex; gap:8px; z-index:10; margin-bottom:10px; }
-.mockup-canvas{
-  flex:1; display:flex; align-items:center; justify-content:center;
-  z-index:2; cursor:grab; overflow:hidden;
-}
+.mockup-controls{ display:flex; gap:8px; z-index:10; margin-bottom:10px; flex-wrap:wrap; }
+.mockup-canvas{ flex:1; display:flex; align-items:center; justify-content:center; z-index:2; cursor:grab; overflow:hidden; }
 .mockup-canvas:active{ cursor:grabbing; }
 .mockup-desc{ background:#111; border:1px solid #1f1f1f; border-radius:12px; padding:16px; margin-top:12px; z-index:5; }
 .mockup-desc h4{ color:#f5d800; font-size:11px; letter-spacing:2px; margin-bottom:8px; font-weight:900; }
-.btn{
-  background:#111; border:1px solid #333; color:white;
-  padding:8px 14px; border-radius:8px; cursor:pointer;
-  font-family:'Barlow Condensed'; font-size:14px; font-weight:900;
-  letter-spacing:1px; transition:all 0.15s; user-select:none;
-}
+.btn{ background:#111; border:1px solid #333; color:white; padding:8px 14px; border-radius:8px; cursor:pointer; font-family:'Barlow Condensed'; font-size:14px; font-weight:900; letter-spacing:1px; transition:all 0.15s; user-select:none; }
 .btn:hover{ border-color:#f5d800; color:#f5d800; }
 .btn-yellow{ background:#f5d800; border-color:#f5d800; color:#000; }
 .btn-yellow:hover{ background:#000; color:#f5d800; }
-.summary-section{
-  background:#0a0a0a; border:1px solid #222; border-radius:18px;
-  padding:28px; margin-top:28px;
-}
+.summary-section{ background:#0a0a0a; border:1px solid #222; border-radius:18px; padding:28px; margin-top:28px; }
 .summary-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
 .summary-item{ background:#111; border-radius:10px; padding:12px 16px; }
 .summary-item span{ display:block; font-size:10px; color:#555; margin-bottom:4px; letter-spacing:1px; }
 .summary-item strong{ font-size:16px; font-weight:900; color:#fff; }
 .summary-desc{ margin-top:16px; color:#555; font-size:14px; line-height:1.5; border-top:1px solid #1a1a1a; padding-top:14px; }
-/* Modal */
-.modal-overlay{
-  position:fixed; inset:0; background:rgba(0,0,0,0.88);
-  z-index:999; display:flex; align-items:center; justify-content:center; padding:20px;
-}
-.modal{
-  background:#0d0d0d; border:1px solid #f5d800; border-radius:18px;
-  padding:28px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto;
-}
+.modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:999; display:flex; align-items:center; justify-content:center; padding:20px; }
+.modal{ background:#0d0d0d; border:1px solid #f5d800; border-radius:18px; padding:28px; max-width:560px; width:100%; max-height:90vh; overflow-y:auto; }
 .modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 .modal-header h2{ color:#f5d800; font-size:18px; letter-spacing:3px; font-weight:900; }
 .modal-close{ background:none; border:none; color:#666; font-size:22px; cursor:pointer; line-height:1; }
@@ -108,16 +83,12 @@ textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-hei
 .modal-mat-label{ color:#aaa; font-size:13px; margin-bottom:10px; font-weight:700; }
 .modal-fields{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
 .modal-field-label{ color:#555; font-size:11px; margin-bottom:4px; }
-.modal-input{
-  width:100%; background:#0a0a0a; border:1px solid #333; border-radius:8px;
-  padding:8px 10px; color:white; font-size:15px; font-family:'Barlow Condensed'; outline:none;
-}
+.modal-input{ width:100%; background:#0a0a0a; border:1px solid #333; border-radius:8px; padding:8px 10px; color:white; font-size:15px; font-family:'Barlow Condensed'; outline:none; }
 .modal-input:focus{ border-color:#f5d800; }
 .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
 .empty-state{ color:#444; font-size:14px; text-align:center; padding:20px 0; }
 .footer{ text-align:center; color:#222; font-size:12px; margin-top:28px; letter-spacing:2px; padding-bottom:20px; }
-/* PDF */
-#pdf-template{ display:none; }
+#img-template{ display:none; }
 @media(max-width:900px){
   .grid{ grid-template-columns:1fr; }
   .mockup{ min-height:520px; }
@@ -161,44 +132,131 @@ function validar(comp, larg, alt, qtd){
   return e;
 }
 
-/* ── 3D Box SVG ─────────────────────────────── */
-function BoxSVG({w:cNum, h:lNum, d:aNum}){
+/* ─── 3D Box SVG — alta qualidade ─────────────────────────── */
+function BoxSVG({w:cNum, h:lNum, d:aNum, forExport}){
   const maxDim = Math.max(cNum,lNum,aNum,1);
   const sc = 200/maxDim;
   const w=cNum*sc, d=lNum*sc, h=aNum*sc;
-  const fl=d/2, cx=450, cy=370;
+  const fl=d/2;
+  const cx=480, cy=390;
+  const labelColor = forExport ? '#7a5200' : '#f5d800';
+  const labelShadow = forExport ? 'none' : 'url(#glow)';
   return (
     <g>
       <defs>
-        <linearGradient id="shad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#000" stopOpacity="0.55"/>
+        <linearGradient id="gradFL" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#c07828"/>
+          <stop offset="100%" stopColor="#e8a84a"/>
+        </linearGradient>
+        <linearGradient id="gradFR" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#9e5f1a"/>
+          <stop offset="100%" stopColor="#b87530"/>
+        </linearGradient>
+        <linearGradient id="gradFlapBack" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#b07828"/>
+          <stop offset="100%" stopColor="#8a5510"/>
+        </linearGradient>
+        <linearGradient id="gradFlapFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#e8b050"/>
+          <stop offset="100%" stopColor="#c08030"/>
+        </linearGradient>
+        <linearGradient id="gradBase" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#5a3008"/>
+          <stop offset="100%" stopColor="#3a1c00"/>
+        </linearGradient>
+        <linearGradient id="gradShadTop" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#000" stopOpacity="0.28"/>
           <stop offset="100%" stopColor="#000" stopOpacity="0"/>
         </linearGradient>
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="b"/>
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
+        <filter id="dropShadow">
+          <feDropShadow dx="4" dy="8" stdDeviation="10" floodColor="#00000050"/>
+        </filter>
+        <pattern id="corrugated" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="6" x2="12" y2="6" stroke="#00000018" strokeWidth="1.5"/>
+        </pattern>
       </defs>
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="#6a3b08" stroke="#42240360" strokeWidth="1.5"/>
-      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`} fill="#7d470d"/>
-      <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`} fill="#8e5313"/>
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`} fill="url(#shad)"/>
-      <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d-fl},${cy-w/2-d/2-h-fl/2} ${cx-w-fl},${cy-w/2-h-fl/2}`} fill="#a06320" stroke="#73420f60" strokeWidth="1.5"/>
-      <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d+fl},${cy-w/2-d/2-h-fl/2} ${cx+d+fl},${cy-d/2-h-fl/2}`} fill="#ad6d25" stroke="#73420f60" strokeWidth="1.5"/>
-      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="#c8893d" stroke="#8b5c1c" strokeWidth="2.5"/>
-      <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="#b67831" stroke="#8b5c1c" strokeWidth="2.5"/>
-      <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w-fl},${cy-w/2-h+fl/2} ${cx-fl},${cy-h+fl/2}`} fill="#dca04d" stroke="#8b5c1c" strokeWidth="2"/>
-      <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d+fl},${cy-d/2-h+fl/2} ${cx+fl},${cy-h+fl/2}`} fill="#e4aa57" stroke="#8b5c1c" strokeWidth="2"/>
-      <text x={cx-w/2} y={cy+50} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{cNum} mm</text>
-      <text x={cx+d/2+50} y={cy-d/4+40} fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{lNum} mm</text>
-      <g transform={`translate(${cx-w-45},${cy-w/2-h/2})`}>
-        <text fill="#f5d800" fontSize="24" fontWeight="900" textAnchor="middle" transform="rotate(-90)" filter="url(#glow)">{aNum} mm</text>
+
+      {/* Sombra no chão */}
+      <ellipse cx={cx-w/2+d/2} cy={cy+8} rx={w*0.55} ry={d*0.22} fill="#00000028"/>
+
+      {/* Topo/base */}
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`}
+        fill="url(#gradBase)" filter="url(#dropShadow)"/>
+
+      {/* Face lateral esquerda */}
+      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
+        fill="url(#gradFL)" stroke="#7a4510" strokeWidth="1.5"/>
+      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
+        fill="url(#corrugated)" opacity="0.6"/>
+
+      {/* Face lateral direita */}
+      <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`}
+        fill="url(#gradFR)" stroke="#6a3808" strokeWidth="1.5"/>
+      <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`}
+        fill="url(#corrugated)" opacity="0.5"/>
+
+      {/* Overlay sombra lateral esquerda */}
+      <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
+        fill="url(#gradShadTop)" opacity="0.5"/>
+
+      {/* Abas traseiras */}
+      <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d-fl},${cy-w/2-d/2-h-fl/2} ${cx-w-fl},${cy-w/2-h-fl/2}`}
+        fill="url(#gradFlapBack)" stroke="#6a3808" strokeWidth="1.5"/>
+      <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d+fl},${cy-w/2-d/2-h-fl/2} ${cx+d+fl},${cy-d/2-h-fl/2}`}
+        fill="url(#gradFlapBack)" stroke="#6a3808" strokeWidth="1.5"/>
+
+      {/* Face frontal esquerda */}
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`}
+        fill="url(#gradFL)" stroke="#8b5c1c" strokeWidth="2"/>
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`}
+        fill="url(#corrugated)" opacity="0.55"/>
+
+      {/* Face frontal direita */}
+      <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`}
+        fill="url(#gradFR)" stroke="#7a4510" strokeWidth="2"/>
+      <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`}
+        fill="url(#corrugated)" opacity="0.45"/>
+
+      {/* Abas frontais */}
+      <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w-fl},${cy-w/2-h+fl/2} ${cx-fl},${cy-h+fl/2}`}
+        fill="url(#gradFlapFront)" stroke="#8b5c1c" strokeWidth="1.5"/>
+      <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d+fl},${cy-d/2-h+fl/2} ${cx+fl},${cy-h+fl/2}`}
+        fill="url(#gradFlapFront)" stroke="#8b5c1c" strokeWidth="1.5"/>
+
+      {/* Highlights */}
+      <line x1={cx} y1={cy} x2={cx} y2={cy-h} stroke="#f0d080" strokeWidth="2" opacity="0.5"/>
+      <line x1={cx} y1={cy-h} x2={cx-w} y2={cy-w/2-h} stroke="#f0d080" strokeWidth="1.5" opacity="0.4"/>
+      <line x1={cx} y1={cy-h} x2={cx+d} y2={cy-d/2-h} stroke="#f0d080" strokeWidth="1.2" opacity="0.3"/>
+
+      {/* Cotas — Comprimento */}
+      <line x1={cx} y1={cy+20} x2={cx-w} y2={cy-w/2+20} stroke={labelColor} strokeWidth="1.2" strokeDasharray="4,3" opacity="0.7"/>
+      <line x1={cx} y1={cy+14} x2={cx} y2={cy+26} stroke={labelColor} strokeWidth="1.5"/>
+      <line x1={cx-w} y1={cy-w/2+14} x2={cx-w} y2={cy-w/2+26} stroke={labelColor} strokeWidth="1.5"/>
+      <text x={(2*cx-w)/2} y={cy+44} fill={labelColor} fontSize="22" fontWeight="900"
+        textAnchor="middle" filter={labelShadow}>{cNum} mm</text>
+
+      {/* Cotas — Altura */}
+      <line x1={cx+d+20} y1={cy-d/2} x2={cx+d+20} y2={cy-d/2-h} stroke={labelColor} strokeWidth="1.2" strokeDasharray="4,3" opacity="0.7"/>
+      <line x1={cx+d+14} y1={cy-d/2} x2={cx+d+26} y2={cy-d/2} stroke={labelColor} strokeWidth="1.5"/>
+      <line x1={cx+d+14} y1={cy-d/2-h} x2={cx+d+26} y2={cy-d/2-h} stroke={labelColor} strokeWidth="1.5"/>
+      <g transform={`translate(${cx+d+46},${cy-d/2-h/2})`}>
+        <text fill={labelColor} fontSize="22" fontWeight="900" textAnchor="middle"
+          transform="rotate(90)" filter={labelShadow}>{aNum} mm</text>
       </g>
+
+      {/* Cotas — Largura/Profundidade */}
+      <line x1={cx+d+10} y1={cy-d/2+10} x2={cx+10} y2={cy+10} stroke={labelColor} strokeWidth="1.2" strokeDasharray="4,3" opacity="0.7"/>
+      <text x={cx+d/2+40} y={cy-d/4+46} fill={labelColor} fontSize="22" fontWeight="900"
+        textAnchor="middle" filter={labelShadow}>{lNum} mm</text>
     </g>
   );
 }
 
-/* ── Modal de Preços ────────────────────────── */
+/* ─── Modal de Preços ──────────────────────────────────────── */
 function PrecosModal({materiais, onSave, onClose}){
   const [local, setLocal] = useState(JSON.parse(JSON.stringify(materiais)));
   const upd = (tipo,idx,campo,val) => {
@@ -207,7 +265,7 @@ function PrecosModal({materiais, onSave, onClose}){
     setLocal(cp);
   };
   return (
-    <div className="modal-overlay" onClick={(e)=>{ if(e.target===e.currentTarget) onClose(); }}>
+    <div className="modal-overlay" onClick={e=>{ if(e.target===e.currentTarget) onClose(); }}>
       <div className="modal">
         <div className="modal-header">
           <h2>EDITAR PREÇOS</h2>
@@ -241,7 +299,7 @@ function PrecosModal({materiais, onSave, onClose}){
   );
 }
 
-/* ── Campo com validação ─────────────────────── */
+/* ─── Campo com validação ──────────────────────────────────── */
 function Field({label, value, onChange, onBlur, error, suffix='mm'}){
   return (
     <div>
@@ -250,7 +308,7 @@ function Field({label, value, onChange, onBlur, error, suffix='mm'}){
         <input type="number" value={value} className={error?'error':''}
           onChange={e=>onChange(e.target.value===''?'':Number(e.target.value))}
           onBlur={onBlur}
-          style={{paddingRight: suffix?'40px':'14px'}}/>
+          style={{paddingRight:suffix?'40px':'14px'}}/>
         {suffix&&<span style={{position:'absolute',right:12,top:'50%',transform:'translateY(-50%)',color:'#444',fontSize:13,pointerEvents:'none'}}>{suffix}</span>}
       </div>
       {error&&<div className="error-msg">⚠ {error}</div>}
@@ -258,7 +316,7 @@ function Field({label, value, onChange, onBlur, error, suffix='mm'}){
   );
 }
 
-/* ── App ────────────────────────────────────── */
+/* ─── App Principal ────────────────────────────────────────── */
 function App(){
   const [comp,setComp]=useState(300);
   const [larg,setLarg]=useState(200);
@@ -272,8 +330,8 @@ function App(){
   const [desc,setDesc]=useState('Caixa de Papelão Ondulado Estruturada no Formato Maleta Normal RSC. Ideal para empacotamento, envios logísticos estáveis e armazenamento seguro.');
   const [showPrecos,setShowPrecos]=useState(false);
   const [touched,setTouched]=useState({});
+  const [exportando,setExportando]=useState(false);
 
-  // Drag & Zoom
   const [zoom,setZoom]=useState(1.0);
   const [pos,setPos]=useState({x:0,y:0});
   const dragging=useRef(false);
@@ -283,15 +341,15 @@ function App(){
   useEffect(()=>{ posRef.current=pos; },[pos]);
   useEffect(()=>{ setMatIdx(0); },[onda]);
 
-  const mat = materiais[onda][matIdx] ?? materiais[onda][0];
+  const mat = materiais[onda][matIdx]??materiais[onda][0];
   const erros = validar(comp,larg,alt,qtd);
   const hasErrors = Object.keys(erros).length>0;
-  const mark = (f) => setTouched(t=>({...t,[f]:true}));
+  const mark = f => setTouched(t=>({...t,[f]:true}));
   const markAll = () => setTouched({comp:true,larg:true,alt:true,qtd:true});
 
   const calc = useMemo(()=>{
     const c=Math.max(Number(comp)||0,0), l=Math.max(Number(larg)||0,0);
-    const a=Math.max(Number(alt)||0,0), q=Math.max(Number(qtd)||0,0);
+    const a=Math.max(Number(alt)||0,0),  q=Math.max(Number(qtd)||0,0);
     if(!c||!l||!a||!q) return null;
     const {gramatura,custo:pc,venda:pv}=mat;
     const cV=c+4, lV=l+4;
@@ -303,52 +361,60 @@ function App(){
     return {
       areaMm2, pesoGramas:pesoKg*1000, pesoTotalKg:pesoKg*q,
       custoTotal:cu*q, vendaTotal:vu*q, lucroTotal:lu*q,
-      margem: vu>0?(lu/vu)*100:0
+      vendaUni:vu, margem:vu>0?(lu/vu)*100:0
     };
   },[comp,larg,alt,qtd,mat]);
 
-  // Drag handlers
-  const startDrag = useCallback((e)=>{
+  const startDrag = useCallback(e=>{
     dragging.current=true;
     const cx=e.touches?e.touches[0].clientX:e.clientX;
     const cy=e.touches?e.touches[0].clientY:e.clientY;
-    dragOrigin.current={x:cx-posRef.current.x, y:cy-posRef.current.y};
+    dragOrigin.current={x:cx-posRef.current.x,y:cy-posRef.current.y};
   },[]);
 
-  const onDrag = useCallback((e)=>{
+  const onDrag = useCallback(e=>{
     if(!dragging.current) return;
     if(e.preventDefault) e.preventDefault();
     const cx=e.touches?e.touches[0].clientX:e.clientX;
     const cy=e.touches?e.touches[0].clientY:e.clientY;
-    setPos({x:cx-dragOrigin.current.x, y:cy-dragOrigin.current.y});
+    setPos({x:cx-dragOrigin.current.x,y:cy-dragOrigin.current.y});
   },[]);
 
   const stopDrag = useCallback(()=>{ dragging.current=false; },[]);
 
-  const margemColor = calc ? (calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a') : '#f5d800';
-
   const exportIMG = () => {
     if(hasErrors){ markAll(); return; }
-    const el = document.getElementById('pdf-template');
-    el.style.display = 'block';
-    html2canvas(el, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-      logging: false,
-    }).then(canvas => {
-      el.style.display = 'none';
-      const link = document.createElement('a');
-      link.download = `Orcamento_YD_BOX_${comp}x${larg}x${alt}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
+    if(exportando) return;
+    setExportando(true);
+    const el = document.getElementById('img-template');
+    el.style.display='block';
+    setTimeout(()=>{
+      html2canvas(el,{
+        scale:3,
+        backgroundColor:'#ffffff',
+        useCORS:true,
+        logging:false,
+        allowTaint:false,
+      }).then(canvas=>{
+        el.style.display='none';
+        setExportando(false);
+        const link=document.createElement('a');
+        link.download=`Orcamento_YD_BOX_${comp}x${larg}x${alt}.png`;
+        link.href=canvas.toDataURL('image/png');
+        link.click();
+      }).catch(()=>{ el.style.display='none'; setExportando(false); });
+    }, 150);
   };
+
+  const margemColor = calc?(calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a'):'#f5d800';
+  const bW = Math.max(Number(comp)||1,1);
+  const bH = Math.max(Number(larg)||1,1);
+  const bD = Math.max(Number(alt)||1,1);
 
   return (
     <div className="container">
 
-      {showPrecos && <PrecosModal materiais={materiais} onSave={setMateriais} onClose={()=>setShowPrecos(false)}/>}
+      {showPrecos&&<PrecosModal materiais={materiais} onSave={setMateriais} onClose={()=>setShowPrecos(false)}/>}
 
       {/* HEADER */}
       <div className="header">
@@ -404,16 +470,14 @@ function App(){
             <div className="fields-2">
               <div>
                 <div className="label">TIPO DE ONDA</div>
-                <select value={onda} onChange={e=>setOnda(e.target.value)}
-                  style={{background:'#1a1a12',borderColor:'#f5d800'}}>
+                <select value={onda} onChange={e=>setOnda(e.target.value)} style={{background:'#1a1a12',borderColor:'#f5d800'}}>
                   <option value="duplex">Duplex (Uma onda)</option>
                   <option value="triplex">Triplex (Duas ondas)</option>
                 </select>
               </div>
               <div>
                 <div className="label">ESPECIFICAÇÃO</div>
-                <select value={matIdx} onChange={e=>setMatIdx(Number(e.target.value))}
-                  style={{background:'#1a1a12',borderColor:'#f5d800'}}>
+                <select value={matIdx} onChange={e=>setMatIdx(Number(e.target.value))} style={{background:'#1a1a12',borderColor:'#f5d800'}}>
                   {materiais[onda].map((item,idx)=>(
                     <option key={idx} value={idx}>{item.label}</option>
                   ))}
@@ -421,7 +485,7 @@ function App(){
               </div>
             </div>
             <div className="mat-info">
-              {[['Gramatura',mat.gramatura+'g'],[`Custo/kg`,money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
+              {[['Gramatura',mat.gramatura+'g'],['Custo/kg',money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
                 <div className="mat-info-item" key={k}><span>{k}</span><strong>{v}</strong></div>
               ))}
             </div>
@@ -437,34 +501,24 @@ function App(){
           {/* Cálculo */}
           <div className="card">
             <div className="section-title">CÁLCULO</div>
-            {hasErrors && Object.keys(touched).length>0 ? (
+            {hasErrors&&Object.keys(touched).length>0?(
               <div style={{color:'#ff5a5a',fontSize:14,textAlign:'center',padding:'18px 0'}}>
                 ⚠ Corrija os campos destacados para ver os resultados.
               </div>
-            ) : calc ? (
+            ):calc?(
               <>
-                <div className="result">
-                  <span className="result-name">Estrutura Aplicada</span>
-                  <span className="result-value" style={{textTransform:'uppercase'}}>{onda} ({mat.gramatura}g)</span>
-                </div>
-                <div className="result">
-                  <span className="result-name">Área Total</span>
-                  <span className="result-value">{fmt(calc.areaMm2,0)} mm²</span>
-                </div>
-                <div className="result">
-                  <span className="result-name">Peso por Caixa</span>
-                  <span className="result-value">{fmt(calc.pesoGramas)} g</span>
-                </div>
-                <div className="result">
-                  <span className="result-name">Peso Total do Pedido</span>
-                  <span className="result-value">{fmt(calc.pesoTotalKg)} kg</span>
-                </div>
-                <div className="result">
-                  <span className="result-name">Margem de Lucro</span>
-                  <span className="result-value" style={{color:margemColor}}>{fmt(calc.margem)}%</span>
-                </div>
+                <div className="result"><span className="result-name">Estrutura Aplicada</span>
+                  <span className="result-value" style={{textTransform:'uppercase'}}>{onda} ({mat.gramatura}g)</span></div>
+                <div className="result"><span className="result-name">Área Total</span>
+                  <span className="result-value">{fmt(calc.areaMm2,0)} mm²</span></div>
+                <div className="result"><span className="result-name">Peso por Caixa</span>
+                  <span className="result-value">{fmt(calc.pesoGramas)} g</span></div>
+                <div className="result"><span className="result-name">Peso Total do Pedido</span>
+                  <span className="result-value">{fmt(calc.pesoTotalKg)} kg</span></div>
+                <div className="result"><span className="result-name">Margem de Lucro</span>
+                  <span className="result-value" style={{color:margemColor}}>{fmt(calc.margem)}%</span></div>
               </>
-            ) : (
+            ):(
               <div className="empty-state">Preencha as medidas para calcular.</div>
             )}
           </div>
@@ -472,20 +526,20 @@ function App(){
           {/* Totais */}
           <div className="total-box">
             <h2 style={{fontSize:26,fontWeight:900}}>TOTAL DO PEDIDO</h2>
-            {calc ? (
+            {calc?(
               <div className="total-grid">
                 <div className="total-item"><h3>CUSTO</h3><p style={{color:'#999'}}>{money(calc.custoTotal)}</p></div>
                 <div className="total-item"><h3>VENDA</h3><p style={{color:'#f5d800'}}>{money(calc.vendaTotal)}</p></div>
                 <div className="total-item"><h3>LUCRO</h3><p style={{color:'#4dcc7a'}}>{money(calc.lucroTotal)}</p></div>
               </div>
-            ) : (
+            ):(
               <div style={{color:'#333',textAlign:'center',padding:'20px 0',fontSize:14}}>—</div>
             )}
           </div>
 
         </div>
 
-        {/* ── COLUNA DIREITA ── */}
+        {/* ── COLUNA DIREITA — VISUALIZADOR ── */}
         <div className="mockup">
           <svg className="mockup-bg" viewBox="0 0 800 600" preserveAspectRatio="none">
             <line x1="-50" y1="100" x2="850" y2="400" stroke="#000" strokeWidth="5" opacity="0.4"/>
@@ -499,22 +553,18 @@ function App(){
             <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.2))}>Zoom +</button>
             <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.4))}>Zoom −</button>
             <button className="btn" onClick={()=>{setZoom(1);setPos({x:0,y:0});}}>Reset</button>
-            <button className="btn btn-yellow" onClick={exportIMG}>⬇ Exportar Imagem</button>
+            <button className="btn btn-yellow" onClick={exportIMG} disabled={exportando}>
+              {exportando?'Gerando...' : '⬇ Exportar Imagem'}
+            </button>
           </div>
 
           <div className="mockup-canvas"
             onMouseDown={startDrag} onMouseMove={onDrag} onMouseUp={stopDrag} onMouseLeave={stopDrag}
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
-            <svg viewBox="0 0 900 700" style={{
-              width:'100%', maxWidth:700, userSelect:'none',
+            <svg viewBox="0 0 900 700" style={{width:'100%',maxWidth:700,userSelect:'none',
               transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,
-              transition:'transform 0.08s ease-out'
-            }}>
-              <BoxSVG
-                w={Math.max(Number(comp)||1,1)}
-                h={Math.max(Number(larg)||1,1)}
-                d={Math.max(Number(alt)||1,1)}
-              />
+              transition:'transform 0.08s ease-out'}}>
+              <BoxSVG w={bW} h={bH} d={bD} forExport={false}/>
             </svg>
           </div>
 
@@ -528,65 +578,82 @@ function App(){
       </div>
 
       {/* RESUMO */}
-      {calc && (
+      {calc&&(
         <div className="summary-section">
           <div className="section-title">RESUMO DO ORÇAMENTO</div>
           <div className="summary-grid">
             {[
-              ['Cliente', cliente||'—'],
-              ['Pedido', pedido||'—'],
-              ['Dimensões', `${comp} × ${larg} × ${alt} mm`],
-              ['Quantidade', `${fmt(qtd,0)} un`],
-              ['Material', `${onda} — ${mat.label}`],
-              ['Peso total', `${fmt(calc.pesoTotalKg)} kg`],
-              ['Custo total', money(calc.custoTotal)],
-              ['Venda total', money(calc.vendaTotal)],
+              ['Cliente',cliente||'—'],['Pedido',pedido||'—'],
+              ['Dimensões',`${comp} × ${larg} × ${alt} mm`],['Quantidade',`${fmt(qtd,0)} un`],
+              ['Material',`${onda} — ${mat.label}`],['Peso total',`${fmt(calc.pesoTotalKg)} kg`],
+              ['Custo total',money(calc.custoTotal)],['Venda total',money(calc.vendaTotal)],
             ].map(([l,v])=>(
-              <div className="summary-item" key={l}>
-                <span>{l.toUpperCase()}</span>
-                <strong>{v}</strong>
-              </div>
+              <div className="summary-item" key={l}><span>{l.toUpperCase()}</span><strong>{v}</strong></div>
             ))}
           </div>
-          {desc && <div className="summary-desc">{desc}</div>}
+          {desc&&<div className="summary-desc">{desc}</div>}
         </div>
       )}
 
       <div className="footer">YD BOX © 2026 — Desenvolvido por Douglas Lima</div>
 
-      {/* PDF TEMPLATE — fundo branco para renderização correta */}
-      <div id="pdf-template" style={{
-        background:'#ffffff', color:'#111', fontFamily:"'Barlow Condensed',sans-serif",
-        padding:'20px', width:'190mm', margin:'0 auto', fontSize:'13px'
+      {/* ═══ TEMPLATE DA IMAGEM (fundo branco, oculto) ═══ */}
+      <div id="img-template" style={{
+        background:'#ffffff', color:'#111',
+        fontFamily:"'Barlow Condensed',sans-serif",
+        padding:'36px', width:'900px', margin:'0 auto', fontSize:'14px',
+        position:'fixed', top:'-9999px', left:'-9999px'
       }}>
 
         {/* Cabeçalho */}
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',
-          borderBottom:'3px solid #f5d800',paddingBottom:'12px',marginBottom:'16px'}}>
+          borderBottom:'4px solid #f5d800',paddingBottom:'16px',marginBottom:'24px'}}>
           <div>
-            <div style={{fontSize:'34px',fontWeight:'900',lineHeight:1,color:'#111'}}>
+            <div style={{fontSize:'46px',fontWeight:'900',lineHeight:1,color:'#111',letterSpacing:'-1px'}}>
               YD <span style={{color:'#f5d800'}}>BOX</span>
             </div>
-            <div style={{fontSize:'10px',color:'#999',letterSpacing:'3px',marginTop:'3px'}}>
+            <div style={{fontSize:'11px',color:'#aaa',letterSpacing:'4px',marginTop:'5px',fontWeight:'700'}}>
               RELATÓRIO TÉCNICO DE ORÇAMENTO
             </div>
           </div>
           <div style={{textAlign:'right'}}>
-            {cliente && <div style={{fontSize:'15px',fontWeight:'900',color:'#111'}}>{cliente}</div>}
-            {pedido  && <div style={{fontSize:'12px',color:'#b89000',fontWeight:'700'}}>{pedido}</div>}
-            <div style={{fontSize:'11px',color:'#aaa',marginTop:'4px'}}>{today}</div>
+            {cliente&&<div style={{fontSize:'20px',fontWeight:'900',color:'#111'}}>{cliente}</div>}
+            {pedido&&<div style={{fontSize:'14px',color:'#b89000',fontWeight:'700',marginTop:'3px'}}>{pedido}</div>}
+            <div style={{fontSize:'12px',color:'#bbb',marginTop:'8px',letterSpacing:'1px'}}>{today}</div>
           </div>
         </div>
 
-        {calc && (
+        {calc&&(
           <>
-            {/* Layout duas colunas: dados + desenho */}
-            <div style={{display:'flex',gap:'16px',marginBottom:'14px',alignItems:'flex-start'}}>
+            {/* Corpo: desenho 3D + tabelas */}
+            <div style={{display:'flex',gap:'28px',marginBottom:'24px',alignItems:'flex-start'}}>
 
-              {/* Coluna dados */}
-              <div style={{flex:'1'}}>
-                <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'10px',padding:'14px',marginBottom:'12px'}}>
-                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'10px',borderBottom:'1px solid #e8e8e8',paddingBottom:'6px'}}>
+              {/* Desenho 3D — 54% da largura */}
+              <div style={{width:'54%',flexShrink:0}}>
+                <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'3px',color:'#b89000',
+                  marginBottom:'10px',borderBottom:'2px solid #f5d800',paddingBottom:'6px'}}>
+                  PERSPECTIVA 3D DA EMBALAGEM
+                </div>
+                <div style={{background:'#f7f7f7',border:'1px solid #e0e0e0',borderRadius:'14px',
+                  padding:'12px',boxShadow:'0 2px 12px #0000000a'}}>
+                  <svg viewBox="0 0 900 700" style={{width:'100%',height:'auto',display:'block'}}>
+                    <rect width="900" height="700" fill="#f7f7f7"/>
+                    <BoxSVG w={bW} h={bH} d={bD} forExport={true}/>
+                  </svg>
+                </div>
+                <div style={{textAlign:'center',marginTop:'10px',fontSize:'14px',color:'#999',
+                  fontWeight:'800',letterSpacing:'2px'}}>
+                  {comp} × {larg} × {alt} mm
+                </div>
+              </div>
+
+              {/* Tabelas — restante */}
+              <div style={{flex:1,display:'flex',flexDirection:'column',gap:'18px'}}>
+
+                {/* Dimensões e material */}
+                <div>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'3px',color:'#b89000',
+                    marginBottom:'8px',borderBottom:'1px solid #eee',paddingBottom:'5px'}}>
                     DIMENSÕES E MATERIAL
                   </div>
                   <table style={{width:'100%',borderCollapse:'collapse',fontSize:'13px'}}>
@@ -599,91 +666,83 @@ function App(){
                         ['Gramatura',   mat.gramatura+' g/m²'],
                         ['Quantidade',  fmt(qtd,0)+' unidades'],
                       ].map(([l,v])=>(
-                        <tr key={l} style={{borderBottom:'1px solid #f0f0f0'}}>
-                          <td style={{padding:'5px 0',color:'#888',width:'48%'}}>{l}</td>
-                          <td style={{padding:'5px 0',fontWeight:'700',color:'#111',textAlign:'right'}}>{v}</td>
+                        <tr key={l} style={{borderBottom:'1px solid #f5f5f5'}}>
+                          <td style={{padding:'6px 0',color:'#aaa',width:'48%',fontSize:'12px'}}>{l}</td>
+                          <td style={{padding:'6px 0',fontWeight:'800',color:'#111',textAlign:'right',fontSize:'13px'}}>{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
 
-                <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'10px',padding:'14px'}}>
-                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'10px',borderBottom:'1px solid #e8e8e8',paddingBottom:'6px'}}>
+                {/* Dados técnicos */}
+                <div>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'3px',color:'#b89000',
+                    marginBottom:'8px',borderBottom:'1px solid #eee',paddingBottom:'5px'}}>
                     DADOS TÉCNICOS
                   </div>
                   <table style={{width:'100%',borderCollapse:'collapse',fontSize:'13px'}}>
                     <tbody>
                       {[
                         ['Área de Desenvolvimento', fmt(calc.areaMm2,0)+' mm²'],
-                        ['Peso por Caixa',          fmt(calc.pesoGramas)+' g'],
-                        ['Peso Total do Lote',      fmt(calc.pesoTotalKg)+' kg'],
-                        ['Margem de Lucro',         fmt(calc.margem)+'%'],
+                        ['Peso por Caixa',           fmt(calc.pesoGramas)+' g'],
+                        ['Peso Total do Lote',       fmt(calc.pesoTotalKg)+' kg'],
                       ].map(([l,v])=>(
-                        <tr key={l} style={{borderBottom:'1px solid #f0f0f0'}}>
-                          <td style={{padding:'5px 0',color:'#888',width:'60%'}}>{l}</td>
-                          <td style={{padding:'5px 0',fontWeight:'700',color:'#111',textAlign:'right'}}>{v}</td>
+                        <tr key={l} style={{borderBottom:'1px solid #f5f5f5'}}>
+                          <td style={{padding:'6px 0',color:'#aaa',fontSize:'12px'}}>{l}</td>
+                          <td style={{padding:'6px 0',fontWeight:'800',color:'#111',textAlign:'right',fontSize:'13px'}}>{v}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
-              </div>
 
-              {/* Coluna desenho 3D */}
-              <div style={{width:'240px',flexShrink:0}}>
-                <div style={{background:'#f0f0f0',border:'1px solid #ddd',borderRadius:'10px',padding:'10px'}}>
-                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'8px',textAlign:'center'}}>
-                    PERSPECTIVA 3D
+                {/* Valores de venda em destaque */}
+                <div style={{background:'#fffbee',border:'2px solid #f5d800',borderRadius:'12px',padding:'16px'}}>
+                  <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'3px',color:'#b89000',marginBottom:'12px'}}>
+                    VALORES DE VENDA
                   </div>
-                  <svg viewBox="0 0 900 700" style={{width:'100%',height:'auto',display:'block'}}>
-                    <rect width="900" height="700" fill="#f0f0f0"/>
-                    <BoxSVG
-                      w={Math.max(Number(comp)||1,1)}
-                      h={Math.max(Number(larg)||1,1)}
-                      d={Math.max(Number(alt)||1,1)}
-                    />
-                  </svg>
-                  <div style={{textAlign:'center',marginTop:'6px',fontSize:'11px',color:'#888',fontWeight:'700'}}>
-                    {comp} × {larg} × {alt} mm
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
+                    borderBottom:'1px solid #f0e8c0',paddingBottom:'10px',marginBottom:'10px'}}>
+                    <span style={{fontSize:'13px',color:'#999'}}>Valor Unitário</span>
+                    <span style={{fontSize:'22px',fontWeight:'900',color:'#b89000'}}>
+                      {money(calc.vendaUni)}
+                    </span>
+                  </div>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    <span style={{fontSize:'13px',color:'#999'}}>Total ({fmt(qtd,0)} un)</span>
+                    <span style={{fontSize:'28px',fontWeight:'900',color:'#111'}}>
+                      {money(calc.vendaTotal)}
+                    </span>
                   </div>
                 </div>
+
               </div>
             </div>
 
-            {/* Totais financeiros */}
-            <div style={{display:'flex',gap:'10px',marginBottom:'12px'}}>
-              {[
-                ['CUSTO INDÚSTRIA', money(calc.custoTotal), '#555555'],
-                ['VALOR DE VENDA',  money(calc.vendaTotal), '#b89000'],
-                ['LUCRO ESTIMADO',  money(calc.lucroTotal), '#2a8a4a'],
-              ].map(([l,v,c])=>(
-                <div key={l} style={{flex:1,background:'#f8f8f8',border:'1px solid #e0e0e0',
-                  borderTop:'3px solid '+c,borderRadius:'8px',padding:'12px',textAlign:'center'}}>
-                  <div style={{fontSize:'9px',color:'#aaa',letterSpacing:'1px',marginBottom:'5px'}}>{l}</div>
-                  <div style={{fontSize:'18px',fontWeight:'900',color:c}}>{v}</div>
+            {/* Descrição comercial */}
+            {desc&&(
+              <div style={{background:'#fafafa',border:'1px solid #eee',borderRadius:'10px',
+                padding:'16px',marginBottom:'20px'}}>
+                <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'3px',color:'#b89000',marginBottom:'7px'}}>
+                  DESCRIÇÃO COMERCIAL
                 </div>
-              ))}
-            </div>
-
-            {/* Descrição */}
-            {desc && (
-              <div style={{background:'#f8f8f8',border:'1px solid #e0e0e0',borderRadius:'8px',padding:'12px',marginBottom:'12px'}}>
-                <div style={{fontSize:'10px',fontWeight:'900',letterSpacing:'2px',color:'#b89000',marginBottom:'6px'}}>DESCRIÇÃO COMERCIAL</div>
-                <p style={{fontSize:'12px',color:'#555',lineHeight:'1.5',margin:0}}>{desc}</p>
+                <p style={{fontSize:'13px',color:'#666',lineHeight:'1.6',margin:0}}>{desc}</p>
               </div>
             )}
           </>
         )}
 
         {/* Rodapé */}
-        <div style={{borderTop:'1px solid #e0e0e0',paddingTop:'10px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-          <span style={{fontSize:'10px',color:'#bbb'}}>YD BOX © 2026 — Desenvolvido por Douglas Lima</span>
-          <span style={{fontSize:'10px',color:'#bbb'}}>Emitido em {today}</span>
+        <div style={{borderTop:'1px solid #eee',paddingTop:'14px',
+          display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontSize:'11px',color:'#ccc',fontWeight:'700',letterSpacing:'1px'}}>
+            YD BOX © 2026 — Desenvolvido por Douglas Lima
+          </span>
+          <span style={{fontSize:'11px',color:'#ccc',letterSpacing:'1px'}}>Emitido em {today}</span>
         </div>
 
       </div>
-
     </div>
   );
 }
