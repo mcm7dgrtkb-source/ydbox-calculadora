@@ -210,38 +210,44 @@ function validar(comp,larg,alt,qtd){
   return e;
 }
 
-/* COMPONENTE EXCLUSIVO DO SEU LOGOTIPO OFICIAL VETORIZADO */
+/* COMPONENTE EXCLUSIVO DO SEU LOGOTIPO OFICIAL MILIMETRICAMENTE FIEL */
 function LogoYDBox({size=65, darkMode=false}){
-  const strokeColor = darkMode ? '#ffffff' : '#1e1e1e';
-  const textColor = darkMode ? '#ffffff' : '#000000';
+  const mainColor = darkMode ? '#ffffff' : '#000000';
   
   return (
     <svg width={size} height={size} viewBox="0 0 500 500" style={{display:'block'}}>
-      {/* Moldura quadrada externa com quebra para o texto BOX */}
-      <path d="M 430 170 L 430 425 M 365 425 L 175 425 L 175 170 L 430 170" 
-            fill="none" stroke={strokeColor} strokeWidth="15" strokeLinecap="square"/>
+      {/* 1. MOLDURA QUADRADA COM ENCAIXE PARA A PALAVRA "BOX" */}
+      <path d="M 80 80 L 420 80 L 420 375 L 385 375 L 385 420 L 80 420 Z" 
+            fill="none" stroke={mainColor} strokeWidth="18" strokeLinejoin="miter" strokeLinecap="square"/>
       
-      {/* Letras Principais YD */}
-      <g transform="translate(30, 10)">
-        {/* Letra Y */}
-        <path d="M 175 230 L 210 278 L 210 320 L 245 320 L 245 278 L 280 230 L 245 230 L 227 260 L 210 230 Z" fill={textColor}/>
+      {/* 2. CONJUNTO INTEGRADO DE LETRAS "YD" */}
+      <g>
+        {/* Haste da Esquerda do Y */}
+        <path d="M 130 150 L 185 150 L 215 230 L 185 230 Z" fill={mainColor} />
         
-        {/* Letra D Estilizada Externa */}
-        <path d="M 258 230 L 258 320 L 305 320 C 340 320 350 295 350 275 C 350 255 340 230 305 230 Z M 293 252" fill={textColor}/>
+        {/* Haste Central Comum (Y e D) */}
+        <rect x="200" y="150" width="30" height="170" fill={mainColor} />
         
-        {/* Elemento Geométrico Interno da letra D (Cubinho Isométrico Oficial) */}
-        <g transform="translate(295, 258) scale(1.1)">
-          {/* Face Superior - Amarela */}
-          <polygon points="20,0 40,10 20,20 0,10" fill="#facc15" stroke={textColor} strokeWidth="4" strokeLinejoin="round"/>
-          {/* Face Esquerda - Branca */}
-          <polygon points="0,10 20,20 20,42 0,32" fill="#ffffff" stroke={textColor} strokeWidth="4" strokeLinejoin="round"/>
-          {/* Face Direita - Branca */}
-          <polygon points="20,20 40,10 40,32 20,42" fill="#ffffff" stroke={textColor} strokeWidth="4" strokeLinejoin="round"/>
-        </g>
+        {/* Haste da Direita do Y que conecta no centro */}
+        <path d="M 270 150 L 215 150 L 200 190 L 230 190 Z" fill={mainColor} />
+        
+        {/* Corpo semicircular da Letra D com recorte perfeito */}
+        <path d="M 230 150 L 310 150 C 365 150 365 320 310 320 L 230 320 Z M 230 182 L 300 182 C 325 182 325 288 300 288 L 230 288 Z" 
+              fill={mainColor} fillRule="evenodd"/>
       </g>
 
-      {/* Subtexto B O X perfeitamente alinhado na fenda da moldura */}
-      <text x="373" y="435" fill={textColor} fontSize="32" fontWeight="900" fontFamily="monospace" letterSpacing="10">BOX</text>
+      {/* 3. O CUBO TRIDIMENSIONAL INTERNO (DENTRO DA LETRA D) */}
+      <g transform="translate(252, 218) scale(0.95)">
+        {/* Face Superior - Amarelo Real da Marca */}
+        <polygon points="25,0 50,12 25,24 0,12" fill="#facc15" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
+        {/* Face Esquerda - Cinza Técnico */}
+        <polygon points="0,12 25,24 25,54 0,42" fill="#e2e8f0" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
+        {/* Face Direita - Branco Puro */}
+        <polygon points="25,24 50,12 50,42 25,54" fill="#ffffff" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
+      </g>
+
+      {/* 4. PALAVRA "BOX" NO RECORTE CORRETO DO QUADRADO */}
+      <text x="260" y="414" fill={mainColor} fontSize="36" fontWeight="900" fontFamily="'Arial Black', sans-serif" letterSpacing="1.5">BOX</text>
     </svg>
   );
 }
@@ -301,15 +307,17 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
 
       {/* Marca D'água do seu Logo Oficial na lateral frontal da caixa */}
       <g transform={`translate(${cx - w*0.65}, ${cy - w/4 - h*0.65}) scale(${w * 0.0009})`} opacity="0.28">
-        <path d="M 430 170 L 430 425 M 365 425 L 175 425 L 175 170 L 430 170" fill="none" stroke="#000" strokeWidth="22"/>
-        <path d="M 175 230 L 210 278 L 210 320 L 245 320 L 245 278 L 280 230 L 245 230 L 227 260 L 210 230 Z" fill="#000"/>
-        <path d="M 258 230 L 258 320 L 305 320 C 340 320 350 295 350 275 C 350 255 340 230 305 230 Z" fill="#000"/>
-        <g transform="translate(295, 258) scale(1.1)">
-          <polygon points="20,0 40,10 20,20 0,10" fill="#facc15" stroke="#000" strokeWidth="4"/>
-          <polygon points="0,10 20,20 20,42 0,32" fill="#fff" stroke="#000" strokeWidth="4"/>
-          <polygon points="20,20 40,10 40,32 20,42" fill="#fff" stroke="#000" strokeWidth="4"/>
+        <path d="M 80 80 L 420 80 L 420 375 L 385 375 L 385 420 L 80 420 Z" fill="none" stroke="#000" strokeWidth="22"/>
+        <path d="M 130 150 L 185 150 L 215 230 L 185 230 Z" fill="#000" />
+        <rect x="200" y="150" width="30" height="170" fill="#000" />
+        <path d="M 270 150 L 215 150 L 200 190 L 230 190 Z" fill="#000" />
+        <path d="M 230 150 L 310 150 C 365 150 365 320 310 320 L 230 320 Z M 230 182 L 300 182 C 325 182 325 288 300 288 L 230 288 Z" fill="#000"/>
+        <g transform="translate(252, 218) scale(0.95)">
+          <polygon points="25,0 50,12 25,24 0,12" fill="#facc15" stroke="#000" strokeWidth="4"/>
+          <polygon points="0,12 25,24 25,54 0,42" fill="#e2e8f0" stroke="#000" strokeWidth="4"/>
+          <polygon points="25,24 50,12 50,42 25,54" fill="#fff" stroke="#000" strokeWidth="4"/>
         </g>
-        <text x="373" y="435" fill="#000" fontSize="32" fontWeight="900" fontFamily="monospace" letterSpacing="10">BOX</text>
+        <text x="260" y="414" fill="#000" fontSize="36" fontWeight="900" fontFamily="sans-serif">BOX</text>
       </g>
 
       {/* Renderização Dinâmica das Abas Superiores (RSC) */}
@@ -740,7 +748,7 @@ function App(){
         </div>
         <div style={{background: '#f59e0b', height: '6px'}}/>
 
-        {/* Corpo da Ficha Técnica */}
+        {/* Corpo da Ficha Técnico */}
         {calc && (
           <div style={{padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px'}}>
             
@@ -840,4 +848,4 @@ root.render(<App />);
 </body>
 </html>
 
-```
+
