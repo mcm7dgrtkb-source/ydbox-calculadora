@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -27,7 +28,7 @@ select{
 }
 textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-height:1.5; }
 .container{ max-width:1280px; margin:auto; padding:20px; }
-.header{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; border-bottom:2px solid #f5d800; padding-bottom:18px; }
+.header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; border-bottom:2px solid #f5d800; padding-bottom:18px; }
 .logo{ font-size:44px; font-weight:900; line-height:1; }
 .logo span{ color:#f5d800; }
 .subtitle{ color:#444; font-size:11px; letter-spacing:4px; margin-top:4px; }
@@ -107,8 +108,8 @@ textarea{ resize:vertical; min-height:80px; font-size:15px; color:#888; line-hei
 <script type="text/babel">
 const {useState, useMemo, useEffect, useRef, useCallback} = React;
 
-const fmt = (n, d=2) => Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
-const money = (n) => 'R$ ' + fmt(n);
+const fmt = (n,d=2) => Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = n => 'R$ '+fmt(n);
 const today = new Date().toLocaleDateString('pt-BR');
 
 const DEFAULT_MATERIAIS = {
@@ -122,9 +123,9 @@ const DEFAULT_MATERIAIS = {
   ],
 };
 
-function validar(comp, larg, alt, qtd){
-  const e = {};
-  const c=Number(comp), l=Number(larg), a=Number(alt), q=Number(qtd);
+function validar(comp,larg,alt,qtd){
+  const e={};
+  const c=Number(comp),l=Number(larg),a=Number(alt),q=Number(qtd);
   if(!comp||c<=0) e.comp='Mínimo 1mm'; else if(c>5000) e.comp='Máx. 5000mm';
   if(!larg||l<=0) e.larg='Mínimo 1mm'; else if(l>5000) e.larg='Máx. 5000mm';
   if(!alt ||a<=0) e.alt ='Mínimo 1mm'; else if(a>5000) e.alt ='Máx. 5000mm';
@@ -132,41 +133,62 @@ function validar(comp, larg, alt, qtd){
   return e;
 }
 
-/* ─── Logo SVG YD BOX ─────────────────────────────────────── */
-function LogoSVG({size=48, dark=false}){
-  const fg = dark ? '#111' : '#fff';
-  const accent = '#f5d800';
+/* ─── Logo fiel ao original ───────────────────────────────────
+   Quadrado com borda branca, "YD" em branco bold,
+   caixinha 3D amarela no lugar do ponto do D, "BOX" abaixo à direita
+   ─────────────────────────────────────────────────────────── */
+function LogoYDBox({size=60, forExport=false}){
+  const fg = forExport ? '#111' : '#ffffff';
+  const bg = forExport ? '#111111' : '#000000';
+  const border = forExport ? '#111' : '#ffffff';
+  const sq = size;
+  const inner = sq * 0.78;
+  const off = (sq - inner) / 2;
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
-      <rect x="8" y="8" width="84" height="84" stroke={fg} strokeWidth="4" fill="none"/>
-      {/* Y */}
-      <text x="14" y="72" fill={fg} fontSize="60" fontWeight="900"
-        fontFamily="'Barlow Condensed',sans-serif" letterSpacing="-2">Y</text>
-      {/* Mini box 3D no lugar do D */}
-      <g transform="translate(54,28)">
-        {/* topo */}
-        <polygon points="18,4 4,10 18,16 32,10" fill={accent}/>
-        {/* frente esq */}
-        <polygon points="4,10 4,28 18,34 18,16" fill="#c8a800"/>
-        {/* frente dir */}
-        <polygon points="32,10 32,28 18,34 18,16" fill="#a08000"/>
+    <svg width={sq+30} height={sq+14} viewBox={`0 0 ${sq+30} ${sq+14}`}>
+      {/* Fundo quadrado */}
+      <rect x="0" y="0" width={sq} height={sq} fill={bg}/>
+      {/* Borda branca do quadrado */}
+      <rect x={sq*0.09} y={sq*0.09} width={sq*0.82} height={sq*0.82}
+        fill="none" stroke={fg} strokeWidth={sq*0.04}/>
+      {/* Y — letra grande bold */}
+      <text
+        x={sq*0.10} y={sq*0.78}
+        fill={fg} fontSize={sq*0.68} fontWeight="900"
+        fontFamily="'Barlow Condensed',Arial,sans-serif"
+        letterSpacing="-2">Y</text>
+      {/* Caixinha 3D amarela — no lugar do D */}
+      <g transform={`translate(${sq*0.52}, ${sq*0.18})`}>
+        {/* topo da caixinha */}
+        <polygon
+          points={`${sq*0.22},${sq*0.06} ${sq*0.04},${sq*0.14} ${sq*0.22},${sq*0.22} ${sq*0.40},${sq*0.14}`}
+          fill="#f5d800"/>
+        {/* face esquerda */}
+        <polygon
+          points={`${sq*0.04},${sq*0.14} ${sq*0.04},${sq*0.38} ${sq*0.22},${sq*0.46} ${sq*0.22},${sq*0.22}`}
+          fill="#c8a000"/>
+        {/* face direita */}
+        <polygon
+          points={`${sq*0.40},${sq*0.14} ${sq*0.40},${sq*0.38} ${sq*0.22},${sq*0.46} ${sq*0.22},${sq*0.22}`}
+          fill="#9a7800"/>
       </g>
-      {/* BOX texto embaixo */}
-      <text x="52" y="88" fill={fg} fontSize="16" fontWeight="700"
-        fontFamily="'Barlow Condensed',sans-serif" letterSpacing="4">BOX</text>
+      {/* "BOX" — abaixo à direita do quadrado, fora da borda */}
+      <text
+        x={sq*0.52} y={sq+12}
+        fill={fg} fontSize={sq*0.22} fontWeight="700"
+        fontFamily="'Barlow Condensed',Arial,sans-serif"
+        letterSpacing={sq*0.04}>BOX</text>
     </svg>
   );
 }
 
 /* ─── 3D Box SVG ──────────────────────────────────────────── */
 function BoxSVG({w:cNum, h:lNum, d:aNum, forExport}){
-  const maxDim = Math.max(cNum,lNum,aNum,1);
-  const sc = 200/maxDim;
+  const maxDim=Math.max(cNum,lNum,aNum,1);
+  const sc=200/maxDim;
   const w=cNum*sc, d=lNum*sc, h=aNum*sc;
-  const fl=d/2;
-  const cx=480, cy=390;
-  const labelColor = forExport ? '#f5d800' : '#f5d800';
-  const labelBg    = forExport ? '#000000cc' : 'none';
+  const fl=d/2, cx=480, cy=390;
+  const lc='#f5d800';
   return (
     <g>
       <defs>
@@ -198,10 +220,6 @@ function BoxSVG({w:cNum, h:lNum, d:aNum, forExport}){
           <feGaussianBlur stdDeviation="3" result="b"/>
           <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
         </filter>
-        <filter id="labelGlow">
-          <feGaussianBlur stdDeviation="4" result="b"/>
-          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
         <filter id="dropShadow">
           <feDropShadow dx="4" dy="8" stdDeviation="12" floodColor="#00000060"/>
         </filter>
@@ -209,96 +227,68 @@ function BoxSVG({w:cNum, h:lNum, d:aNum, forExport}){
           <line x1="0" y1="6" x2="12" y2="6" stroke="#00000018" strokeWidth="1.5"/>
         </pattern>
       </defs>
-
-      {/* Sombra no chão */}
       <ellipse cx={cx-w/2+d/2} cy={cy+10} rx={w*0.6} ry={d*0.25} fill="#00000040"/>
-
-      {/* Topo/base */}
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx+d},${cy-d/2}`}
         fill="url(#gradBase)" filter="url(#dropShadow)"/>
-
-      {/* Face lateral esquerda */}
       <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
         fill="url(#gradFL)" stroke="#7a4510" strokeWidth="1.5"/>
       <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
         fill="url(#corrugated)" opacity="0.6"/>
       <polygon points={`${cx-w},${cy-w/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w},${cy-w/2-h}`}
         fill="url(#gradShadTop)" opacity="0.5"/>
-
-      {/* Face lateral direita */}
       <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`}
         fill="url(#gradFR)" stroke="#6a3808" strokeWidth="1.5"/>
       <polygon points={`${cx+d},${cy-d/2} ${cx-w+d},${cy-w/2-d/2} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`}
         fill="url(#corrugated)" opacity="0.5"/>
-
-      {/* Abas traseiras */}
       <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d-fl},${cy-w/2-d/2-h-fl/2} ${cx-w-fl},${cy-w/2-h-fl/2}`}
         fill="url(#gradFlapBack)" stroke="#6a3808" strokeWidth="1.5"/>
       <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d+fl},${cy-w/2-d/2-h-fl/2} ${cx+d+fl},${cy-d/2-h-fl/2}`}
         fill="url(#gradFlapBack)" stroke="#6a3808" strokeWidth="1.5"/>
-
-      {/* Face frontal esquerda */}
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`}
         fill="url(#gradFL)" stroke="#8b5c1c" strokeWidth="2"/>
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`}
         fill="url(#corrugated)" opacity="0.55"/>
-
-      {/* Face frontal direita */}
       <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`}
         fill="url(#gradFR)" stroke="#7a4510" strokeWidth="2"/>
       <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`}
         fill="url(#corrugated)" opacity="0.45"/>
-
-      {/* Abas frontais */}
       <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w-fl},${cy-w/2-h+fl/2} ${cx-fl},${cy-h+fl/2}`}
         fill="url(#gradFlapFront)" stroke="#8b5c1c" strokeWidth="1.5"/>
       <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d+fl},${cy-d/2-h+fl/2} ${cx+fl},${cy-h+fl/2}`}
         fill="url(#gradFlapFront)" stroke="#8b5c1c" strokeWidth="1.5"/>
-
-      {/* Highlights */}
       <line x1={cx} y1={cy} x2={cx} y2={cy-h} stroke="#f0d080" strokeWidth="2.5" opacity="0.5"/>
       <line x1={cx} y1={cy-h} x2={cx-w} y2={cy-w/2-h} stroke="#f0d080" strokeWidth="1.5" opacity="0.4"/>
       <line x1={cx} y1={cy-h} x2={cx+d} y2={cy-d/2-h} stroke="#f0d080" strokeWidth="1.2" opacity="0.3"/>
-
-      {/* Cotas — Comprimento */}
-      <line x1={cx} y1={cy+22} x2={cx-w} y2={cy-w/2+22} stroke={labelColor} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
-      <line x1={cx} y1={cy+15} x2={cx} y2={cy+29} stroke={labelColor} strokeWidth="2"/>
-      <line x1={cx-w} y1={cy-w/2+15} x2={cx-w} y2={cy-w/2+29} stroke={labelColor} strokeWidth="2"/>
-      <text x={(2*cx-w)/2} y={cy+50} fill={labelColor} fontSize="24" fontWeight="900"
-        textAnchor="middle" filter="url(#labelGlow)">{cNum} mm</text>
-
-      {/* Cotas — Altura */}
-      <line x1={cx+d+22} y1={cy-d/2} x2={cx+d+22} y2={cy-d/2-h} stroke={labelColor} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
-      <line x1={cx+d+15} y1={cy-d/2} x2={cx+d+29} y2={cy-d/2} stroke={labelColor} strokeWidth="2"/>
-      <line x1={cx+d+15} y1={cy-d/2-h} x2={cx+d+29} y2={cy-d/2-h} stroke={labelColor} strokeWidth="2"/>
+      {/* Cotas */}
+      <line x1={cx} y1={cy+22} x2={cx-w} y2={cy-w/2+22} stroke={lc} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
+      <line x1={cx} y1={cy+15} x2={cx} y2={cy+29} stroke={lc} strokeWidth="2"/>
+      <line x1={cx-w} y1={cy-w/2+15} x2={cx-w} y2={cy-w/2+29} stroke={lc} strokeWidth="2"/>
+      <text x={(2*cx-w)/2} y={cy+50} fill={lc} fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{cNum} mm</text>
+      <line x1={cx+d+22} y1={cy-d/2} x2={cx+d+22} y2={cy-d/2-h} stroke={lc} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
+      <line x1={cx+d+15} y1={cy-d/2} x2={cx+d+29} y2={cy-d/2} stroke={lc} strokeWidth="2"/>
+      <line x1={cx+d+15} y1={cy-d/2-h} x2={cx+d+29} y2={cy-d/2-h} stroke={lc} strokeWidth="2"/>
       <g transform={`translate(${cx+d+52},${cy-d/2-h/2})`}>
-        <text fill={labelColor} fontSize="24" fontWeight="900" textAnchor="middle"
-          transform="rotate(90)" filter="url(#labelGlow)">{aNum} mm</text>
+        <text fill={lc} fontSize="24" fontWeight="900" textAnchor="middle" transform="rotate(90)" filter="url(#glow)">{aNum} mm</text>
       </g>
-
-      {/* Cotas — Profundidade */}
-      <line x1={cx+d+12} y1={cy-d/2+12} x2={cx+12} y2={cy+12} stroke={labelColor} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
-      <text x={cx+d/2+44} y={cy-d/4+50} fill={labelColor} fontSize="24" fontWeight="900"
-        textAnchor="middle" filter="url(#labelGlow)">{lNum} mm</text>
+      <line x1={cx+d+12} y1={cy-d/2+12} x2={cx+12} y2={cy+12} stroke={lc} strokeWidth="1.2" strokeDasharray="5,4" opacity="0.6"/>
+      <text x={cx+d/2+44} y={cy-d/4+50} fill={lc} fontSize="24" fontWeight="900" textAnchor="middle" filter="url(#glow)">{lNum} mm</text>
     </g>
   );
 }
 
 /* ─── Modal de Preços ─────────────────────────────────────── */
-function PrecosModal({materiais, onSave, onClose}){
-  const [local, setLocal] = useState(JSON.parse(JSON.stringify(materiais)));
-  const upd = (tipo,idx,campo,val) => {
-    const cp = JSON.parse(JSON.stringify(local));
-    cp[tipo][idx][campo] = parseFloat(val)||0;
+function PrecosModal({materiais,onSave,onClose}){
+  const [local,setLocal]=useState(JSON.parse(JSON.stringify(materiais)));
+  const upd=(tipo,idx,campo,val)=>{
+    const cp=JSON.parse(JSON.stringify(local));
+    cp[tipo][idx][campo]=parseFloat(val)||0;
     setLocal(cp);
   };
   return (
     <div className="modal-overlay" onClick={e=>{ if(e.target===e.currentTarget) onClose(); }}>
       <div className="modal">
-        <div className="modal-header">
-          <h2>EDITAR PREÇOS</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
-        </div>
+        <div className="modal-header"><h2>EDITAR PREÇOS</h2>
+          <button className="modal-close" onClick={onClose}>✕</button></div>
         {['duplex','triplex'].map(tipo=>(
           <div key={tipo} style={{marginBottom:24}}>
             <div className="modal-tipo">{tipo.toUpperCase()}</div>
@@ -328,7 +318,7 @@ function PrecosModal({materiais, onSave, onClose}){
 }
 
 /* ─── Campo com validação ─────────────────────────────────── */
-function Field({label, value, onChange, onBlur, error, suffix='mm'}){
+function Field({label,value,onChange,onBlur,error,suffix='mm'}){
   return (
     <div>
       <div className={'label'+(error?' error-label':'')}>{label}</div>
@@ -358,7 +348,6 @@ function App(){
   const [showPrecos,setShowPrecos]=useState(false);
   const [touched,setTouched]=useState({});
   const [exportando,setExportando]=useState(false);
-
   const [zoom,setZoom]=useState(1.0);
   const [pos,setPos]=useState({x:0,y:0});
   const dragging=useRef(false);
@@ -368,66 +357,60 @@ function App(){
   useEffect(()=>{ posRef.current=pos; },[pos]);
   useEffect(()=>{ setMatIdx(0); },[onda]);
 
-  const mat = materiais[onda][matIdx]??materiais[onda][0];
-  const erros = validar(comp,larg,alt,qtd);
-  const hasErrors = Object.keys(erros).length>0;
-  const mark = f => setTouched(t=>({...t,[f]:true}));
-  const markAll = () => setTouched({comp:true,larg:true,alt:true,qtd:true});
+  const mat=materiais[onda][matIdx]??materiais[onda][0];
+  const erros=validar(comp,larg,alt,qtd);
+  const hasErrors=Object.keys(erros).length>0;
+  const mark=f=>setTouched(t=>({...t,[f]:true}));
+  const markAll=()=>setTouched({comp:true,larg:true,alt:true,qtd:true});
 
-  const calc = useMemo(()=>{
-    const c=Math.max(Number(comp)||0,0), l=Math.max(Number(larg)||0,0);
-    const a=Math.max(Number(alt)||0,0),  q=Math.max(Number(qtd)||0,0);
+  const calc=useMemo(()=>{
+    const c=Math.max(Number(comp)||0,0),l=Math.max(Number(larg)||0,0);
+    const a=Math.max(Number(alt)||0,0),q=Math.max(Number(qtd)||0,0);
     if(!c||!l||!a||!q) return null;
     const {gramatura,custo:pc,venda:pv}=mat;
-    const cV=c+4, lV=l+4;
+    const cV=c+4,lV=l+4;
     const areaMm2=((2*cV)+(2*lV)+30)*(a+(lV/2)+(cV/2));
     const pesoKg=(areaMm2/1_000_000)*gramatura/1000;
-    const cu=pesoKg*pc, vu=pesoKg*pv, lu=vu-cu;
-    return {
-      areaMm2, pesoGramas:pesoKg*1000, pesoTotalKg:pesoKg*q,
-      custoTotal:cu*q, vendaTotal:vu*q, lucroTotal:lu*q,
-      vendaUni:vu, margem:vu>0?(lu/vu)*100:0
-    };
+    const cu=pesoKg*pc,vu=pesoKg*pv,lu=vu-cu;
+    return{areaMm2,pesoGramas:pesoKg*1000,pesoTotalKg:pesoKg*q,
+      custoTotal:cu*q,vendaTotal:vu*q,lucroTotal:lu*q,vendaUni:vu,
+      margem:vu>0?(lu/vu)*100:0};
   },[comp,larg,alt,qtd,mat]);
 
-  const startDrag = useCallback(e=>{
+  const startDrag=useCallback(e=>{
     dragging.current=true;
     const cx=e.touches?e.touches[0].clientX:e.clientX;
     const cy=e.touches?e.touches[0].clientY:e.clientY;
     dragOrigin.current={x:cx-posRef.current.x,y:cy-posRef.current.y};
   },[]);
-
-  const onDrag = useCallback(e=>{
+  const onDrag=useCallback(e=>{
     if(!dragging.current) return;
     if(e.preventDefault) e.preventDefault();
     const cx=e.touches?e.touches[0].clientX:e.clientX;
     const cy=e.touches?e.touches[0].clientY:e.clientY;
     setPos({x:cx-dragOrigin.current.x,y:cy-dragOrigin.current.y});
   },[]);
+  const stopDrag=useCallback(()=>{ dragging.current=false; },[]);
 
-  const stopDrag = useCallback(()=>{ dragging.current=false; },[]);
-
-  const exportIMG = () => {
-    if(hasErrors){ markAll(); return; }
+  const exportIMG=()=>{
+    if(hasErrors){markAll();return;}
     if(exportando) return;
     setExportando(true);
-    const el = document.getElementById('img-template');
+    const el=document.getElementById('img-template');
     el.style.display='block';
     setTimeout(()=>{
-      html2canvas(el,{
-        scale:3, backgroundColor:'#0a0a0a',
-        useCORS:true, logging:false, allowTaint:false,
-      }).then(canvas=>{
+      html2canvas(el,{scale:3,backgroundColor:'#ffffff',useCORS:true,logging:false,allowTaint:false})
+      .then(canvas=>{
         el.style.display='none'; setExportando(false);
         const link=document.createElement('a');
         link.download=`YD_BOX_${comp}x${larg}x${alt}_orcamento.png`;
         link.href=canvas.toDataURL('image/png');
         link.click();
-      }).catch(()=>{ el.style.display='none'; setExportando(false); });
+      }).catch(()=>{el.style.display='none';setExportando(false);});
     },150);
   };
 
-  const margemColor = calc?(calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a'):'#f5d800';
+  const margemColor=calc?(calc.margem>30?'#4dcc7a':calc.margem>15?'#f5d800':'#ff7a5a'):'#f5d800';
   const bW=Math.max(Number(comp)||1,1);
   const bH=Math.max(Number(larg)||1,1);
   const bD=Math.max(Number(alt)||1,1);
@@ -436,10 +419,10 @@ function App(){
     <div className="container">
       {showPrecos&&<PrecosModal materiais={materiais} onSave={setMateriais} onClose={()=>setShowPrecos(false)}/>}
 
-      {/* HEADER */}
+      {/* HEADER APP */}
       <div className="header">
-        <div style={{display:'flex',alignItems:'center',gap:16}}>
-          <LogoSVG size={56}/>
+        <div style={{display:'flex',alignItems:'center',gap:14}}>
+          <LogoYDBox size={56}/>
           <div>
             <div className="logo">YD <span>BOX</span></div>
             <div className="subtitle">CALCULADORA DE PAPELÃO ONDULADO</div>
@@ -452,53 +435,40 @@ function App(){
       </div>
 
       <div className="grid">
-        {/* ── COLUNA ESQUERDA ── */}
+        {/* COLUNA ESQUERDA */}
         <div>
           <div className="card">
             <div className="section-title">IDENTIFICAÇÃO DO PEDIDO</div>
             <div className="fields-2">
-              <div>
-                <div className="label">CLIENTE</div>
-                <input type="text" value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nome do cliente"/>
-              </div>
-              <div>
-                <div className="label">Nº DO PEDIDO</div>
-                <input type="text" value={pedido} onChange={e=>setPedido(e.target.value)} placeholder="Ex: PED-2026-001"/>
-              </div>
+              <div><div className="label">CLIENTE</div>
+                <input type="text" value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nome do cliente"/></div>
+              <div><div className="label">Nº DO PEDIDO</div>
+                <input type="text" value={pedido} onChange={e=>setPedido(e.target.value)} placeholder="Ex: PED-2026-001"/></div>
             </div>
           </div>
-
           <div className="card">
             <div className="section-title">MEDIDAS (EM MILÍMETROS)</div>
             <div className="fields-3">
-              <Field label="COMPRIMENTO" value={comp} error={touched.comp&&erros.comp}
-                onChange={v=>{setComp(v);mark('comp');}} onBlur={()=>mark('comp')}/>
-              <Field label="LARGURA" value={larg} error={touched.larg&&erros.larg}
-                onChange={v=>{setLarg(v);mark('larg');}} onBlur={()=>mark('larg')}/>
-              <Field label="ALTURA" value={alt} error={touched.alt&&erros.alt}
-                onChange={v=>{setAlt(v);mark('alt');}} onBlur={()=>mark('alt')}/>
+              <Field label="COMPRIMENTO" value={comp} error={touched.comp&&erros.comp} onChange={v=>{setComp(v);mark('comp');}} onBlur={()=>mark('comp')}/>
+              <Field label="LARGURA" value={larg} error={touched.larg&&erros.larg} onChange={v=>{setLarg(v);mark('larg');}} onBlur={()=>mark('larg')}/>
+              <Field label="ALTURA" value={alt} error={touched.alt&&erros.alt} onChange={v=>{setAlt(v);mark('alt');}} onBlur={()=>mark('alt')}/>
             </div>
           </div>
-
           <div className="card-highlight">
             <div className="section-title" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
               <span>ESTRUTURA DO MATERIAL</span>
               <span style={{fontSize:10,background:'#ccaa00',color:'#000',padding:'2px 8px',borderRadius:4,fontWeight:900}}>SELECIONE:</span>
             </div>
             <div className="fields-2">
-              <div>
-                <div className="label">TIPO DE ONDA</div>
+              <div><div className="label">TIPO DE ONDA</div>
                 <select value={onda} onChange={e=>setOnda(e.target.value)} style={{background:'#1a1a12',borderColor:'#f5d800'}}>
                   <option value="duplex">Duplex (Uma onda)</option>
                   <option value="triplex">Triplex (Duas ondas)</option>
-                </select>
-              </div>
-              <div>
-                <div className="label">ESPECIFICAÇÃO</div>
+                </select></div>
+              <div><div className="label">ESPECIFICAÇÃO</div>
                 <select value={matIdx} onChange={e=>setMatIdx(Number(e.target.value))} style={{background:'#1a1a12',borderColor:'#f5d800'}}>
                   {materiais[onda].map((item,idx)=>(<option key={idx} value={idx}>{item.label}</option>))}
-                </select>
-              </div>
+                </select></div>
             </div>
             <div className="mat-info">
               {[['Gramatura',mat.gramatura+'g'],['Custo/kg',money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
@@ -506,48 +476,32 @@ function App(){
               ))}
             </div>
           </div>
-
           <div className="card">
             <div className="section-title">QUANTIDADE</div>
-            <Field label="UNIDADES" value={qtd} suffix="un" error={touched.qtd&&erros.qtd}
-              onChange={v=>{setQtd(v);mark('qtd');}} onBlur={()=>mark('qtd')}/>
+            <Field label="UNIDADES" value={qtd} suffix="un" error={touched.qtd&&erros.qtd} onChange={v=>{setQtd(v);mark('qtd');}} onBlur={()=>mark('qtd')}/>
           </div>
-
           <div className="card">
             <div className="section-title">CÁLCULO</div>
-            {hasErrors&&Object.keys(touched).length>0?(
-              <div style={{color:'#ff5a5a',fontSize:14,textAlign:'center',padding:'18px 0'}}>
-                ⚠ Corrija os campos destacados para ver os resultados.
-              </div>
-            ):calc?(
-              <>
-                <div className="result"><span className="result-name">Estrutura Aplicada</span>
-                  <span className="result-value" style={{textTransform:'uppercase'}}>{onda} ({mat.gramatura}g)</span></div>
-                <div className="result"><span className="result-name">Área Total</span>
-                  <span className="result-value">{fmt(calc.areaMm2,0)} mm²</span></div>
-                <div className="result"><span className="result-name">Peso por Caixa</span>
-                  <span className="result-value">{fmt(calc.pesoGramas)} g</span></div>
-                <div className="result"><span className="result-name">Peso Total do Pedido</span>
-                  <span className="result-value">{fmt(calc.pesoTotalKg)} kg</span></div>
-                <div className="result"><span className="result-name">Margem de Lucro</span>
-                  <span className="result-value" style={{color:margemColor}}>{fmt(calc.margem)}%</span></div>
-              </>
-            ):(<div className="empty-state">Preencha as medidas para calcular.</div>)}
+            {hasErrors&&Object.keys(touched).length>0?(<div style={{color:'#ff5a5a',fontSize:14,textAlign:'center',padding:'18px 0'}}>⚠ Corrija os campos destacados para ver os resultados.</div>)
+            :calc?(<>
+              <div className="result"><span className="result-name">Estrutura Aplicada</span><span className="result-value" style={{textTransform:'uppercase'}}>{onda} ({mat.gramatura}g)</span></div>
+              <div className="result"><span className="result-name">Área Total</span><span className="result-value">{fmt(calc.areaMm2,0)} mm²</span></div>
+              <div className="result"><span className="result-name">Peso por Caixa</span><span className="result-value">{fmt(calc.pesoGramas)} g</span></div>
+              <div className="result"><span className="result-name">Peso Total do Pedido</span><span className="result-value">{fmt(calc.pesoTotalKg)} kg</span></div>
+              <div className="result"><span className="result-name">Margem de Lucro</span><span className="result-value" style={{color:margemColor}}>{fmt(calc.margem)}%</span></div>
+            </>):(<div className="empty-state">Preencha as medidas para calcular.</div>)}
           </div>
-
           <div className="total-box">
             <h2 style={{fontSize:26,fontWeight:900}}>TOTAL DO PEDIDO</h2>
-            {calc?(
-              <div className="total-grid">
-                <div className="total-item"><h3>CUSTO</h3><p style={{color:'#999'}}>{money(calc.custoTotal)}</p></div>
-                <div className="total-item"><h3>VENDA</h3><p style={{color:'#f5d800'}}>{money(calc.vendaTotal)}</p></div>
-                <div className="total-item"><h3>LUCRO</h3><p style={{color:'#4dcc7a'}}>{money(calc.lucroTotal)}</p></div>
-              </div>
-            ):(<div style={{color:'#333',textAlign:'center',padding:'20px 0',fontSize:14}}>—</div>)}
+            {calc?(<div className="total-grid">
+              <div className="total-item"><h3>CUSTO</h3><p style={{color:'#999'}}>{money(calc.custoTotal)}</p></div>
+              <div className="total-item"><h3>VENDA</h3><p style={{color:'#f5d800'}}>{money(calc.vendaTotal)}</p></div>
+              <div className="total-item"><h3>LUCRO</h3><p style={{color:'#4dcc7a'}}>{money(calc.lucroTotal)}</p></div>
+            </div>):(<div style={{color:'#333',textAlign:'center',padding:'20px 0',fontSize:14}}>—</div>)}
           </div>
         </div>
 
-        {/* ── COLUNA DIREITA — VISUALIZADOR ── */}
+        {/* COLUNA DIREITA */}
         <div className="mockup">
           <svg className="mockup-bg" viewBox="0 0 800 600" preserveAspectRatio="none">
             <line x1="-50" y1="100" x2="850" y2="400" stroke="#000" strokeWidth="5" opacity="0.4"/>
@@ -555,7 +509,6 @@ function App(){
             <line x1="0" y1="500" x2="800" y2="100" stroke="#fff" strokeWidth="1" strokeDasharray="5,5" opacity="0.07"/>
             <circle cx="400" cy="300" r="200" fill="none" stroke="#f5d800" strokeWidth="1" strokeDasharray="4,10" opacity="0.07"/>
           </svg>
-
           <div className="mockup-controls">
             <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.2))}>Zoom +</button>
             <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.4))}>Zoom −</button>
@@ -564,21 +517,17 @@ function App(){
               {exportando?'⏳ Gerando...':'⬇ Exportar Imagem'}
             </button>
           </div>
-
           <div className="mockup-canvas"
             onMouseDown={startDrag} onMouseMove={onDrag} onMouseUp={stopDrag} onMouseLeave={stopDrag}
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
             <svg viewBox="0 0 900 700" style={{width:'100%',maxWidth:700,userSelect:'none',
-              transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,
-              transition:'transform 0.08s ease-out'}}>
+              transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,transition:'transform 0.08s ease-out'}}>
               <BoxSVG w={bW} h={bH} d={bD} forExport={false}/>
             </svg>
           </div>
-
           <div className="mockup-desc">
             <h4>ESPECIFICAÇÕES DO MODELO (EDITÁVEL)</h4>
-            <textarea value={desc} onChange={e=>setDesc(e.target.value)}
-              placeholder="Escreva aqui a descrição técnica ou observações comerciais da caixa..."/>
+            <textarea value={desc} onChange={e=>setDesc(e.target.value)} placeholder="Escreva aqui a descrição técnica ou observações comerciais da caixa..."/>
           </div>
         </div>
       </div>
@@ -598,189 +547,142 @@ function App(){
           {desc&&<div className="summary-desc">{desc}</div>}
         </div>
       )}
-
       <div className="footer">YD BOX © 2026 — Desenvolvido por Douglas Lima</div>
 
-      {/* ═══════════════════════════════════════════════════
-          TEMPLATE DA IMAGEM EXPORTADA
-          Identidade visual YD BOX: fundo preto, amarelo, bold
+      {/* ═══════════ TEMPLATE DA IMAGEM EXPORTADA ═══════════
+          Fundo BRANCO + identidade YD BOX
           ═══════════════════════════════════════════════════ */}
       <div id="img-template" style={{
-        background:'#0a0a0a', color:'#fff',
+        background:'#ffffff',color:'#111',
         fontFamily:"'Barlow Condensed',sans-serif",
-        width:'1000px', margin:'0 auto',
-        position:'fixed', top:'-9999px', left:'-9999px',
+        width:'1000px',margin:'0 auto',
+        position:'fixed',top:'-9999px',left:'-9999px',
         overflow:'hidden'
       }}>
-
-        {/* Barra superior amarela */}
-        <div style={{background:'#f5d800',height:'6px',width:'100%'}}/>
-
-        {/* Header */}
-        <div style={{
-          display:'flex',justifyContent:'space-between',alignItems:'center',
-          padding:'24px 32px 20px',
-          borderBottom:'1px solid #1f1f1f',
-          background:'#111'
-        }}>
-          {/* Logo área */}
-          <div style={{display:'flex',alignItems:'center',gap:14}}>
-            <div style={{
-              width:52,height:52,border:'2px solid #fff',
-              display:'flex',alignItems:'center',justifyContent:'center',
-              position:'relative', flexShrink:0
-            }}>
-              <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
-                <text x="6" y="72" fill="#fff" fontSize="58" fontWeight="900"
-                  fontFamily="'Barlow Condensed',sans-serif">Y</text>
-                <g transform="translate(55,22)">
-                  <polygon points="18,4 2,12 18,20 34,12" fill="#f5d800"/>
-                  <polygon points="2,12 2,32 18,40 18,20" fill="#c8a800"/>
-                  <polygon points="34,12 34,32 18,40 18,20" fill="#9a7a00"/>
-                </g>
-              </svg>
-            </div>
-            <div>
-              <div style={{fontSize:34,fontWeight:900,lineHeight:1,letterSpacing:'-1px'}}>
-                YD <span style={{color:'#f5d800'}}>BOX</span>
-              </div>
-              <div style={{fontSize:10,color:'#555',letterSpacing:'4px',marginTop:3,fontWeight:700}}>
-                RELATÓRIO TÉCNICO DE ORÇAMENTO
-              </div>
+        {/* Faixa preta do topo */}
+        <div style={{background:'#111',padding:'20px 32px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          {/* Logo fiel */}
+          <LogoYDBox size={64} forExport={false}/>
+          {/* Título central */}
+          <div style={{textAlign:'center'}}>
+            <div style={{fontSize:13,color:'#555',letterSpacing:'5px',fontWeight:700}}>
+              RELATÓRIO TÉCNICO DE ORÇAMENTO
             </div>
           </div>
-
-          {/* Cliente / Data */}
-          <div style={{textAlign:'right'}}>
-            {cliente&&<div style={{fontSize:20,fontWeight:900,color:'#fff'}}>{cliente}</div>}
+          {/* Cliente / pedido / data */}
+          <div style={{textAlign:'right',minWidth:180}}>
+            {cliente&&<div style={{fontSize:18,fontWeight:900,color:'#fff'}}>{cliente}</div>}
             {pedido&&<div style={{fontSize:13,color:'#f5d800',fontWeight:700,marginTop:2}}>{pedido}</div>}
-            <div style={{fontSize:11,color:'#444',marginTop:6,letterSpacing:'1px'}}>{today}</div>
+            <div style={{fontSize:11,color:'#444',marginTop:5,letterSpacing:'1px'}}>{today}</div>
           </div>
         </div>
+        {/* Linha amarela */}
+        <div style={{background:'#f5d800',height:5}}/>
 
         {calc&&(
           <>
-            {/* ── CORPO ── */}
-            <div style={{display:'flex',gap:0}}>
-
-              {/* Desenho 3D — lado esquerdo, grande */}
-              <div style={{
-                width:'60%', flexShrink:0,
-                background:'#0d0d0d',
-                borderRight:'1px solid #1a1a1a',
-                padding:'24px 20px 16px',
-                display:'flex', flexDirection:'column', alignItems:'center'
-              }}>
-                <div style={{fontSize:10,fontWeight:900,letterSpacing:'4px',color:'#f5d800',
-                  marginBottom:14,alignSelf:'flex-start'}}>
+            {/* CORPO */}
+            <div style={{display:'flex'}}>
+              {/* Desenho 3D grande — 58% */}
+              <div style={{width:'58%',flexShrink:0,padding:'28px 16px 16px 24px',
+                background:'#fafafa',borderRight:'1px solid #eee',
+                display:'flex',flexDirection:'column',alignItems:'center'}}>
+                <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#b89000',
+                  marginBottom:12,alignSelf:'flex-start'}}>
                   PERSPECTIVA 3D DA EMBALAGEM
                 </div>
-                {/* SVG grande */}
-                <svg viewBox="100 80 720 560" style={{width:'100%',height:'auto',display:'block'}}>
-                  <rect x="0" y="0" width="900" height="700" fill="#0d0d0d"/>
-                  {/* Grade sutil de fundo */}
-                  <line x1="0" y1="350" x2="900" y2="350" stroke="#ffffff08" strokeWidth="1"/>
-                  <line x1="450" y1="0" x2="450" y2="700" stroke="#ffffff08" strokeWidth="1"/>
-                  <circle cx="450" cy="350" r="260" fill="none" stroke="#f5d80008" strokeWidth="1" strokeDasharray="6,14"/>
+                <svg viewBox="100 60 720 580" style={{width:'100%',height:'auto',display:'block'}}>
+                  <rect x="0" y="0" width="900" height="700" fill="#fafafa"/>
                   <BoxSVG w={bW} h={bH} d={bD} forExport={true}/>
                 </svg>
-                <div style={{fontSize:13,color:'#444',fontWeight:800,letterSpacing:'3px',marginTop:8}}>
+                <div style={{fontSize:13,color:'#bbb',fontWeight:800,letterSpacing:'3px',marginTop:6}}>
                   {comp} × {larg} × {alt} mm
                 </div>
               </div>
 
-              {/* Dados — lado direito */}
-              <div style={{flex:1,padding:'24px 28px',display:'flex',flexDirection:'column',gap:20}}>
+              {/* Dados — 42% */}
+              <div style={{flex:1,padding:'24px 28px',display:'flex',flexDirection:'column',gap:18}}>
 
                 {/* Dimensões */}
                 <div>
-                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#f5d800',
-                    borderBottom:'1px solid #222',paddingBottom:6,marginBottom:10}}>
+                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#b89000',
+                    borderBottom:'2px solid #f5d800',paddingBottom:5,marginBottom:10}}>
                     DIMENSÕES E MATERIAL
                   </div>
                   {[
-                    ['Comprimento', comp+' mm'],
-                    ['Largura',     larg+' mm'],
-                    ['Altura',      alt+' mm'],
-                    ['Estrutura',   onda.toUpperCase()+' — '+mat.label],
-                    ['Gramatura',   mat.gramatura+' g/m²'],
-                    ['Quantidade',  fmt(qtd,0)+' unidades'],
+                    ['Comprimento',comp+' mm'],
+                    ['Largura',larg+' mm'],
+                    ['Altura',alt+' mm'],
+                    ['Estrutura',onda.toUpperCase()+' — '+mat.label],
+                    ['Gramatura',mat.gramatura+' g/m²'],
+                    ['Quantidade',fmt(qtd,0)+' unidades'],
                   ].map(([l,v])=>(
                     <div key={l} style={{display:'flex',justifyContent:'space-between',
-                      borderBottom:'1px solid #151515',padding:'5px 0'}}>
-                      <span style={{color:'#555',fontSize:12}}>{l}</span>
-                      <span style={{fontWeight:800,color:'#ccc',fontSize:13}}>{v}</span>
+                      borderBottom:'1px solid #f5f5f5',padding:'5px 0'}}>
+                      <span style={{color:'#aaa',fontSize:12}}>{l}</span>
+                      <span style={{fontWeight:800,color:'#111',fontSize:13}}>{v}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Dados técnicos */}
                 <div>
-                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#f5d800',
-                    borderBottom:'1px solid #222',paddingBottom:6,marginBottom:10}}>
+                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#b89000',
+                    borderBottom:'2px solid #f5d800',paddingBottom:5,marginBottom:10}}>
                     DADOS TÉCNICOS
                   </div>
                   {[
-                    ['Área de Desenvolvimento', fmt(calc.areaMm2,0)+' mm²'],
-                    ['Peso por Caixa',           fmt(calc.pesoGramas)+' g'],
-                    ['Peso Total do Lote',       fmt(calc.pesoTotalKg)+' kg'],
+                    ['Área de Desenvolvimento',fmt(calc.areaMm2,0)+' mm²'],
+                    ['Peso por Caixa',fmt(calc.pesoGramas)+' g'],
+                    ['Peso Total do Lote',fmt(calc.pesoTotalKg)+' kg'],
                   ].map(([l,v])=>(
                     <div key={l} style={{display:'flex',justifyContent:'space-between',
-                      borderBottom:'1px solid #151515',padding:'5px 0'}}>
-                      <span style={{color:'#555',fontSize:12}}>{l}</span>
-                      <span style={{fontWeight:800,color:'#ccc',fontSize:13}}>{v}</span>
+                      borderBottom:'1px solid #f5f5f5',padding:'5px 0'}}>
+                      <span style={{color:'#aaa',fontSize:12}}>{l}</span>
+                      <span style={{fontWeight:800,color:'#111',fontSize:13}}>{v}</span>
                     </div>
                   ))}
                 </div>
 
-                {/* Valores de venda — destaque amarelo */}
-                <div style={{background:'#111',border:'1px solid #f5d800',borderRadius:12,padding:16,marginTop:'auto'}}>
-                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#f5d800',marginBottom:12}}>
+                {/* Valores de venda */}
+                <div style={{background:'#fffbee',border:'2px solid #f5d800',borderRadius:12,padding:16,marginTop:'auto'}}>
+                  <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#b89000',marginBottom:12}}>
                     VALORES DE VENDA
                   </div>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',
-                    borderBottom:'1px solid #222',paddingBottom:10,marginBottom:10}}>
-                    <span style={{fontSize:12,color:'#666'}}>Valor Unitário</span>
-                    <span style={{fontSize:20,fontWeight:900,color:'#f5d800'}}>{money(calc.vendaUni)}</span>
+                    borderBottom:'1px solid #f0e8c0',paddingBottom:10,marginBottom:10}}>
+                    <span style={{fontSize:12,color:'#aaa'}}>Valor Unitário</span>
+                    <span style={{fontSize:22,fontWeight:900,color:'#b89000'}}>{money(calc.vendaUni)}</span>
                   </div>
                   <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                    <span style={{fontSize:12,color:'#666'}}>Total — {fmt(qtd,0)} un</span>
-                    <span style={{fontSize:26,fontWeight:900,color:'#fff'}}>{money(calc.vendaTotal)}</span>
+                    <span style={{fontSize:12,color:'#aaa'}}>Total — {fmt(qtd,0)} un</span>
+                    <span style={{fontSize:28,fontWeight:900,color:'#111'}}>{money(calc.vendaTotal)}</span>
                   </div>
                 </div>
-
               </div>
             </div>
 
             {/* Descrição */}
             {desc&&(
-              <div style={{padding:'16px 32px',background:'#0d0d0d',borderTop:'1px solid #1a1a1a'}}>
-                <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#f5d800',marginBottom:6}}>
+              <div style={{padding:'16px 32px',background:'#fafafa',borderTop:'1px solid #eee'}}>
+                <div style={{fontSize:9,fontWeight:900,letterSpacing:'4px',color:'#b89000',marginBottom:6}}>
                   DESCRIÇÃO COMERCIAL
                 </div>
-                <p style={{fontSize:13,color:'#555',lineHeight:'1.6',margin:0}}>{desc}</p>
+                <p style={{fontSize:13,color:'#888',lineHeight:'1.6',margin:0}}>{desc}</p>
               </div>
             )}
           </>
         )}
 
+        {/* Linha amarela */}
+        <div style={{background:'#f5d800',height:4}}/>
         {/* Rodapé */}
-        <div style={{
-          display:'flex',justifyContent:'space-between',alignItems:'center',
-          padding:'14px 32px', background:'#111',
-          borderTop:'1px solid #1a1a1a'
-        }}>
-          <span style={{fontSize:11,color:'#333',fontWeight:700,letterSpacing:'2px'}}>
-            YD BOX — @Yd_box
-          </span>
-          <div style={{width:60,height:3,background:'#f5d800',borderRadius:2}}/>
-          <span style={{fontSize:11,color:'#333',letterSpacing:'1px'}}>Emitido em {today}</span>
+        <div style={{background:'#111',padding:'12px 32px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontSize:11,color:'#444',fontWeight:700,letterSpacing:'2px'}}>YD BOX — @Yd_box</span>
+          <span style={{fontSize:11,color:'#444',letterSpacing:'1px'}}>Emitido em {today}</span>
         </div>
-
-        {/* Barra inferior amarela */}
-        <div style={{background:'#f5d800',height:'4px',width:'100%'}}/>
-
       </div>
+
     </div>
   );
 }
@@ -789,3 +691,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
 </html>
+HTMLEOF
+echo "OK"
