@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +10,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-/* Variáveis de Tema */
 :root {
   --bg-main: #f4f5f7;
   --bg-card: #ffffff;
@@ -25,7 +23,6 @@
   --input-arrow: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23d97706' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   --mockup-bg-dots: #f1f5f9;
 }
-
 .dark-mode {
   --bg-main: #0f172a;
   --bg-card: #1e293b;
@@ -39,10 +36,8 @@
   --input-arrow: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23fbbf24' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   --mockup-bg-dots: #334155;
 }
-
 *{ margin:0; padding:0; box-sizing:border-box; transition: background-color 0.15s, border-color 0.15s; }
 body{ background: var(--bg-main); font-family:'Barlow Condensed',sans-serif; color: var(--text-main); padding:20px 0; overflow-x: hidden; }
-
 input,textarea,select{
   width:100%; background: var(--bg-input); border:2px solid var(--border-color);
   border-radius:10px; padding:10px 12px; color: var(--text-title); font-size:16px;
@@ -50,7 +45,6 @@ input,textarea,select{
 }
 input:focus,textarea:focus,select:focus{ border-color:#d97706; background: var(--bg-highlight); }
 input.error,select.error{ border-color:#ef4444 !important; background:#fef2f2; }
-
 select{
   appearance:none;
   background-image: var(--input-arrow);
@@ -58,8 +52,6 @@ select{
 }
 textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: var(--text-main); line-height:1.4; }
 .container{ max-width:1380px; margin:auto; padding:0 20px; }
-
-/* Topo do sistema unificado */
 .header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border-bottom:3px solid var(--border-color); background: var(--bg-card); padding:16px 20px; border-radius:16px; box-shadow:0 1px 3px rgba(0,0,0,0.05); flex-wrap: wrap; gap: 16px; }
 .logo-area{ display:flex; align-items:center; gap:16px; }
 .logo-meta{ display: flex; flex-direction: column; justify-content: center; }
@@ -67,25 +59,19 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .subtitle{ color: var(--text-muted); font-size:11px; letter-spacing:2px; margin-top:4px; font-weight:700; }
 .header-actions{ display:flex; gap:16px; align-items:center; }
 .header-date{ color: var(--text-muted); font-size:13px; font-weight:600; }
-
-/* Grid */
 .grid{ display:grid; grid-template-columns:460px 1fr; gap:20px; align-items: start; }
 .card{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:16px; margin-bottom:16px; box-shadow:0 1px 2px rgba(0,0,0,0.01); }
 .card-highlight{ background: var(--bg-highlight); border: 2px dashed #f59e0b; border-radius:16px; padding:16px; margin-bottom:16px; }
 .section-title{ font-size:12px; letter-spacing:2px; color:#b45309; margin-bottom:12px; font-weight:800; border-left:3px solid #f59e0b; padding-left:8px; text-transform: uppercase; }
 .dark-mode .section-title { color: #fbbf24; }
-
 .fields-3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
 .fields-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 .label{ margin-bottom:4px; color: var(--text-label); font-size:11px; letter-spacing:1px; font-weight:700; text-transform:uppercase; }
 .error-msg{ color:#ef4444; font-size:11px; font-weight:700; margin-top:2px; }
-
 .result{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color); }
 .result:last-child{ border:none; }
 .result-name{ color: var(--text-main); font-size:14px; font-weight:600; }
 .result-value{ font-weight:800; color: var(--text-title); font-size:14px; }
-
-/* Painel de Custos */
 .total-box{ background:#0f172a; border-radius:16px; padding:16px; color:white; border: 1px solid var(--border-color); }
 .dark-mode .total-box { background: #131d31; }
 .total-grid{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:12px; }
@@ -93,7 +79,6 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .dark-mode .total-item { background: #0f172a; }
 .total-item h3{ color:#94a3b8; font-size:10px; margin-bottom:4px; letter-spacing:1px; font-weight:700; }
 .total-item p{ font-size:17px; font-weight:900; }
-
 .mat-info{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:10px; }
 .mat-info-item{ background: var(--bg-card); border:1px solid #f2e6cb; border-radius:8px; padding:6px; text-align:center; }
 .dark-mode .mat-info-item { border-color: #334155; }
@@ -101,18 +86,13 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .dark-mode .mat-info-item span { color: #fbbf24; }
 .mat-info-item strong{ font-size:14px; font-weight:800; color:#b45309; }
 .dark-mode .mat-info-item strong { color: #f59e0b; }
-
-/* Estrutura Externa do Mockup */
 .mockup{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:16px; height: 720px; display:flex; flex-direction:column; padding:16px; position:relative; overflow:hidden; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05); }
 .mockup-bg{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:1; opacity:0.5; }
 .mockup-top-bar{ display:flex; justify-content:space-between; align-items:center; z-index:10; margin-bottom:12px; background: var(--bg-main); padding:8px 12px; border-radius:12px; border:1px solid var(--border-color); flex-wrap: wrap; gap: 8px; }
 .mockup-controls{ display:flex; gap:6px; align-items:center; }
-
 .tabs-view{ display:flex; background: var(--border-color); padding:3px; border-radius:8px; gap:2px; }
 .tab-btn{ background:none; border:none; padding:6px 12px; font-family:'Barlow Condensed'; font-size:12px; font-weight:800; letter-spacing:1px; border-radius:6px; cursor:pointer; color: var(--text-muted); text-transform:uppercase; }
 .tab-btn.active{ background: var(--bg-card); color:#d97706; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
-
-/* Estilo para a Tag de Evidência da Caixa */
 .box-reference-badge {
   background: #fef3c7; color: #b45309; font-size: 13px; font-weight: 800;
   letter-spacing: 1.5px; padding: 5px 12px; border-radius: 6px; text-transform: uppercase;
@@ -121,33 +101,25 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .dark-mode .box-reference-badge {
   background: #b45309; color: #ffffff; border-color: #fbbf24;
 }
-
 .mockup-canvas{ flex:1; display:flex; align-items:center; justify-content:center; z-index:2; cursor:grab; overflow:hidden; background: transparent; border-radius:8px; }
 .mockup-canvas:active{ cursor:grabbing; }
 .mockup-desc{ background: var(--bg-main); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-top:12px; z-index:5; }
 .mockup-desc h4{ color:#b45309; font-size:11px; letter-spacing:1px; margin-bottom:6px; font-weight:800; text-transform: uppercase; }
 .dark-mode .mockup-desc h4 { color: #fbbf24; }
-
-/* Botões */
 .btn{ background: var(--bg-card); border:1px solid var(--border-color); color: var(--text-label); padding:6px 12px; border-radius:8px; cursor:pointer; font-family:'Barlow Condensed'; font-size:13px; font-weight:800; letter-spacing:1px; transition:all 0.1s; user-select:none; display:inline-flex; align-items:center; gap:4px; text-transform: uppercase; }
 .btn:hover{ border-color:#b45309; color:#b45309; background: var(--bg-highlight); }
 .btn-export{ background:#f59e0b; border-color:#d97706; color:#ffffff !important; font-size: 14px; padding: 7px 16px; box-shadow: 0 2px 4px rgba(217,119,6,0.2); }
 .btn-export:hover{ background:#d97706; border-color:#b45309; color:#ffffff !important; }
-
-/* Switch de Tema */
 .theme-switch { display: flex; background: var(--border-color); padding: 3px; border-radius: 30px; cursor: pointer; position: relative; width: 64px; height: 30px; align-items: center; justify-content: space-between; }
 .theme-switch .icon { font-size: 12px; z-index: 2; width: 24px; text-align: center; user-select: none; }
 .theme-switch .ball { position: absolute; background: #f59e0b; width: 22px; height: 22px; border-radius: 50%; top: 4px; left: 4px; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
 .dark-mode .theme-switch .ball { transform: translateX(34px); background: #38bdf8; }
-
-/* Seção Resumo */
 .summary-section{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:16px; padding:20px; margin-top:20px; box-shadow:0 1px 3px rgba(0,0,0,0.02); }
 .summary-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
 .summary-item{ background: var(--bg-main); border:1px solid var(--border-color); border-radius:10px; padding:10px 12px; }
 .summary-item span{ display:block; font-size:11px; color: var(--text-muted); margin-bottom:2px; letter-spacing:1px; font-weight:700; text-transform:uppercase; }
 .summary-item strong{ font-size:15px; font-weight:800; color: var(--text-title); }
 .summary-desc{ margin-top:12px; color: var(--text-main); font-size:14px; line-height:1.4; border-top:1px solid var(--border-color); padding-top:10px; font-weight:500; }
-
 .modal-overlay{ position:fixed; inset:0; background:rgba(15,23,42,0.6); backdrop-filter:blur(4px); z-index:999; display:flex; align-items:center; justify-content:center; padding:20px; }
 .modal{ background: var(--bg-card); border:1px solid var(--border-color); border-radius:20px; padding:20px; max-width:520px; width:100%; max-height:90vh; overflow-y:auto; }
 .modal-header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:10px; }
@@ -159,13 +131,9 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .modal-fields{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
 .modal-input{ width:100%; background: var(--bg-input); border:1px solid var(--border-color); border-radius:8px; padding:6px 10px; color: var(--text-title); font-size:14px; font-family:'Barlow Condensed'; font-weight:600; outline:none; }
 .modal-actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:16px; border-top:1px solid var(--border-color); padding-top:12px; }
-
 .empty-state{ color: var(--text-muted); font-size:14px; text-align:center; padding:16px 0; font-weight:600; }
 .footer{ text-align:center; color: var(--text-muted); font-size:13px; margin-top:24px; letter-spacing:2px; padding-bottom:24px; font-weight:600; }
-
-/* Elemento Oculto da Imagem de Exportação */
 #img-template{ display:none; }
-
 @media(max-width:1024px){
   .grid{ grid-template-columns: 1fr; }
   .mockup{ height:650px; }
@@ -184,6 +152,8 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 
 <script type="text/babel">
 const { useState, useMemo, useEffect, useRef, useCallback } = React;
+
+const LOGO_SRC = "data:image/png;base64,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";
 
 const fmt = (n,d=2) => Number(n).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
 const money = n => 'R$ '+fmt(n);
@@ -210,60 +180,32 @@ function validar(comp,larg,alt,qtd){
   return e;
 }
 
-/* COMPONENTE EXCLUSIVO DO SEU LOGOTIPO OFICIAL MILIMETRICAMENTE FIEL */
+/* Logo usando a imagem real do arquivo enviado */
 function LogoYDBox({size=65, darkMode=false}){
-  const mainColor = darkMode ? '#ffffff' : '#000000';
-  
   return (
-    <svg width={size} height={size} viewBox="0 0 500 500" style={{display:'block'}}>
-      {/* 1. MOLDURA QUADRADA COM ENCAIXE PARA A PALAVRA "BOX" */}
-      <path d="M 80 80 L 420 80 L 420 375 L 385 375 L 385 420 L 80 420 Z" 
-            fill="none" stroke={mainColor} strokeWidth="18" strokeLinejoin="miter" strokeLinecap="square"/>
-      
-      {/* 2. CONJUNTO INTEGRADO DE LETRAS "YD" */}
-      <g>
-        {/* Haste da Esquerda do Y */}
-        <path d="M 130 150 L 185 150 L 215 230 L 185 230 Z" fill={mainColor} />
-        
-        {/* Haste Central Comum (Y e D) */}
-        <rect x="200" y="150" width="30" height="170" fill={mainColor} />
-        
-        {/* Haste da Direita do Y que conecta no centro */}
-        <path d="M 270 150 L 215 150 L 200 190 L 230 190 Z" fill={mainColor} />
-        
-        {/* Corpo semicircular da Letra D com recorte perfeito */}
-        <path d="M 230 150 L 310 150 C 365 150 365 320 310 320 L 230 320 Z M 230 182 L 300 182 C 325 182 325 288 300 288 L 230 288 Z" 
-              fill={mainColor} fillRule="evenodd"/>
-      </g>
-
-      {/* 3. O CUBO TRIDIMENSIONAL INTERNO (DENTRO DA LETRA D) */}
-      <g transform="translate(252, 218) scale(0.95)">
-        {/* Face Superior - Amarelo Real da Marca */}
-        <polygon points="25,0 50,12 25,24 0,12" fill="#facc15" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
-        {/* Face Esquerda - Cinza Técnico */}
-        <polygon points="0,12 25,24 25,54 0,42" fill="#e2e8f0" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
-        {/* Face Direita - Branco Puro */}
-        <polygon points="25,24 50,12 50,42 25,54" fill="#ffffff" stroke={mainColor} strokeWidth="4" strokeLinejoin="round"/>
-      </g>
-
-      {/* 4. PALAVRA "BOX" NO RECORTE CORRETO DO QUADRADO */}
-      <text x="260" y="414" fill={mainColor} fontSize="36" fontWeight="900" fontFamily="'Arial Black', sans-serif" letterSpacing="1.5">BOX</text>
-    </svg>
+    <img
+      src={LOGO_SRC}
+      width={size}
+      height={size}
+      alt="YD Box Logo"
+      style={{
+        display:'block',
+        filter: darkMode ? 'invert(1) brightness(1.2)' : 'none',
+        imageRendering: 'crisp-edges'
+      }}
+    />
   );
 }
 
-/* COMPONENTE GRÁFICO - CÁLCULOS TÉCNICOS DE VETORES E DIRETRIZES */
 function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
   const maxDim = Math.max(cNum, lNum, aNum, 1);
-  const sc = 200 / maxDim; 
+  const sc = 200 / maxDim;
   const w = cNum * sc;
   const d = lNum * sc;
   const h = aNum * sc;
-  
   const cx = 460;
-  const cy = 430; 
-  
-  const lc = darkMode ? '#fbbf24' : '#d97706'; 
+  const cy = 430;
+  const lc = darkMode ? '#fbbf24' : '#d97706';
   const txtColor = darkMode ? '#f8fafc' : '#0f172a';
   const isOpen = status === 'abertas';
   const flapH = d * 0.45;
@@ -289,10 +231,8 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         </linearGradient>
       </defs>
 
-      {/* Sombra de projeção da base */}
       <ellipse cx={cx - w/2 + d/2} cy={cy + 15} rx={w * 0.75} ry={d * 0.35} fill="#0f172a" opacity={darkMode ? "0.4" : "0.08"}/>
 
-      {/* Geometria Interna (visto apenas com abas abertas) */}
       {isOpen && (
         <g>
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx+d},${cy-d/2-h}`} fill="url(#boxInside)" stroke="#523313" strokeWidth="1"/>
@@ -301,64 +241,54 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
         </g>
       )}
 
-      {/* Corpo da Caixa (Paredes Laterais principais) */}
       <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-h} ${cx},${cy-h}`} fill="url(#boxFaceLeft)" stroke="#b07733" strokeWidth="1.5"/>
       <polygon points={`${cx},${cy} ${cx+d},${cy-d/2} ${cx+d},${cy-d/2-h} ${cx},${cy-h}`} fill="url(#boxFaceRight)" stroke="#946025" strokeWidth="1.5"/>
 
-      {/* Marca D'água do seu Logo Oficial na lateral frontal da caixa */}
-      <g transform={`translate(${cx - w*0.65}, ${cy - w/4 - h*0.65}) scale(${w * 0.0009})`} opacity="0.28">
-        <path d="M 80 80 L 420 80 L 420 375 L 385 375 L 385 420 L 80 420 Z" fill="none" stroke="#000" strokeWidth="22"/>
-        <path d="M 130 150 L 185 150 L 215 230 L 185 230 Z" fill="#000" />
-        <rect x="200" y="150" width="30" height="170" fill="#000" />
-        <path d="M 270 150 L 215 150 L 200 190 L 230 190 Z" fill="#000" />
-        <path d="M 230 150 L 310 150 C 365 150 365 320 310 320 L 230 320 Z M 230 182 L 300 182 C 325 182 325 288 300 288 L 230 288 Z" fill="#000"/>
-        <g transform="translate(252, 218) scale(0.95)">
-          <polygon points="25,0 50,12 25,24 0,12" fill="#facc15" stroke="#000" strokeWidth="4"/>
-          <polygon points="0,12 25,24 25,54 0,42" fill="#e2e8f0" stroke="#000" strokeWidth="4"/>
-          <polygon points="25,24 50,12 50,42 25,54" fill="#fff" stroke="#000" strokeWidth="4"/>
-        </g>
-        <text x="260" y="414" fill="#000" fontSize="36" fontWeight="900" fontFamily="sans-serif">BOX</text>
-      </g>
+      {/* Marca d'água usando o logo real */}
+      <foreignObject
+        x={cx - w*0.55}
+        y={cy - w/4 - h*0.72}
+        width={w * 0.45}
+        height={w * 0.45}
+        style={{opacity:0.22, pointerEvents:'none'}}
+      >
+        <img xmlns="http://www.w3.org/1999/xhtml"
+          src={LOGO_SRC}
+          width="100%"
+          height="100%"
+          style={{objectFit:'contain'}}
+        />
+      </foreignObject>
 
-      {/* Renderização Dinâmica das Abas Superiores (RSC) */}
       {isOpen ? (
         <g>
-          {/* Abas Traseiras e Laterais Abertas */}
           <polygon points={`${cx-w},${cy-w/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d - flapH*0.7},${cy-w/2-d/2-h - flapH*1.1} ${cx-w - flapH*0.7},${cy-w/2-h - flapH*1.1}`} fill="url(#boxFaceRight)" stroke="#8f5c22" strokeWidth="1.2"/>
           <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d + flapH*1.1},${cy-w/2-d/2-h - flapH*0.7} ${cx+d + flapH*1.1},${cy-d/2-h - flapH*0.7}`} fill="url(#boxFaceLeft)" stroke="#8f5c22" strokeWidth="1.2"/>
-          {/* Abas Frontais Abertas */}
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w - flapH*0.7},${cy-w/2-h + flapH*0.9} ${cx - flapH*0.7},${cy-h + flapH*0.9}`} fill="url(#boxFlapFront)" stroke="#bd803a" strokeWidth="1.5"/>
           <polygon points={`${cx},${cy-h} ${cx+d},${cy-d/2-h} ${cx+d + flapH*0.9},${cy-d/2-h + flapH*0.6} ${cx + flapH*0.9},${cy-h + flapH*0.6}`} fill="url(#boxFlapFront)" stroke="#a36b2c" strokeWidth="1.5"/>
         </g>
       ) : (
         <g>
-          {/* Abas Totalmente Fechadas e Encontradas no Centro */}
           <polygon points={`${cx},${cy-h} ${cx-w},${cy-w/2-h} ${cx-w + d/2},${cy-w/2-d/4-h} ${cx + d/2},${cy-d/4-h}`} fill="url(#boxFlapFront)" stroke="#b57a38" strokeWidth="1.5"/>
           <polygon points={`${cx+d},${cy-d/2-h} ${cx-w+d},${cy-w/2-d/2-h} ${cx-w+d - d/2},${cy-w/2-d/4-h} ${cx+d - d/2},${cy-d/4-h}`} fill="url(#boxFaceRight)" stroke="#9c6426" strokeWidth="1.5"/>
           <line x1={cx - w + d/2} y1={cy - w/2 - d/4 - h} x2={cx + d/2} y2={cy - d/4 - h} stroke="#6e4213" strokeWidth="2" strokeDasharray="4,2"/>
         </g>
       )}
 
-      {/* Vinco frontal de divisão */}
       <line x1={cx} y1={cy} x2={cx} y2={cy-h} stroke="#ffd699" strokeWidth="2" opacity="0.4"/>
-      
-      {/* Cota do Comprimento (C) */}
+
       <g>
         <line x1={cx} y1={cy+25} x2={cx-w} y2={cy-w/2+25} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx} y1={cy+18} x2={cx} y2={cy+32} stroke={lc} strokeWidth="2.5"/>
         <line x1={cx-w} y1={cy-w/2+18} x2={cx-w} y2={cy-w/2+32} stroke={lc} strokeWidth="2.5"/>
         <text x={(2*cx-w)/2} y={cy+55} fill={txtColor} fontSize="23" fontWeight="900" textAnchor="middle" fontFamily="'Barlow Condensed'">C: {cNum} mm</text>
       </g>
-
-      {/* Cota da Largura (L) */}
       <g>
         <line x1={cx+15} y1={cy+8} x2={cx+d+15} y2={cy-d/2+8} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx+15} y1={cy+1} x2={cx+15} y2={cy+15} stroke={lc} strokeWidth="2.5"/>
         <line x1={cx+d+15} y1={cy-d/2+1} x2={cx+d+15} y2={cy-d/2+15} stroke={lc} strokeWidth="2.5"/>
         <text x={cx+d/2+45} y={cy-d/4+38} fill={txtColor} fontSize="23" fontWeight="900" textAnchor="middle" fontFamily="'Barlow Condensed'">L: {lNum} mm</text>
       </g>
-
-      {/* Cota da Altura (A) */}
       <g>
         <line x1={cx-w-25} y1={cy-w/2} x2={cx-w-25} y2={cy-w/2-h} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
         <line x1={cx-w-32} y1={cy-w/2} x2={cx-w-18} y2={cy-w/2} stroke={lc} strokeWidth="2.5"/>
@@ -435,10 +365,9 @@ function App(){
   const [alt,setAlt]=useState(200);
   const [qtd,setQtd]=useState(500);
   const [statusAba, setStatusAba] = useState('abertas');
-  
   const [cliente,setCliente]=useState('');
   const [pedido,setPedido]=useState('');
-  const [nomeCaixa, setNomeCaixa] = useState(''); 
+  const [nomeCaixa, setNomeCaixa] = useState('');
   const [onda,setOnda]=useState('duplex');
   const [matIdx,setMatIdx]=useState(0);
   const [materiais,setMateriais]=useState(DEFAULT_MATERIAIS);
@@ -448,17 +377,13 @@ function App(){
   const [exportando,setExportando]=useState(false);
   const [zoom,setZoom]=useState(1.0);
   const [pos,setPos]=useState({x:0,y:0});
-  
+
   const dragging=useRef(false);
   const dragOrigin=useRef({x:0,y:0});
   const posRef=useRef({x:0,y:0});
 
   useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
-    }
+    document.body.classList.toggle('dark-mode', darkMode);
   }, [darkMode]);
 
   useEffect(()=>{ posRef.current=pos; },[pos]);
@@ -467,7 +392,6 @@ function App(){
   const mat=materiais[onda][matIdx]??materiais[onda][0];
   const erros=validar(comp,larg,alt,qtd);
   const hasErrors=Object.keys(erros).length>0;
-  
   const mark=f=>setTouched(t=>({...t,[f]:true}));
   const markAll=()=>setTouched({comp:true,larg:true,alt:true,qtd:true});
 
@@ -475,19 +399,14 @@ function App(){
     const c=Math.max(Number(comp)||0,0), l=Math.max(Number(larg)||0,0);
     const a=Math.max(Number(alt)||0,0), q=Math.max(Number(qtd)||0,0);
     if(!c||!l||!a||!q) return null;
-    
     const {gramatura,custo:pc,venda:pv}=mat;
-    
     const larguraChapa = (2 * c) + (2 * l) + 40;
     const alturaChapa = a + l + 10;
-    
     const areaM2 = (larguraChapa * alturaChapa) / 1_000_000;
     const pesoUnitarioKg = areaM2 * (gramatura / 1000);
-    
     const cu = pesoUnitarioKg * pc;
     const vu = pesoUnitarioKg * pv;
     const lu = vu - cu;
-    
     return{
       areaMm2: larguraChapa * alturaChapa,
       pesoGramas: pesoUnitarioKg * 1000,
@@ -506,7 +425,6 @@ function App(){
     const cy=e.touches?e.touches[0].clientY:e.clientY;
     dragOrigin.current={x:cx-posRef.current.x,y:cy-posRef.current.y};
   },[]);
-  
   const onDrag=useCallback(e=>{
     if(!dragging.current) return;
     if(e.preventDefault) e.preventDefault();
@@ -514,7 +432,6 @@ function App(){
     const cy=e.touches?e.touches[0].clientY:e.clientY;
     setPos({x:cx-dragOrigin.current.x,y:cy-dragOrigin.current.y});
   },[]);
-  
   const stopDrag=useCallback(()=>{ dragging.current=false; },[]);
 
   const exportIMG=()=>{
@@ -656,25 +573,19 @@ function App(){
           <div className="mockup-top-bar">
             <div style={{display:'flex', gap:'12px', alignItems:'center'}}>
               <div className="tabs-view">
-                <button className={`tab-btn ${statusAba==='abertas'?'active':''}`} onClick={()=>setStatusAba('abertas')}>
-                  ⬆ Abertas
-                </button>
-                <button className={`tab-btn ${statusAba==='fechadas'?'active':''}`} onClick={()=>setStatusAba('fechadas')}>
-                  ⬇ Fechadas
-                </button>
+                <button className={`tab-btn ${statusAba==='abertas'?'active':''}`} onClick={()=>setStatusAba('abertas')}>⬆ Abertas</button>
+                <button className={`tab-btn ${statusAba==='fechadas'?'active':''}`} onClick={()=>setStatusAba('fechadas')}>⬇ Fechadas</button>
               </div>
-              {/* TAG DA REFERÊNCIA EM DESTAQUE */}
               {nomeCaixa && nomeCaixa.trim() !== "" && (
                 <div className="box-reference-badge">📦 {nomeCaixa}</div>
               )}
             </div>
-
             <div className="mockup-controls">
               <button className="btn" onClick={()=>setZoom(z=>Math.min(z+0.15,2.0))}>+</button>
               <button className="btn" onClick={()=>setZoom(z=>Math.max(z-0.15,0.5))}>−</button>
               <button className="btn" onClick={()=>{setZoom(1);setPos({x:0,y:0});}}>Reset</button>
               <button className="btn btn-export" onClick={exportIMG} disabled={exportando}>
-                {exportando?'Gerando...':'💾 Exportar Ficha'}
+                {exportando?'Gerando...':`💾 Exportar Ficha`}
               </button>
             </div>
           </div>
@@ -688,7 +599,7 @@ function App(){
             </svg>
           </div>
 
-          <div className="mockup-canvas-desc" style={{padding: '4px', textAlign: 'center', fontSize: '12px', color: 'var(--text-muted)', fontWeight: 'bold'}}>
+          <div style={{padding:'4px',textAlign:'center',fontSize:'12px',color:'var(--text-muted)',fontWeight:'bold'}}>
             💡 Arraste e use os botões de (+ / -) se quiser ajustar a visualização em tempo real.
           </div>
 
@@ -720,76 +631,57 @@ function App(){
           {desc&&<div className="summary-desc">{desc}</div>}
         </div>
       )}
+
       <div className="footer">YD BOX — Todos os direitos reservados © 2026</div>
 
-      {/* TEMPLATE DE EXPORTAÇÃO COMPACTADO */}
+      {/* TEMPLATE DE EXPORTAÇÃO */}
       <div id="img-template" style={{
-        background: '#ffffff', color: '#0f172a',
-        fontFamily: "'Barlow Condensed', sans-serif",
-        width: '1200px', paddingBottom: '24px',
-        position: 'fixed', top: '-9999px', left: '-9999px', overflow: 'hidden'
+        background:'#ffffff', color:'#0f172a',
+        fontFamily:"'Barlow Condensed', sans-serif",
+        width:'1200px', paddingBottom:'24px',
+        position:'fixed', top:'-9999px', left:'-9999px', overflow:'hidden'
       }}>
-        {/* Header da Imagem Gerada */}
-        <div style={{background: '#0f172a', padding: '20px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <div style={{background:'#0f172a', padding:'20px 40px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
           <div style={{display:'flex', alignItems:'center', gap:'16px'}}>
-            <LogoYDBox size={70} darkMode={true}/>
+            <img src={LOGO_SRC} width={70} height={70} alt="YD Box" style={{display:'block'}}/>
             <div>
-              <div style={{fontSize: '28px', color: '#fff', fontWeight: '900', letterSpacing: '0.5px'}}>YD BOX</div>
-              <div style={{fontSize: '11px', color: '#94a3b8', letterSpacing: '2px', fontWeight: '700', marginTop: '2px'}}>SOLUÇÕES EM EMBALAGENS</div>
+              <div style={{fontSize:'28px', color:'#fff', fontWeight:'900', letterSpacing:'0.5px'}}>YD BOX</div>
+              <div style={{fontSize:'11px', color:'#94a3b8', letterSpacing:'2px', fontWeight:'700', marginTop:'2px'}}>SOLUÇÕES EM EMBALAGENS</div>
             </div>
           </div>
-          <div style={{textAlign: 'center'}}>
-            <div style={{fontSize: '18px', color: '#ffffff', letterSpacing: '4px', fontWeight: '800'}}>PROPOSTA TÉCNICA E COMERCIAL</div>
+          <div style={{textAlign:'center'}}>
+            <div style={{fontSize:'18px', color:'#ffffff', letterSpacing:'4px', fontWeight:'800'}}>PROPOSTA TÉCNICA E COMERCIAL</div>
           </div>
-          <div style={{textAlign: 'right', color: '#ffffff'}}>
-            <div style={{fontSize: '16px', fontWeight: '800', textTransform: 'uppercase'}}>{cliente || 'CLIENTE PADRÃO'}</div>
-            <div style={{fontSize: '13px', color: '#f59e0b', fontWeight: '700', marginTop: '2px'}}>{pedido || 'REF: ORC-DIRETO'}</div>
+          <div style={{textAlign:'right', color:'#ffffff'}}>
+            <div style={{fontSize:'16px', fontWeight:'800', textTransform:'uppercase'}}>{cliente || 'CLIENTE PADRÃO'}</div>
+            <div style={{fontSize:'13px', color:'#f59e0b', fontWeight:'700', marginTop:'2px'}}>{pedido || 'REF: ORC-DIRETO'}</div>
           </div>
         </div>
-        <div style={{background: '#f59e0b', height: '6px'}}/>
+        <div style={{background:'#f59e0b', height:'6px'}}/>
 
-        {/* Corpo da Ficha Técnico */}
         {calc && (
-          <div style={{padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px'}}>
-            
-            {/* Linha das Caixas Duplas */}
-            <div style={{display: 'flex', gap: '20px', width: '100%'}}>
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', position:'relative'}}>
-                <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS ABERTAS</div>
-                
-                {/* Tag em evidência na exportação */}
-                {nomeCaixa && nomeCaixa.trim() !== "" && (
-                  <div style={{background: '#fef3c7', color: '#b45309', fontSize: '13px', fontWeight: '800', letterSpacing: '1px', padding: '4px 10px', borderRadius: '6px', border: '1px dashed #f59e0b', textTransform: 'uppercase', marginTop: '4px'}}>📦 REFERÊNCIA: {nomeCaixa}</div>
-                )}
-
-                <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
-                    <Box3DSVG w={bW} h={bH} d={bD} status="abertas" darkMode={false}/>
-                  </svg>
+          <div style={{padding:'30px', display:'flex', flexDirection:'column', gap:'30px'}}>
+            <div style={{display:'flex', gap:'20px', width:'100%'}}>
+              {['abertas','fechadas'].map(status => (
+                <div key={status} style={{flex:1, background:'#fafafa', border:'1px solid #e2e8f0', borderRadius:'16px', padding:'20px', display:'flex', flexDirection:'column', alignItems:'center'}}>
+                  <div style={{fontSize:'14px', fontWeight:'800', color:'#b45309', marginBottom:'4px', letterSpacing:'1px'}}>
+                    CAIXA RSC - ABAS {status.toUpperCase()}
+                  </div>
+                  {nomeCaixa && nomeCaixa.trim() !== "" && (
+                    <div style={{background:'#fef3c7', color:'#b45309', fontSize:'13px', fontWeight:'800', letterSpacing:'1px', padding:'4px 10px', borderRadius:'6px', border:'1px dashed #f59e0b', textTransform:'uppercase', marginTop:'4px'}}>📦 REFERÊNCIA: {nomeCaixa}</div>
+                  )}
+                  <div style={{width:'100%', height:'380px', display:'flex', alignItems:'center', justifyContent:'center'}}>
+                    <svg viewBox="0 50 920 750" style={{width:'100%', height:'100%'}}>
+                      <Box3DSVG w={bW} h={bH} d={bD} status={status} darkMode={false}/>
+                    </svg>
+                  </div>
                 </div>
-              </div>
-              
-              <div style={{flex: 1, background: '#fafafa', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center', position:'relative'}}>
-                <div style={{fontSize: '14px', fontWeight: '800', color: '#b45309', marginBottom: '4px', letterSpacing: '1px'}}>CAIXA RSC - ABAS FECHADAS</div>
-                
-                {/* Tag em evidência na exportação */}
-                {nomeCaixa && nomeCaixa.trim() !== "" && (
-                  <div style={{background: '#fef3c7', color: '#b45309', fontSize: '13px', fontWeight: '800', letterSpacing: '1px', padding: '4px 10px', borderRadius: '6px', border: '1px dashed #f59e0b', textTransform: 'uppercase', marginTop: '4px'}}>📦 REFERÊNCIA: {nomeCaixa}</div>
-                )}
-
-                <div style={{width: '100%', height: '380px', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                  <svg viewBox="0 50 920 750" style={{width: '100%', height: '100%'}}>
-                    <Box3DSVG w={bW} h={bH} d={bD} status="fechadas" darkMode={false}/>
-                  </svg>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Linha de Dados e Parâmetros */}
-            <div style={{display: 'flex', gap: '20px'}}>
-              {/* Tabela Técnica */}
-              <div style={{flex: 1.2, background: '#ffffff', padding: '10px 0'}}>
-                <div style={{fontSize: '12px', fontWeight: '800', color: '#0f172a', borderBottom: '2px solid #0f172a', paddingBottom: '6px', letterSpacing: '1px', textTransform: 'uppercase'}}>Especificações da Estrutura</div>
+            <div style={{display:'flex', gap:'20px'}}>
+              <div style={{flex:1.2, background:'#ffffff', padding:'10px 0'}}>
+                <div style={{fontSize:'12px', fontWeight:'800', color:'#0f172a', borderBottom:'2px solid #0f172a', paddingBottom:'6px', letterSpacing:'1px', textTransform:'uppercase'}}>Especificações da Estrutura</div>
                 {[
                   ['Identificação da Caixa', nomeCaixa || 'Modelo Padrão'],
                   ['Comprimento útil (C)', comp + ' mm'],
@@ -801,51 +693,43 @@ function App(){
                   ['Massa Total do Pedido', fmt(calc.pesoTotalKg, 2) + ' kg'],
                   ['Área de Chapa por Caixa', fmt(calc.areaMm2, 0) + ' mm²']
                 ].map(([l,v], idx)=>(
-                  <div key={idx} style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f1f5f9', padding: '8px 4px', fontSize: '15px'}}>
-                    <span style={{color: '#475569', fontWeight: '600'}}>{l}</span>
-                    <strong style={{color: '#0f172a', fontWeight: '800'}}>{v}</strong>
+                  <div key={idx} style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #f1f5f9', padding:'8px 4px', fontSize:'15px'}}>
+                    <span style={{color:'#475569', fontWeight:'600'}}>{l}</span>
+                    <strong style={{color:'#0f172a', fontWeight:'800'}}>{v}</strong>
                   </div>
                 ))}
               </div>
 
-              {/* Quadro Comercial Monetário */}
-              <div style={{flex: 0.8, display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                <div style={{background: '#fafafa', border: '2px solid #f59e0b', borderRadius: '16px', padding: '24px', display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1}}>
-                  <div style={{fontSize: '14px', color: '#64748b', fontWeight: '700', letterSpacing: '0.5px'}}>INVESTIMENTO UNITÁRIO</div>
-                  <div style={{fontSize: '34px', fontWeight: '900', color: '#d97706', marginTop: '2px'}}>{money(calc.vendaUni)}</div>
-                  
-                  <div style={{height: '1px', background: '#e2e8f0', margin: '20px 0'}}/>
-                  
-                  <div style={{fontSize: '14px', color: '#64748b', fontWeight: '700', letterSpacing: '0.5px'}}>VALOR LÍQUIDO DO LOTE</div>
-                  <div style={{fontSize: '44px', fontWeight: '900', color: '#0f172a', marginTop: '2px'}}>{money(calc.vendaTotal)}</div>
+              <div style={{flex:0.8, display:'flex', flexDirection:'column', gap:'16px'}}>
+                <div style={{background:'#fafafa', border:'2px solid #f59e0b', borderRadius:'16px', padding:'24px', display:'flex', flexDirection:'column', justifyContent:'center', flex:1}}>
+                  <div style={{fontSize:'14px', color:'#64748b', fontWeight:'700', letterSpacing:'0.5px'}}>INVESTIMENTO UNITÁRIO</div>
+                  <div style={{fontSize:'34px', fontWeight:'900', color:'#d97706', marginTop:'2px'}}>{money(calc.vendaUni)}</div>
+                  <div style={{height:'1px', background:'#e2e8f0', margin:'20px 0'}}/>
+                  <div style={{fontSize:'14px', color:'#64748b', fontWeight:'700', letterSpacing:'0.5px'}}>VALOR LÍQUIDO DO LOTE</div>
+                  <div style={{fontSize:'44px', fontWeight:'900', color:'#0f172a', marginTop:'2px'}}>{money(calc.vendaTotal)}</div>
                 </div>
               </div>
             </div>
 
-            {/* Notas e Observações */}
             {desc && (
-              <div style={{background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px'}}>
-                <div style={{fontSize: '11px', fontWeight: '800', color: '#64748b', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '4px'}}>Observações de Fornecimento</div>
-                <div style={{fontSize: '14px', color: '#334155', fontWeight: '500', lineHeight: '1.4'}}>{desc}</div>
+              <div style={{background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:'12px', padding:'16px'}}>
+                <div style={{fontSize:'11px', fontWeight:'800', color:'#64748b', letterSpacing:'1px', textTransform:'uppercase', marginBottom:'4px'}}>Observações de Fornecimento</div>
+                <div style={{fontSize:'14px', color:'#334155', fontWeight:'500', lineHeight:'1.4'}}>{desc}</div>
               </div>
             )}
-            
-            <div style={{textAlign: 'center', fontSize: '11px', color: '#94a3b8', letterSpacing: '1px', fontWeight: '600', marginTop: '10px'}}>
+
+            <div style={{textAlign:'center', fontSize:'11px', color:'#94a3b8', letterSpacing:'1px', fontWeight:'600', marginTop:'10px'}}>
               Documento gerado eletronicamente em {today} • Válido por 10 dias.
             </div>
           </div>
         )}
       </div>
-
     </div>
   );
 }
 
-const rootEl = document.getElementById('root');
-const root = ReactDOM.createRoot(rootEl);
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 </script>
 </body>
 </html>
-
-
