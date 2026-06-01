@@ -161,12 +161,12 @@ const today = new Date().toLocaleDateString('pt-BR');
 
 const DEFAULT_MATERIAIS = {
   duplex:[
-    {label:'Onda B - 360g (Coluna 4.5)', gramatura:360, custo:7.50, venda:15.00},
-    {label:'Onda C - 410g (Coluna 5.2)', gramatura:410, custo:8.20, venda:16.40},
+    {label:'Onda B - 360g (Coluna 4.5)', onda:'Onda B', gramatura:360, custo:7.50, venda:15.00},
+    {label:'Onda C - 410g (Coluna 5.2)', onda:'Onda C', gramatura:410, custo:8.20, venda:16.40},
   ],
   triplex:[
-    {label:'Onda BC - 720g (Coluna 8.5)', gramatura:720, custo:11.80, venda:23.60},
-    {label:'Onda EB - 610g (Coluna 7.8)', gramatura:610, custo:10.50, venda:21.00},
+    {label:'Onda BC - 720g (Coluna 8.5)', onda:'Onda BC', gramatura:720, custo:11.80, venda:23.60},
+    {label:'Onda EB - 610g (Coluna 7.8)', onda:'Onda EB', gramatura:610, custo:10.50, venda:21.00},
   ],
 };
 
@@ -303,40 +303,121 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
 
 function PrecosModal({materiais,onSave,onClose}){
   const [local,setLocal]=useState(JSON.parse(JSON.stringify(materiais)));
-  const upd=(tipo,idx,campo,val)=>{
+  const [abaAtiva,setAbaAtiva]=useState('duplex');
+
+  const updItem=(tipo,idx,campo,val)=>{
     const cp=JSON.parse(JSON.stringify(local));
-    cp[tipo][idx][campo]=parseFloat(val)||0;
+    cp[tipo][idx][campo] = (campo==='label'||campo==='onda') ? val : (parseFloat(val)||0);
     setLocal(cp);
   };
+
+  const addItem=(tipo)=>{
+    const cp=JSON.parse(JSON.stringify(local));
+    cp[tipo].push({label:'Nova Especificação', onda:'Onda X', gramatura:400, custo:8.00, venda:16.00});
+    setLocal(cp);
+  };
+
+  const removeItem=(tipo,idx)=>{
+    const cp=JSON.parse(JSON.stringify(local));
+    if(cp[tipo].length<=1){alert('Deve haver ao menos 1 especificação.');return;}
+    cp[tipo].splice(idx,1);
+    setLocal(cp);
+  };
+
+  const tabStyle=(aba)=>({
+    padding:'7px 18px', border:'none', borderRadius:'8px', cursor:'pointer',
+    fontFamily:"'Barlow Condensed'", fontSize:'13px', fontWeight:'800', letterSpacing:'1px',
+    textTransform:'uppercase',
+    background: abaAtiva===aba ? '#f59e0b' : 'transparent',
+    color: abaAtiva===aba ? '#fff' : 'var(--text-muted)',
+  });
+
+  const TIPOS = [
+    {key:'duplex',  label:'Onda Simples (Duplex)'},
+    {key:'triplex', label:'Onda Dupla (Triplex)'},
+  ];
+
   return (
     <div className="modal-overlay" onClick={e=>{ if(e.target===e.currentTarget) onClose(); }}>
-      <div className="modal">
+      <div className="modal" style={{maxWidth:600}}>
         <div className="modal-header">
           <h2>EDITAR MATRIZ DE PREÇOS</h2>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-        {['duplex','triplex'].map(tipo=>(
-          <div key={tipo} style={{marginBottom:14}}>
-            <div className="modal-tipo">{tipo === 'duplex' ? 'PAREDE SIMPLES (UMA ONDA)' : 'PAREDE DUPLA (DUAS ONDAS)'}</div>
-            {local[tipo].map((item,idx)=>(
-              <div className="modal-mat" key={idx}>
-                <div style={{color: 'var(--text-title)', fontSize: 14, fontWeight: 700, marginBottom: 6}}>{item.label}</div>
-                <div className="modal-fields">
-                  {[['Gramatura','gramatura'],['Custo R$/kg','custo'],['Venda R$/kg','venda']].map(([lbl,campo])=>(
-                    <div key={campo}>
-                      <div style={{fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', marginBottom: 2}}>{lbl}</div>
-                      <input className="modal-input" type="number" step="0.01" value={item[campo]}
-                        onChange={e=>upd(tipo,idx,campo,e.target.value)}/>
-                    </div>
-                  ))}
-                </div>
+
+        {/* Abas de tipo */}
+        <div style={{display:'flex', background:'var(--bg-main)', borderRadius:'10px', padding:'3px', gap:'3px', marginBottom:'14px'}}>
+          {TIPOS.map(t=>(
+            <button key={t.key} style={tabStyle(t.key)} onClick={()=>setAbaAtiva(t.key)}>
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Itens da aba ativa */}
+        {local[abaAtiva].map((item,idx)=>(
+          <div className="modal-mat" key={idx} style={{marginBottom:10, position:'relative'}}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8}}>
+              <span style={{fontSize:11, fontWeight:800, color:'var(--text-muted)', letterSpacing:'1px'}}>
+                ESPECIFICAÇÃO #{idx+1}
+              </span>
+              <button onClick={()=>removeItem(abaAtiva,idx)}
+                style={{background:'#fee2e2', border:'none', borderRadius:6, padding:'3px 10px',
+                  color:'#ef4444', fontWeight:800, fontSize:12, cursor:'pointer', letterSpacing:'0.5px'}}>
+                ✕ REMOVER
+              </button>
+            </div>
+
+            {/* Linha 1: Onda + Nome completo */}
+            <div style={{display:'grid', gridTemplateColumns:'1fr 2fr', gap:8, marginBottom:8}}>
+              <div>
+                <div style={{fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:3, textTransform:'uppercase', letterSpacing:'1px'}}>Tipo de Onda</div>
+                <input className="modal-input" type="text" value={item.onda||''}
+                  placeholder="Ex: Onda B"
+                  onChange={e=>updItem(abaAtiva,idx,'onda',e.target.value)}/>
               </div>
-            ))}
+              <div>
+                <div style={{fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:3, textTransform:'uppercase', letterSpacing:'1px'}}>Descrição / Referência</div>
+                <input className="modal-input" type="text" value={item.label}
+                  placeholder="Ex: Onda B - 360g (Coluna 4.5)"
+                  onChange={e=>updItem(abaAtiva,idx,'label',e.target.value)}/>
+              </div>
+            </div>
+
+            {/* Linha 2: Gramatura + Custo + Venda */}
+            <div className="modal-fields">
+              <div>
+                <div style={{fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:3, textTransform:'uppercase', letterSpacing:'1px'}}>Gramatura (g/m²)</div>
+                <input className="modal-input" type="number" step="1" value={item.gramatura}
+                  onChange={e=>updItem(abaAtiva,idx,'gramatura',e.target.value)}/>
+              </div>
+              <div>
+                <div style={{fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:3, textTransform:'uppercase', letterSpacing:'1px'}}>Custo R$/kg</div>
+                <input className="modal-input" type="number" step="0.01" value={item.custo}
+                  onChange={e=>updItem(abaAtiva,idx,'custo',e.target.value)}/>
+              </div>
+              <div>
+                <div style={{fontSize:10, fontWeight:700, color:'var(--text-muted)', marginBottom:3, textTransform:'uppercase', letterSpacing:'1px'}}>Venda R$/kg</div>
+                <input className="modal-input" type="number" step="0.01" value={item.venda}
+                  onChange={e=>updItem(abaAtiva,idx,'venda',e.target.value)}/>
+              </div>
+            </div>
           </div>
         ))}
+
+        {/* Botão adicionar */}
+        <button onClick={()=>addItem(abaAtiva)}
+          style={{width:'100%', padding:'9px', border:'2px dashed #f59e0b', borderRadius:'10px',
+            background:'transparent', color:'#b45309', fontFamily:"'Barlow Condensed'",
+            fontSize:'13px', fontWeight:'800', letterSpacing:'1px', cursor:'pointer', marginBottom:'4px'}}>
+          + ADICIONAR ESPECIFICAÇÃO
+        </button>
+
         <div className="modal-actions">
           <button className="btn" onClick={onClose}>Cancelar</button>
-          <button className="btn btn-export" style={{fontSize:13, padding:'6px 12px'}} onClick={()=>{onSave(local);onClose();}}>Salvar</button>
+          <button className="btn btn-export" style={{fontSize:13, padding:'6px 14px'}} onClick={()=>{onSave(local);onClose();}}>
+            💾 Salvar Alterações
+          </button>
         </div>
       </div>
     </div>
@@ -526,8 +607,8 @@ function App(){
                 </select>
               </div>
             </div>
-            <div className="mat-info">
-              {[['Gramatura',mat.gramatura+' g'],['Custo/kg',money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
+            <div className="mat-info" style={{gridTemplateColumns:'1fr 1fr 1fr 1fr'}}>
+              {[['Onda',mat.onda||'—'],['Gramatura',mat.gramatura+' g/m²'],['Custo/kg',money(mat.custo)],['Venda/kg',money(mat.venda)]].map(([k,v])=>(
                 <div className="mat-info-item" key={k}><span>{k}</span><strong>{v}</strong></div>
               ))}
             </div>
