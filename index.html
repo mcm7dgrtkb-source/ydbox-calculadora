@@ -134,6 +134,20 @@ textarea{ resize:none; min-height:65px; font-size:15px; font-weight:500; color: 
 .empty-state{ color: var(--text-muted); font-size:14px; text-align:center; padding:16px 0; font-weight:600; }
 .footer{ text-align:center; color: var(--text-muted); font-size:13px; margin-top:24px; letter-spacing:2px; padding-bottom:24px; font-weight:600; }
 #img-template{ display:none; }
+
+/* Tela de seleção de modelo */
+.model-select-screen{ min-height:80vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
+.model-select-title{ font-size:32px; font-weight:900; color:var(--text-title); letter-spacing:1px; margin-bottom:6px; text-align:center; }
+.model-select-sub{ font-size:14px; color:var(--text-muted); font-weight:600; letter-spacing:2px; margin-bottom:48px; text-align:center; }
+.model-cards{ display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:820px; width:100%; }
+.model-card{ background:var(--bg-card); border:2px solid var(--border-color); border-radius:20px; padding:32px 24px; cursor:pointer; transition:all 0.15s; display:flex; flex-direction:column; align-items:center; gap:16px; position:relative; overflow:hidden; }
+.model-card:hover{ border-color:#f59e0b; transform:translateY(-3px); box-shadow:0 8px 24px rgba(245,158,11,0.15); }
+.model-card h3{ font-size:20px; font-weight:900; color:var(--text-title); letter-spacing:0.5px; text-align:center; }
+.model-card p{ font-size:13px; color:var(--text-muted); font-weight:600; text-align:center; line-height:1.5; }
+.model-card-badge{ background:#f59e0b; color:#fff; font-size:10px; font-weight:800; letter-spacing:1px; padding:3px 10px; border-radius:20px; }
+.model-card-badge.new{ background:#10b981; }
+.model-tag{ background:var(--bg-main); border:1px solid var(--border-color); border-radius:6px; padding:3px 10px; font-size:11px; font-weight:800; color:var(--text-label); letter-spacing:1px; }
+@media(max-width:600px){ .model-cards{ grid-template-columns:1fr; } }
 @media(max-width:1024px){
   .grid{ grid-template-columns: 1fr; }
   .mockup{ height:650px; }
@@ -301,6 +315,198 @@ function Box3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
   );
 }
 
+/* TELA DE SELEÇÃO DE MODELO */
+function ModelSelectScreen({onSelect, darkMode, onToggleDark}){
+  const today = new Date().toLocaleDateString('pt-BR');
+  return (
+    <div className="container">
+      <div className="header">
+        <div className="logo-area">
+          <LogoYDBox size={60} darkMode={darkMode}/>
+          <div className="logo-meta">
+            <div className="logo-text-title">YD BOX</div>
+            <div className="subtitle">SOLUÇÕES EM EMBALAGENS</div>
+          </div>
+        </div>
+        <div className="header-actions">
+          <div className="theme-switch" onClick={onToggleDark}>
+            <span className="icon" style={{opacity: darkMode?0.3:1}}>☀️</span>
+            <span className="ball"></span>
+            <span className="icon" style={{opacity: darkMode?1:0.3}}>🌙</span>
+          </div>
+          <span className="header-date">Emissão: {today}</span>
+        </div>
+      </div>
+
+      <div className="model-select-screen">
+        <div className="model-select-title">SELECIONE O MODELO DA CAIXA</div>
+        <div className="model-select-sub">ESCOLHA O TIPO PARA CALCULAR A CHAPA E O CUSTO CORRETO</div>
+
+        <div className="model-cards">
+          {/* RSC */}
+          <div className="model-card" onClick={()=>onSelect('rsc')}>
+            <svg viewBox="0 0 320 220" width="100%" style={{maxWidth:260}}>
+              <defs>
+                <linearGradient id="ms_left" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#e7a961"/><stop offset="100%" stopColor="#c88b42"/></linearGradient>
+                <linearGradient id="ms_right" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#cca16e"/><stop offset="100%" stopColor="#a3743f"/></linearGradient>
+                <linearGradient id="ms_top" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#f3be7a"/><stop offset="100%" stopColor="#cf924c"/></linearGradient>
+              </defs>
+              <ellipse cx="145" cy="195" rx="115" ry="22" fill="#0f172a" opacity="0.07"/>
+              {/* abas abertas */}
+              <polygon points="160,80 50,120 50,55 160,15" fill="#f8d49a" stroke="#d97706" strokeWidth="1.5"/>
+              <polygon points="160,80 270,40 270,105 160,145" fill="#f8d49a" stroke="#c88b42" strokeWidth="1.5"/>
+              {/* corpo */}
+              <polygon points="160,145 50,185 50,120 160,80" fill="url(#ms_left)" stroke="#b07733" strokeWidth="1.5"/>
+              <polygon points="160,145 270,105 270,170 160,210" fill="url(#ms_right)" stroke="#946025" strokeWidth="1.5"/>
+              <polygon points="160,80 50,120 270,40" fill="url(#ms_top)" stroke="#b07733" strokeWidth="1"/>
+              <text x="155" y="168" fontSize="13" fill="#78350f" fontWeight="900" textAnchor="middle" fontFamily="Barlow Condensed, Arial">ABAS SEPARADAS</text>
+            </svg>
+            <h3>RSC — Caixa Padrão</h3>
+            <p>Fechamento por abas que se encontram no centro. Ideal para logística, paletização e e-commerce básico.</p>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',justifyContent:'center'}}>
+              <span className="model-tag">ABAS SUPERIORES</span>
+              <span className="model-tag">BASE ABERTA</span>
+            </div>
+            <div className="model-card-badge">PADRÃO</div>
+          </div>
+
+          {/* MAILER */}
+          <div className="model-card" onClick={()=>onSelect('mailer')}>
+            <svg viewBox="0 0 320 220" width="100%" style={{maxWidth:260}}>
+              <defs>
+                <linearGradient id="ml_left" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#e7a961"/><stop offset="100%" stopColor="#c88b42"/></linearGradient>
+                <linearGradient id="ml_right" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#cca16e"/><stop offset="100%" stopColor="#a3743f"/></linearGradient>
+              </defs>
+              <ellipse cx="145" cy="200" rx="115" ry="18" fill="#0f172a" opacity="0.07"/>
+              {/* tampa aberta (painel inteiro) */}
+              <polygon points="160,85 50,125 50,40 160,0" fill="#f8d49a" stroke="#d97706" strokeWidth="2"/>
+              {/* aba interna trava */}
+              <polygon points="160,0 50,40 55,55 165,15" fill="#fde68a" stroke="#f59e0b" strokeWidth="1.5" opacity="0.9"/>
+              {/* abas laterais arredondadas */}
+              <path d="M 50,125 Q 50,80 50,40" fill="none" stroke="#6366f1" strokeWidth="2"/>
+              {/* corpo */}
+              <polygon points="160,150 50,190 50,125 160,85" fill="url(#ml_left)" stroke="#b07733" strokeWidth="1.5"/>
+              <polygon points="160,150 270,110 270,175 160,215" fill="url(#ml_right)" stroke="#946025" strokeWidth="1.5"/>
+              <polygon points="160,85 50,125 270,45 160,5" fill="#f3be7a" stroke="#b07733" strokeWidth="1" opacity="0.6"/>
+              <text x="155" y="173" fontSize="13" fill="#78350f" fontWeight="900" textAnchor="middle" fontFamily="Barlow Condensed, Arial">TAMPA INTEGRADA</text>
+            </svg>
+            <h3>Mailer Box — E-commerce</h3>
+            <p>Tampa integrada em painel único com aba de trava. Base pré-colada. Ideal para envio direto ao consumidor.</p>
+            <div style={{display:'flex',gap:6,flexWrap:'wrap',justifyContent:'center'}}>
+              <span className="model-tag">TAMPA INTEGRADA</span>
+              <span className="model-tag">BASE FIXA</span>
+            </div>
+            <div className="model-card-badge new">NOVO</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* 3D DA MAILER BOX */
+function MailerBox3DSVG({w:cNum, h:lNum, d:aNum, status, darkMode}){
+  const maxDim = Math.max(cNum, lNum, aNum, 1);
+  const sc = 180 / maxDim;
+  const w = cNum * sc; // comprimento
+  const l = lNum * sc; // largura
+  const a = aNum * sc; // altura
+  const cx = 460, cy = 400;
+  const lc = darkMode ? '#fbbf24' : '#d97706';
+  const txtColor = darkMode ? '#f8fafc' : '#0f172a';
+  const isOpen = status === 'abertas';
+
+  return (
+    <g>
+      <defs>
+        <linearGradient id="mbl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#e7a961"/><stop offset="100%" stopColor="#c88b42"/></linearGradient>
+        <linearGradient id="mbr" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#cca16e"/><stop offset="100%" stopColor="#a3743f"/></linearGradient>
+        <linearGradient id="mbt" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stopColor="#f3be7a"/><stop offset="100%" stopColor="#cf924c"/></linearGradient>
+        <linearGradient id="mbtp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#f8d49a"/><stop offset="100%" stopColor="#e8b870"/></linearGradient>
+      </defs>
+
+      {/* Sombra */}
+      <ellipse cx={cx-w/2+l/2} cy={cy+12} rx={w*0.72} ry={l*0.28} fill="#0f172a" opacity={darkMode?"0.35":"0.07"}/>
+
+      {/* Base (fundo fixo — não tem abas) */}
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w+l},${cy-w/2-l/2} ${cx+l},${cy-l/2}`} fill="#b8863a" stroke="#8a5e1f" strokeWidth="1.5"/>
+
+      {/* Parede esquerda */}
+      <polygon points={`${cx},${cy} ${cx-w},${cy-w/2} ${cx-w},${cy-w/2-a} ${cx},${cy-a}`} fill="url(#mbl)" stroke="#b07733" strokeWidth="1.5"/>
+      {/* Parede direita */}
+      <polygon points={`${cx},${cy} ${cx+l},${cy-l/2} ${cx+l},${cy-l/2-a} ${cx},${cy-a}`} fill="url(#mbr)" stroke="#946025" strokeWidth="1.5"/>
+      {/* Parede lateral traseira */}
+      <polygon points={`${cx-w},${cy-w/2} ${cx-w+l},${cy-w/2-l/2} ${cx-w+l},${cy-w/2-l/2-a} ${cx-w},${cy-w/2-a}`} fill="#c8924a" stroke="#9a6828" strokeWidth="1.5"/>
+      {/* Topo do corpo (borda superior aberta) */}
+      <polygon points={`${cx},${cy-a} ${cx-w},${cy-w/2-a} ${cx-w+l},${cy-w/2-l/2-a} ${cx+l},${cy-l/2-a}`} fill="url(#mbt)" stroke="#b07733" strokeWidth="1.5"/>
+
+      {/* Interior visível quando aberto */}
+      {isOpen && (
+        <polygon points={`${cx},${cy-a} ${cx-w},${cy-w/2-a} ${cx-w+l},${cy-w/2-l/2-a} ${cx+l},${cy-l/2-a}`} fill="#7c5123" opacity="0.5"/>
+      )}
+
+      {/* TAMPA */}
+      {isOpen ? (
+        <g>
+          {/* Tampa aberta — painel inteiro girando para trás */}
+          <polygon
+            points={`${cx},${cy-a} ${cx-w},${cy-w/2-a} ${cx-w},${cy-w/2-a-w*0.5} ${cx},${cy-a-w*0.5}`}
+            fill="url(#mbtp)" stroke="#d97706" strokeWidth="2"/>
+          {/* Aba interna de trava */}
+          <polygon
+            points={`${cx},${cy-a-w*0.5} ${cx-w},${cy-w/2-a-w*0.5} ${cx-w},${cy-w/2-a-w*0.5-a*0.4} ${cx},${cy-a-w*0.5-a*0.4}`}
+            fill="#fde68a" stroke="#f59e0b" strokeWidth="1.5" opacity="0.9"/>
+          {/* Abas laterais da tampa abertas */}
+          <polygon
+            points={`${cx},${cy-a} ${cx+l},${cy-l/2-a} ${cx+l},${cy-l/2-a-l*0.4} ${cx},${cy-a-l*0.4}`}
+            fill="#daa050" stroke="#b07733" strokeWidth="1.5" opacity="0.85"/>
+          {/* Label tampa */}
+          <text x={cx-w/2} y={cy-a-w*0.25} fill={txtColor} fontSize="18" fontWeight="900" textAnchor="middle" fontFamily="Barlow Condensed, Arial">TAMPA</text>
+          <text x={cx-w/2} y={cy-a-w*0.5-a*0.2} fill="#92400e" fontSize="14" fontWeight="800" textAnchor="middle" fontFamily="Barlow Condensed, Arial">ABA TRAVA</text>
+        </g>
+      ) : (
+        <g>
+          {/* Tampa fechada — cobre o topo */}
+          <polygon
+            points={`${cx},${cy-a} ${cx-w},${cy-w/2-a} ${cx-w+l},${cy-w/2-l/2-a} ${cx+l},${cy-l/2-a}`}
+            fill="url(#mbtp)" stroke="#d97706" strokeWidth="2"/>
+          {/* Linha de fechamento da aba */}
+          <line x1={cx} y1={cy-a} x2={cx-w} y2={cy-w/2-a} stroke="#b07733" strokeWidth="1.5" strokeDasharray="5,3"/>
+          {/* Recorte meia-lua simbólico */}
+          <path d={`M ${cx-w/2-10} ${cy-a-w/4} Q ${cx-w/2} ${cy-a-w/4+10} ${cx-w/2+10} ${cy-a-w/4}`} fill="none" stroke="#d97706" strokeWidth="2"/>
+        </g>
+      )}
+
+      {/* Vinco frontal */}
+      <line x1={cx} y1={cy} x2={cx} y2={cy-a} stroke="#ffd699" strokeWidth="1.5" opacity="0.4"/>
+
+      {/* COTA C */}
+      <g>
+        <line x1={cx} y1={cy+28} x2={cx-w} y2={cy-w/2+28} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
+        <line x1={cx} y1={cy+20} x2={cx} y2={cy+36} stroke={lc} strokeWidth="2.5"/>
+        <line x1={cx-w} y1={cy-w/2+20} x2={cx-w} y2={cy-w/2+36} stroke={lc} strokeWidth="2.5"/>
+        <text x={(2*cx-w)/2} y={cy+56} fill={txtColor} fontSize="22" fontWeight="900" textAnchor="middle" fontFamily="Barlow Condensed, Arial">C: {cNum} mm</text>
+      </g>
+      {/* COTA L */}
+      <g>
+        <line x1={cx+18} y1={cy+10} x2={cx+l+18} y2={cy-l/2+10} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
+        <line x1={cx+18} y1={cy+3} x2={cx+18} y2={cy+17} stroke={lc} strokeWidth="2.5"/>
+        <line x1={cx+l+18} y1={cy-l/2+3} x2={cx+l+18} y2={cy-l/2+17} stroke={lc} strokeWidth="2.5"/>
+        <text x={cx+l/2+48} y={cy-l/4+36} fill={txtColor} fontSize="22" fontWeight="900" textAnchor="middle" fontFamily="Barlow Condensed, Arial">L: {lNum} mm</text>
+      </g>
+      {/* COTA A */}
+      <g>
+        <line x1={cx-w-28} y1={cy-w/2} x2={cx-w-28} y2={cy-w/2-a} stroke={lc} strokeWidth="1.5" strokeDasharray="4,4"/>
+        <line x1={cx-w-35} y1={cy-w/2} x2={cx-w-21} y2={cy-w/2} stroke={lc} strokeWidth="2.5"/>
+        <line x1={cx-w-35} y1={cy-w/2-a} x2={cx-w-21} y2={cy-w/2-a} stroke={lc} strokeWidth="2.5"/>
+        <g transform={`translate(${cx-w-52},${cy-w/2-a/2})`}>
+          <text fill={txtColor} fontSize="22" fontWeight="900" textAnchor="middle" transform="rotate(-90)" fontFamily="Barlow Condensed, Arial">A: {aNum} mm</text>
+        </g>
+      </g>
+    </g>
+  );
+}
+
 function PrecosModal({materiais,onSave,onClose}){
   const [local,setLocal]=useState(JSON.parse(JSON.stringify(materiais)));
   const [abaAtiva,setAbaAtiva]=useState('duplex');
@@ -441,6 +647,7 @@ function Field({label,value,onChange,onBlur,error,suffix='mm'}){
 
 function App(){
   const [darkMode, setDarkMode] = useState(false);
+  const [modelo, setModelo] = useState(null); // null = tela seleção | 'rsc' | 'mailer'
   const [comp,setComp]=useState(500);
   const [larg,setLarg]=useState(300);
   const [alt,setAlt]=useState(200);
@@ -452,7 +659,7 @@ function App(){
   const [onda,setOnda]=useState('duplex');
   const [matIdx,setMatIdx]=useState(0);
   const [materiais,setMateriais]=useState(DEFAULT_MATERIAIS);
-  const [desc,setDesc]=useState('Caixa de Papelão Ondulado RSC (Regular Slotted Container). Formato maleta tradicional com fechamento padrão seguro, ideal para paletização e e-commerce.');
+  const [desc,setDesc]=useState('');
   const [showPrecos,setShowPrecos]=useState(false);
   const [touched,setTouched]=useState({});
   const [exportando,setExportando]=useState(false);
@@ -470,6 +677,12 @@ function App(){
   useEffect(()=>{ posRef.current=pos; },[pos]);
   useEffect(()=>{ setMatIdx(0); },[onda]);
 
+  // Ao trocar modelo, resetar desc padrão
+  useEffect(()=>{
+    if(modelo==='rsc') setDesc('Caixa de Papelão Ondulado RSC (Regular Slotted Container). Fechamento por abas, ideal para paletização e logística.');
+    if(modelo==='mailer') setDesc('Mailer Box E-commerce com tampa integrada e aba de trava. Base pré-colada. Ideal para envio direto ao consumidor.');
+  },[modelo]);
+
   const mat=materiais[onda][matIdx]??materiais[onda][0];
   const erros=validar(comp,larg,alt,qtd);
   const hasErrors=Object.keys(erros).length>0;
@@ -481,14 +694,25 @@ function App(){
     const a=Math.max(Number(alt)||0,0), q=Math.max(Number(qtd)||0,0);
     if(!c||!l||!a||!q) return null;
     const {gramatura,custo:pc,venda:pv}=mat;
-    const larguraChapa = (2 * c) + (2 * l) + 40;
-    const alturaChapa = a + l + 10;
+
+    let larguraChapa, alturaChapa;
+    if(modelo==='mailer'){
+      // Fórmula Mailer Box: 5+A+5+A+C+A+5+A+5 × A+L+A+L+A+10
+      larguraChapa = c + (4*a) + 20;
+      alturaChapa  = (3*a) + (2*l) + 10;
+    } else {
+      // Fórmula RSC padrão
+      larguraChapa = (2*c) + (2*l) + 40;
+      alturaChapa  = a + l + 10;
+    }
+
     const areaM2 = (larguraChapa * alturaChapa) / 1_000_000;
     const pesoUnitarioKg = areaM2 * (gramatura / 1000);
     const cu = pesoUnitarioKg * pc;
     const vu = pesoUnitarioKg * pv;
     const lu = vu - cu;
     return{
+      larguraChapa, alturaChapa,
       areaMm2: larguraChapa * alturaChapa,
       pesoGramas: pesoUnitarioKg * 1000,
       pesoTotalKg: pesoUnitarioKg * q,
@@ -498,7 +722,7 @@ function App(){
       vendaUni: vu,
       margem: vu > 0 ? (lu / vu) * 100 : 0
     };
-  },[comp,larg,alt,qtd,mat]);
+  },[comp,larg,alt,qtd,mat,modelo]);
 
   const startDrag=useCallback(e=>{
     dragging.current=true;
@@ -542,6 +766,17 @@ function App(){
     <div className="container">
       {showPrecos&&<PrecosModal materiais={materiais} onSave={setMateriais} onClose={()=>setShowPrecos(false)}/>}
 
+      {/* TELA DE SELEÇÃO */}
+      {!modelo && (
+        <ModelSelectScreen
+          onSelect={m=>setModelo(m)}
+          darkMode={darkMode}
+          onToggleDark={()=>setDarkMode(!darkMode)}
+        />
+      )}
+
+      {/* PAINEL PRINCIPAL */}
+      {modelo && (<>
       <div className="header">
         <div className="logo-area">
           <LogoYDBox size={60} darkMode={darkMode}/>
@@ -551,12 +786,17 @@ function App(){
           </div>
         </div>
         <div className="header-actions">
-          <div className="theme-switch" onClick={() => setDarkMode(!darkMode)} title="Alternar fundo claro/escuro">
+          <div className="theme-switch" onClick={() => setDarkMode(!darkMode)}>
             <span className="icon" style={{opacity: darkMode ? 0.3 : 1}}>☀️</span>
             <span className="ball"></span>
             <span className="icon" style={{opacity: darkMode ? 1 : 0.3}}>🌙</span>
           </div>
           <span className="header-date">Emissão: {today}</span>
+          {/* Badge do modelo atual */}
+          <div style={{background: modelo==='mailer'?'#10b981':'#f59e0b', color:'#fff', padding:'4px 12px', borderRadius:'8px', fontSize:'12px', fontWeight:'800', letterSpacing:'1px'}}>
+            {modelo==='mailer'?'📦 MAILER BOX':'🗃 RSC PADRÃO'}
+          </div>
+          <button className="btn" onClick={()=>{ setModelo(null); setTouched({}); }}>⇄ Trocar Modelo</button>
           <button className="btn" onClick={()=>setShowPrecos(true)}>⚙ Valores</button>
         </div>
       </div>
@@ -624,10 +864,19 @@ function App(){
             {hasErrors&&Object.keys(touched).length>0?(
               <div style={{color:'#ef4444',fontSize:13,textAlign:'center',padding:'4px 0',fontWeight:600}}>⚠ Ajuste as medidas para recalcular.</div>
             ):calc?(<>
-              <div className="result"><span className="result-name">Área Linear de Chapa</span><span className="result-value">{fmt(calc.areaMm2,0)} mm²</span></div>
+              <div className="result"><span className="result-name">Largura da Chapa</span><span className="result-value">{fmt(calc.larguraChapa,0)} mm</span></div>
+              <div className="result"><span className="result-name">Altura da Chapa</span><span className="result-value">{fmt(calc.alturaChapa,0)} mm</span></div>
+              <div className="result"><span className="result-name">Área Total da Chapa</span><span className="result-value">{fmt(calc.areaMm2,0)} mm²</span></div>
               <div className="result"><span className="result-name">Massa Unitária</span><span className="result-value">{fmt(calc.pesoGramas,1)} g</span></div>
               <div className="result"><span className="result-name">Massa Bruta do Lote</span><span className="result-value">{fmt(calc.pesoTotalKg,2)} kg</span></div>
               <div className="result"><span className="result-name">Margem de Lucro</span><span className="result-value" style={{color:'#16a34a'}}>{fmt(calc.margem,1)}%</span></div>
+              {/* Fórmula usada */}
+              <div style={{marginTop:8, background:'var(--bg-main)', borderRadius:8, padding:'8px 10px', fontSize:11, color:'var(--text-muted)', fontWeight:700, letterSpacing:'0.5px'}}>
+                {modelo==='mailer'
+                  ? '📐 Mailer: Larg = C+(4×A)+20 · Alt = (3×A)+(2×L)+10'
+                  : '📐 RSC: Larg = (2×C)+(2×L)+40 · Alt = A+L+10'
+                }
+              </div>
             </>):(<div className="empty-state">Aguardando especificações...</div>)}
           </div>
 
@@ -676,7 +925,10 @@ function App(){
             onTouchStart={startDrag} onTouchMove={onDrag} onTouchEnd={stopDrag}>
             <svg viewBox="0 0 920 750" style={{width:'100%',maxWidth:720,userSelect:'none',
               transform:`translate(${pos.x}px,${pos.y}px) scale(${zoom})`,transition:'transform 0.08s ease-out'}}>
-              <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode}/>
+              {modelo==='mailer'
+                ? <MailerBox3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode}/>
+                : <Box3DSVG w={bW} h={bH} d={bD} status={statusAba} darkMode={darkMode}/>
+              }
             </svg>
           </div>
 
@@ -714,6 +966,7 @@ function App(){
       )}
 
       <div className="footer">YD BOX — Todos os direitos reservados © 2026</div>
+      </>)}
 
       {/* TEMPLATE DE EXPORTAÇÃO */}
       <div id="img-template" style={{
@@ -753,7 +1006,10 @@ function App(){
                   )}
                   <div style={{width:'100%', height:'380px', display:'flex', alignItems:'center', justifyContent:'center'}}>
                     <svg viewBox="0 50 920 750" style={{width:'100%', height:'100%'}}>
-                      <Box3DSVG w={bW} h={bH} d={bD} status={status} darkMode={false}/>
+                      {modelo==='mailer'
+                        ? <MailerBox3DSVG w={bW} h={bH} d={bD} status={status} darkMode={false}/>
+                        : <Box3DSVG w={bW} h={bH} d={bD} status={status} darkMode={false}/>
+                      }
                     </svg>
                   </div>
                 </div>
